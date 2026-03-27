@@ -3496,6 +3496,48 @@ function updateDeptOptions() {
 // Global: holds pending ticket data while dup modal is open
 let _pendingTicketData = null;
 
+// ── Duplicate / similar ticket detection ─────────────────────────────────────
+function detectDuplicate(newTicket, allTickets) {
+    const now = Date.now();
+    const WINDOW_MS = 30 * 60 * 1000; // 30 นาที
+    const newDesc = (newTicket.desc || '').toLowerCase().trim();
+    const newCat  = (newTicket.category || '').toLowerCase();
+
+    for (const t of allTickets) {
+        if (t.status === 'Fixed' || t.status === 'Closed') continue;
+        const tDate = new Date(t.date).getTime();
+        if (
+            t.user === newTicket.user &&
+            (t.category || '').toLowerCase() === newCat &&
+            now - tDate < WINDOW_MS
+        ) {
+            return { type: 'exact', ticket: t };
+        }
+        const tDesc = (t.desc || '').toLowerCase().trim();
+        if (newDesc && tDesc && newCat === (t.category || '').toLowerCase()) {
+            const wordsNew = newDesc.split(/\s+/).filter(w => w.length > 3);
+            const wordsOld = new Set(tDesc.split(/\s+/).filter(w => w.length > 3));
+            const overlap  = wordsNew.filter(w => wordsOld.has(w)).length;
+            if (wordsNew.length > 0 && overlap / wordsNew.length > 0.5) {
+                return { type: 'similar', ticket: t };
+            }
+        }
+    }
+    return { type: 'new' };
+}
+
+// ── Duplicate modal ───────────────────────────────────────────────────────────
+function showDupModal(dupResult) {
+    const t = dupResult.ticket;
+    const typeLabel = dupResult.type === 'exact' ? 'Ticket ซ้ำ' : 'Ticket คล้ายกัน';
+    const msg = '⚠️ พบ' + typeLabel + 'ในระบบ\n\nTicket: ' + t.id + '\nหมวด: ' + t.category + '\nสถานะ: ' + t.status + '\n\nต้องการส่ง Ticket ใหม่อีกครั้งหรือไม่?';
+    if (confirm(msg)) {
+        _commitTicket(_pendingTicketData);
+        _afterSubmitReset(document.getElementById('ticket-form'));
+    }
+    _pendingTicketData = null;
+}
+
 function handleTicketSubmit(e) {
     e.preventDefault();
 
@@ -3539,8 +3581,35 @@ function handleTicketSubmit(e) {
 }
 
 // ===================== TELEGRAM NOTIFICATION =====================
-const TELEGRAM_BOT_TOKEN = '8614827705:AAHpxC5Qm-xaEvb3KcF6w_j3tK83rDIy2hU';  // ← ใส่ Bot Token ของคุณ
-const TELEGRAM_CHAT_ID   = '-1003706331500';    // ← ใส่ Chat ID ของคุณ
+const TELEGRAM_BOT_TOKEN = '8614827705:AAHpxC5Qm-xaEvb3KcF6w_j3tK83rDIy2hU';
+const TELEGRAM_CHAT_ID   = '-1003706331500';
+
+// ── ส่ง Telegram ผ่าน GAS proxy เพื่อหลีกเลี่ยง CORS ──────────────────────────
+// Browser ไม่สามารถ fetch api.telegram.org โดยตรงได้ (CORS blocked)
+// จึงส่งผ่าน GAS ซึ่งทำงานฝั่ง server แล้วไม่มีปัญหา CORS
+async function _sendTelegramViaGAS(message) {
+    try {
+        const url = getGasDbUrl();
+        if (!url) throw new Error('NO_GAS_URL');
+        const formData = new URLSearchParams();
+        formData.append('action', 'sendTelegram');
+        formData.append('botToken', TELEGRAM_BOT_TOKEN);
+        formData.append('chatId', TELEGRAM_CHAT_ID);
+        formData.append('message', message);
+        const r = await fetch(url, {
+            method: 'POST',
+            redirect: 'follow',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: formData.toString()
+        });
+        const res = await r.json().catch(() => ({}));
+        if (res.status === 'ok' || res.ok) return true;
+        throw new Error(res.error || 'GAS_TELEGRAM_FAIL');
+    } catch (err) {
+        console.warn('[Telegram via GAS] failed:', err.message);
+        return false;
+    }
+}
 
 async function sendTelegramNotification(ticket) {
     const priorityEmoji = {
@@ -3567,19 +3636,7 @@ ${ticket.desc}
 
 🔗 สถานะ: Open`;
 
-    try {
-        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: TELEGRAM_CHAT_ID,
-                text: message,
-                parse_mode: 'Markdown'
-            })
-        });
-    } catch (err) {
-        console.warn('Telegram notification failed:', err);
-    }
+    await _sendTelegramViaGAS(message);
 }
 // ===================== END TELEGRAM =====================
 
@@ -3600,19 +3657,7 @@ async function sendTelegramStatusUpdate(ticket, updatedStatus, assigneeName) {
 👤 ผู้แจ้ง: ${ticket.user}${ticket.dept && ticket.dept!=='-' ? ' · ' + ticket.dept : ''}${ticket.section && ticket.section!=='-' ? ' / ' + ticket.section : ''}
 👷 ผู้รับงาน: *${assigneeName || 'ไม่ระบุ'}*${ratingLine}`;
 
-    try {
-        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: TELEGRAM_CHAT_ID,
-                text: message,
-                parse_mode: 'Markdown'
-            })
-        });
-    } catch (err) {
-        console.warn('Telegram status update failed:', err);
-    }
+    await _sendTelegramViaGAS(message);
 }
 // ===================== END TELEGRAM STATUS UPDATE =====================
 
@@ -5475,8 +5520,9 @@ window.usersDoResetPassword = usersDoResetPassword;
     if (ol.classList.contains('visible') && !ol.classList.contains('hidden')) return false;
     // ตรวจ view ที่แสดงอยู่
     var userPortal  = document.getElementById('view-user-portal');
+    var adminPortal = document.getElementById('view-admin-panel');
     var userActive  = userPortal  && userPortal.classList.contains('active');
-    var adminActive = adminPanel  && adminPanel.classList.contains('active');
+    var adminActive = adminPortal && adminPortal.classList.contains('active');
     return userActive || adminActive;
   }
 
