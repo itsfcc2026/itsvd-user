@@ -4413,6 +4413,17 @@ function updateUserBadge() {
     }
 }
 
+// ── Export ฟังก์ชันหลักออก window ให้ block อื่นเรียกได้ ──
+window.showUserPortal        = showUserPortal;
+window.showLoginOverlay      = showLoginOverlay;
+window._updateUserPortalName = _updateUserPortalName;
+window.updateUserUI          = updateUserUI;
+window.userShowPage          = userShowPage;
+window.userLogout            = userLogout;
+window.closeTicketDetail     = closeTicketDetail;
+window.updateHomeStats       = updateHomeStats;
+window.renderUserTickets     = renderUserTickets;
+
 </script>
 
 
@@ -4766,8 +4777,8 @@ async function doUserLogin() {
     if (!res.ok && res.status !== 'ok') throw new Error(res.error || res.message || 'Login ไม่สำเร็จ');
 
     UserSession.set(res.token, res.user);
-    showUserPortal();
-    _updateUserPortalName(res.user);
+    window.showUserPortal();
+    if (window._updateUserPortalName) window._updateUserPortalName(res.user);
 
   } catch (err) {
     errText.textContent = err.message;
@@ -4887,8 +4898,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (user) {
       const ol = document.getElementById('login-overlay');
       if (ol) { ol.classList.remove('visible'); ol.classList.add('hidden'); ol.style.display = 'none'; }
-      showUserPortal();
-      _updateUserPortalName(user);
+      window.showUserPortal();
+      if (window._updateUserPortalName) window._updateUserPortalName(user);
     }
   } else {
     // ไม่มี session → แสดงหน้า User Login เสมอ
