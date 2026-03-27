@@ -2612,7 +2612,7 @@ const GAS_DB_KEY = 'it_gas_db_url';
 
 // ★ วาง GAS URL ของคุณที่นี่ เพื่อให้ทุกเครื่อง (รวมมือถือ) ซิงก์ได้ทันที
 //   โดยไม่ต้องกรอก URL ใหม่ทุกครั้ง
-const DEFAULT_GAS_URL = 'https://script.google.com/macros/s/AKfycbytcpCTJ1REBeNEjMkxXLVFKjv36ihaCoOMlSkU_qCDC7EQjmHCG2RM-rpbLOaFyMyP/exec';
+var DEFAULT_GAS_URL = 'https://script.google.com/macros/s/AKfycbytcpCTJ1REBeNEjMkxXLVFKjv36ihaCoOMlSkU_qCDC7EQjmHCG2RM-rpbLOaFyMyP/exec';
 
 function getGasDbUrl() {
     return localStorage.getItem(GAS_DB_KEY) || DEFAULT_GAS_URL;
