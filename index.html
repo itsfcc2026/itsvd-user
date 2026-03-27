@@ -38,7 +38,7 @@
         #view-user-portal.active { display: block; }
         /* ข้ามการ login: แสดง portal ทันที */
         #login-overlay.hidden { display: none !important; }
-        #view-user-portal { display: block !important; }
+        #view-user-portal { display: none; }   /* จะแสดงเมื่อ login สำเร็จ */
 
         /* ===================== LOGIN OVERLAY ===================== */
         #login-overlay {
@@ -1582,7 +1582,7 @@
 
 <!-- ===================== LOGIN OVERLAY ===================== -->
 <!-- ===================== LOGIN OVERLAY ===================== -->
-<div id="login-overlay" class="hidden" style="display:none!important">
+<div id="login-overlay" class="visible">
     <div class="login-bg-pattern"></div>
     <!-- ===== USER LOGIN PANEL (ซ้อนอยู่ใน login-overlay) ===== -->
     <div id="user-login-box" style="display:;width:100%;max-width:420px;position:relative;margin:auto 0;">
@@ -2838,7 +2838,7 @@ function _filterForCurrentUser(all) {
     const _sess = (typeof UserSession !== 'undefined') ? UserSession.getUser() : null;
     const _email = _sess ? (_sess.email || '').toLowerCase().trim() : null;
     // guest หรือไม่มี email → แสดง ticket ทั้งหมด (ข้ามการกรอง login)
-    if (!_email || _email === 'guest@farmchokchai.net') return all;
+    if (!_email) return [];
     return all.filter(t => (t.email || '').toLowerCase().trim() === _email);
 }
 
@@ -2848,36 +2848,21 @@ window.onload = async function() {
     const session = sessionStorage.getItem(ADMIN_SESSION_KEY);
     const _isUserLoggedIn = typeof UserSession !== 'undefined' && UserSession.isLoggedIn();
 
-    // ── ข้ามการ Login: แสดง portal ทันทีโดยไม่ต้องกรอก email/password ──
-    (function() {
+    if (session === 'active') {
+        document.getElementById('login-overlay').classList.add('hidden');
+    } else if (_isUserLoggedIn) {
         const _ol = document.getElementById('login-overlay');
-        if (_ol) { _ol.classList.remove('visible'); _ol.classList.add('hidden'); _ol.style.display = 'none'; }
-        const _vup = document.getElementById('view-user-portal');
-        if (_vup) { _vup.style.display = ''; _vup.classList.add('active'); }
-        // ตั้ง guest session เพื่อให้ฟังก์ชันต่างๆ ทำงานได้
-        if (typeof UserSession !== 'undefined' && !UserSession.isLoggedIn()) {
-            try {
-                UserSession.set('guest-token', {
-                    email: 'guest@farmchokchai.net',
-                    name: 'ผู้ใช้งาน',
-                    role: 'user'
-                });
-            } catch(e) {}
-        }
-        // โหลด cached tickets
-        try {
-            const _cachedTickets = JSON.parse(localStorage.getItem(typeof TICKETS_KEY !== 'undefined' ? TICKETS_KEY : 'it_tickets') || '[]');
-            const _deletedIds = JSON.parse(localStorage.getItem('_deletedIds') || '[]');
-            const _filtered = _deletedIds.length ? _cachedTickets.filter(t => !_deletedIds.includes(t.id)) : _cachedTickets;
-            if (typeof adminTickets !== 'undefined') adminTickets = _filtered;
-            if (typeof userTickets !== 'undefined' && typeof _filterForCurrentUser === 'function') {
-                userTickets = _filterForCurrentUser(_filtered);
-            }
-        } catch(e) {}
-    })();
-
-    if (false) { // disabled login check
-        // (original login logic preserved but disabled)
+        _ol.classList.remove('visible'); _ol.classList.add('hidden'); _ol.style.display = 'none';
+        document.getElementById('view-user-portal').classList.add('active');
+        const _cachedTickets = JSON.parse(localStorage.getItem(TICKETS_KEY) || '[]');
+        const _deletedIds = JSON.parse(localStorage.getItem('_deletedIds') || '[]');
+        const _filtered = _deletedIds.length ? _cachedTickets.filter(t => !_deletedIds.includes(t.id)) : _cachedTickets;
+        adminTickets = _filtered;
+        userTickets  = _filterForCurrentUser(_filtered);
+    } else {
+        const _ol = document.getElementById('login-overlay');
+        _ol.classList.remove('hidden'); _ol.classList.add('visible'); _ol.style.display = '';
+        setTimeout(() => { if (typeof showUserLoginPanel === 'function') showUserLoginPanel(); }, 50);
     }
 
     document.getElementById('lang-selector').value = currentLang;
