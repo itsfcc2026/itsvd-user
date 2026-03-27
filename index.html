@@ -2600,7 +2600,6 @@
 <div id="toast"></div>
 
 <script>
-<script>
 // ===================== DATA KEYS =====================
 const TICKETS_KEY = 'it_portal_user_tickets';
 const STAFF_KEY = 'it_portal_staff';
@@ -2608,7 +2607,7 @@ const ADMIN_SESSION_KEY = 'it_admin_session';
 
 // ===================== GAS DATABASE LAYER =====================
 // ใช้ Google Apps Script เป็น database กลาง sync ทุกเครื่อง
-const GAS_DB_KEY = 'it_gas_db_url';
+var GAS_DB_KEY = 'it_gas_db_url';
 
 // ★ วาง GAS URL ของคุณที่นี่ เพื่อให้ทุกเครื่อง (รวมมือถือ) ซิงก์ได้ทันที
 //   โดยไม่ต้องกรอก URL ใหม่ทุกครั้ง
@@ -4610,7 +4609,9 @@ setInterval(_syncMobileNavDot, 2000);
 <script>
 // ── ดึง URL ล่าสุดเสมอ (ไม่ cache ไว้ใน const) ──
 function getUserApiUrl() {
-  return (typeof getGasDbUrl === 'function') ? getGasDbUrl() : DEFAULT_GAS_URL;
+  if (typeof getGasDbUrl === 'function') return getGasDbUrl();
+  if (typeof DEFAULT_GAS_URL !== 'undefined' && DEFAULT_GAS_URL) return DEFAULT_GAS_URL;
+  return '';
 }
 
 // ── SESSION ──
@@ -4940,7 +4941,7 @@ function usersInitSettingsCard() {
 }
 
 async function usersApiCall(params) {
-  const url = getGasDbUrl();
+  const url = (typeof getGasDbUrl === 'function') ? getGasDbUrl() : (typeof DEFAULT_GAS_URL !== 'undefined' ? DEFAULT_GAS_URL : '');
   if (!url || url.includes('xxxxxxxx')) {
     throw new Error('ยังไม่ได้ตั้งค่า GAS URL — ไปที่เมนู "ส่งออก Google Sheet"');
   }
