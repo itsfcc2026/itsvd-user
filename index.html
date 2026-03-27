@@ -3581,8 +3581,7 @@ function handleTicketSubmit(e) {
 }
 
 // ===================== TELEGRAM NOTIFICATION =====================
-const TELEGRAM_BOT_TOKEN = '8614827705:AAHpxC5Qm-xaEvb3KcF6w_j3tK83rDIy2hU';
-const TELEGRAM_CHAT_ID   = '-1003706331500';
+// Bot Token และ Chat ID เก็บใน GAS Script Properties (ปลอดภัย)
 
 // ── ส่ง Telegram ผ่าน GAS proxy เพื่อหลีกเลี่ยง CORS ──────────────────────────
 // Browser ไม่สามารถ fetch api.telegram.org โดยตรงได้ (CORS blocked)
@@ -3593,8 +3592,6 @@ async function _sendTelegramViaGAS(message) {
         if (!url) throw new Error('NO_GAS_URL');
         const formData = new URLSearchParams();
         formData.append('action', 'sendTelegram');
-        formData.append('botToken', TELEGRAM_BOT_TOKEN);
-        formData.append('chatId', TELEGRAM_CHAT_ID);
         formData.append('message', message);
         const r = await fetch(url, {
             method: 'POST',
