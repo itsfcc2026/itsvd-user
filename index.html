@@ -2614,7 +2614,12 @@ var GAS_DB_KEY = 'it_gas_db_url';
 var DEFAULT_GAS_URL = 'https://script.google.com/macros/s/AKfycbytcpCTJ1REBeNEjMkxXLVFKjv36ihaCoOMlSkU_qCDC7EQjmHCG2RM-rpbLOaFyMyP/exec';
 
 function getGasDbUrl() {
-    return localStorage.getItem(GAS_DB_KEY) || DEFAULT_GAS_URL;
+    var stored = localStorage.getItem(GAS_DB_KEY);
+    // ถ้า stored URL ว่าง หรือยังเป็น placeholder → ใช้ DEFAULT
+    if (!stored || stored.trim() === '' || stored.includes('xxxxxxxx')) {
+        return DEFAULT_GAS_URL;
+    }
+    return stored.trim();
 }
 function setGasDbUrl(url) {
     localStorage.setItem(GAS_DB_KEY, url.trim());
@@ -4607,11 +4612,25 @@ setInterval(_syncMobileNavDot, 2000);
 <!-- ===================== USER LOGIN SYSTEM ===================== -->
 <!-- ===================== USER LOGIN SYSTEM ===================== -->
 <script>
-// ── ดึง URL ล่าสุดเสมอ (ไม่ cache ไว้ใน const) ──
+// ── GAS URL หลัก (ฝังตรงนี้ให้ block นี้ใช้ได้เสมอ) ──
+var _HARDCODED_GAS_URL = 'https://script.google.com/macros/s/AKfycbytcpCTJ1REBeNEjMkxXLVFKjv36ihaCoOMlSkU_qCDC7EQjmHCG2RM-rpbLOaFyMyP/exec';
+
+// ── ดึง URL ล่าสุดเสมอ ──
 function getUserApiUrl() {
-  if (typeof getGasDbUrl === 'function') return getGasDbUrl();
-  if (typeof DEFAULT_GAS_URL !== 'undefined' && DEFAULT_GAS_URL) return DEFAULT_GAS_URL;
-  return '';
+  // 1. ลอง getGasDbUrl() จาก block อื่น
+  if (typeof getGasDbUrl === 'function') {
+    var u = getGasDbUrl();
+    if (u && u.startsWith('https://')) return u;
+  }
+  // 2. ลอง DEFAULT_GAS_URL จาก block อื่น
+  if (typeof DEFAULT_GAS_URL !== 'undefined' && DEFAULT_GAS_URL && DEFAULT_GAS_URL.startsWith('https://')) return DEFAULT_GAS_URL;
+  // 3. ลอง localStorage โดยตรง
+  try {
+    var stored = localStorage.getItem('it_gas_db_url');
+    if (stored && stored.trim().startsWith('https://') && !stored.includes('xxxxxxxx')) return stored.trim();
+  } catch(e) {}
+  // 4. fallback hardcoded
+  return _HARDCODED_GAS_URL;
 }
 
 // ── SESSION ──
@@ -4646,8 +4665,8 @@ async function userApiCall(params) {
   const token = UserSession.getToken();
   if (token && !params.token) params = { ...params, token };
 
-  if (!USER_API_URL || USER_API_URL.includes('xxxxxxxx')) {
-    throw new Error('ยังไม่ได้ตั้งค่า Google Apps Script URL — กรุณาติดต่อผู้ดูแลระบบ');
+  if (!USER_API_URL || !USER_API_URL.startsWith('https://script.google.com')) {
+    throw new Error('ไม่สามารถเชื่อมต่อ Google Apps Script ได้ — กรุณาติดต่อผู้ดูแลระบบ');
   }
 
   // ใช้ POST สำหรับ action ที่มีข้อมูลภาษาไทย เช่น register เพื่อป้องกัน
@@ -4941,8 +4960,14 @@ function usersInitSettingsCard() {
 }
 
 async function usersApiCall(params) {
-  const url = (typeof getGasDbUrl === 'function') ? getGasDbUrl() : (typeof DEFAULT_GAS_URL !== 'undefined' ? DEFAULT_GAS_URL : '');
-  if (!url || url.includes('xxxxxxxx')) {
+  var url;
+  if (typeof getGasDbUrl === 'function') {
+    var _u = getGasDbUrl();
+    url = (_u && _u.startsWith('https://')) ? _u : null;
+  }
+  if (!url && typeof DEFAULT_GAS_URL !== 'undefined' && DEFAULT_GAS_URL) url = DEFAULT_GAS_URL;
+  if (!url) url = 'https://script.google.com/macros/s/AKfycbytcpCTJ1REBeNEjMkxXLVFKjv36ihaCoOMlSkU_qCDC7EQjmHCG2RM-rpbLOaFyMyP/exec';
+  if (!url || !url.startsWith('https://script.google.com')) {
     throw new Error('ยังไม่ได้ตั้งค่า GAS URL — ไปที่เมนู "ส่งออก Google Sheet"');
   }
   const allParams = { ...params, adminKey: _getAdminKey() };
