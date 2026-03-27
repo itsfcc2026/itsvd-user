@@ -4581,7 +4581,7 @@ function closeMobileDrawer() {
 
 
 /* Sync bottom nav & drawer active state with page */
-const _origUserShowPage = typeof userShowPage === 'function' ? userShowPage : null;
+// _origUserShowPage patch removed — ใช้ window.userShowPage แทน
 function _syncMobileNav(page) {
     const pages = ['home', 'submit', 'track'];
     pages.forEach(p => {
@@ -4592,18 +4592,20 @@ function _syncMobileNav(page) {
     });
 }
 
-/* Patch userShowPage to sync mobile nav */
+/* Patch userShowPage to sync mobile nav — รอจนกว่า window.userShowPage พร้อม */
 (function() {
-    const waitForFn = setInterval(() => {
-        if (typeof userShowPage === 'function') {
+    var _patched = false;
+    var waitForFn = setInterval(function() {
+        if (typeof window.userShowPage === 'function' && !_patched) {
+            _patched = true;
             clearInterval(waitForFn);
-            const orig = userShowPage;
+            var orig = window.userShowPage;
             window.userShowPage = function(page) {
                 orig(page);
                 _syncMobileNav(page);
             };
         }
-    }, 100);
+    }, 50);
 })();
 
 /* Show/hide mobile bottom nav based on active view */
@@ -4792,11 +4794,11 @@ async function doUserLogin() {
     if (!res.ok && res.status !== 'ok') throw new Error(res.error || res.message || 'Login ไม่สำเร็จ');
 
     UserSession.set(res.token, res.user);
-    // แก้ปัญหา showUserPortal is not defined — ใช้ window scope เสมอ
+    // safe call — window.showUserPortal export ทันทีหลัง define
     if (typeof window.showUserPortal === 'function') {
       window.showUserPortal();
     } else {
-      // fallback: ซ่อน overlay แล้วแสดง view-user-portal ตรงๆ
+      // fallback: ซ่อน overlay แล้วแสดง portal ตรงๆ
       var _ol = document.getElementById('login-overlay');
       if (_ol) { _ol.classList.remove('visible'); _ol.classList.add('hidden'); _ol.style.display = 'none'; }
       var _vup = document.getElementById('view-user-portal');
@@ -4922,18 +4924,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (user) {
       const ol = document.getElementById('login-overlay');
       if (ol) { ol.classList.remove('visible'); ol.classList.add('hidden'); ol.style.display = 'none'; }
-      // แก้ปัญหา showUserPortal is not defined — รอให้ function พร้อม
-      var _tryShowPortal = function() {
-        if (typeof window.showUserPortal === 'function') {
-          window.showUserPortal();
-        } else {
-          var _ol2 = document.getElementById('login-overlay');
-          if (_ol2) { _ol2.classList.remove('visible'); _ol2.classList.add('hidden'); _ol2.style.display = 'none'; }
-          var _vup2 = document.getElementById('view-user-portal');
-          if (_vup2) { _vup2.style.display = ''; _vup2.classList.add('active'); }
-        }
+      // safe call DOMContentLoaded
+      var _tryPortal = function() {
+        if (typeof window.showUserPortal === 'function') { window.showUserPortal(); }
+        else { setTimeout(_tryPortal, 50); }
       };
-      setTimeout(_tryShowPortal, 0);
+      setTimeout(_tryPortal, 0);
       _updateUserPortalName(user);
     }
   } else {
