@@ -5437,6 +5437,7 @@ window.usersDoResetPassword = usersDoResetPassword;
     // ตรวจ view ที่แสดงอยู่
     var userPortal  = document.getElementById('view-user-portal');
     var userActive  = userPortal  && userPortal.classList.contains('active');
+    var adminPanel  = document.getElementById('view-admin-panel');
     var adminActive = adminPanel  && adminPanel.classList.contains('active');
     return userActive || adminActive;
   }
