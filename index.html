@@ -2977,6 +2977,8 @@ function showUserPortal() {
         if (_u && typeof _updateUserPortalName === 'function') _updateUserPortalName(_u);
     }
 }
+window.showUserPortal = showUserPortal; // early export
+
 
 
 
@@ -4790,9 +4792,16 @@ async function doUserLogin() {
     if (!res.ok && res.status !== 'ok') throw new Error(res.error || res.message || 'Login ไม่สำเร็จ');
 
     UserSession.set(res.token, res.user);
-    var _portalFn = window.showUserPortal || (typeof showUserPortal !== 'undefined' ? showUserPortal : null);
-    if (typeof _portalFn === 'function') { _portalFn(); }
-    else { console.error('showUserPortal is not defined'); alert('เกิดข้อผิดพลาด: ไม่สามารถเปิดหน้า Portal ได้ กรุณา refresh หน้าแล้วลองใหม่'); }
+    // แก้ปัญหา showUserPortal is not defined — ใช้ window scope เสมอ
+    if (typeof window.showUserPortal === 'function') {
+      window.showUserPortal();
+    } else {
+      // fallback: ซ่อน overlay แล้วแสดง view-user-portal ตรงๆ
+      var _ol = document.getElementById('login-overlay');
+      if (_ol) { _ol.classList.remove('visible'); _ol.classList.add('hidden'); _ol.style.display = 'none'; }
+      var _vup = document.getElementById('view-user-portal');
+      if (_vup) { _vup.style.display = ''; _vup.classList.add('active'); }
+    }
     if (window._updateUserPortalName) window._updateUserPortalName(res.user);
 
   } catch (err) {
@@ -4913,13 +4922,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (user) {
       const ol = document.getElementById('login-overlay');
       if (ol) { ol.classList.remove('visible'); ol.classList.add('hidden'); ol.style.display = 'none'; }
-      // รอให้ showUserPortal พร้อมก่อนเรียก (อาจ define อยู่ใน script block อื่น)
-      var _callShowPortal = function() {
-        var fn = window.showUserPortal || (typeof showUserPortal !== 'undefined' ? showUserPortal : null);
-        if (typeof fn === 'function') { fn(); }
-        else { setTimeout(_callShowPortal, 50); }
+      // แก้ปัญหา showUserPortal is not defined — รอให้ function พร้อม
+      var _tryShowPortal = function() {
+        if (typeof window.showUserPortal === 'function') {
+          window.showUserPortal();
+        } else {
+          var _ol2 = document.getElementById('login-overlay');
+          if (_ol2) { _ol2.classList.remove('visible'); _ol2.classList.add('hidden'); _ol2.style.display = 'none'; }
+          var _vup2 = document.getElementById('view-user-portal');
+          if (_vup2) { _vup2.style.display = ''; _vup2.classList.add('active'); }
+        }
       };
-      _callShowPortal();
+      setTimeout(_tryShowPortal, 0);
       _updateUserPortalName(user);
     }
   } else {
