@@ -1,0 +1,2762 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IT Self-Service Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#f0f4f8;--white:#fff;--border:#e2e8f0;
+  --primary:#1e40af;--primary-light:#3b82f6;
+  --accent:#0ea5e9;--accent-bg:#eff6ff;
+  --text:#1e293b;--muted:#64748b;--dim:#475569;
+  --green:#16a34a;--green-bg:#f0fdf4;
+  --sh:0 1px 4px rgba(30,64,175,.07),0 1px 2px rgba(0,0,0,.04);
+  --sh2:0 4px 20px rgba(30,64,175,.10),0 1px 6px rgba(0,0,0,.04);
+}
+
+body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;flex-direction:column;font-size:16px;line-height:1.7;}
+
+/* FOOTER */
+.contact-copyright{margin-top:14px;text-align:center;font-size:11px;color:#b0bdd0;font-family:'Sarabun',sans-serif;letter-spacing:.2px;line-height:1.7;}
+
+/* HEADER */
+.app-header{
+  height:72px;flex-shrink:0;
+  background:linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border-bottom:1px solid #bfdbfe;
+  display:flex;align-items:center;gap:20px;padding:0 2rem;
+  box-shadow:0 1px 6px rgba(30,64,175,.08);
+  z-index:100;position:relative;
+}
+.header-left{display:flex;align-items:center;gap:12px;flex-shrink:0;position:relative;z-index:1;}
+.header-center{flex:1;display:flex;justify-content:center;align-items:center;position:relative;z-index:1;}
+.header-right{display:flex;align-items:center;gap:14px;position:relative;z-index:1;flex-shrink:0;}
+.header-clock{text-align:right;line-height:1.3;}
+.header-clock-time{font-size:1rem;font-weight:700;color:var(--text);font-family:'Sarabun',monospace;letter-spacing:.5px;}
+.header-clock-date{font-size:0.75rem;color:var(--muted);font-family:'Sarabun',monospace;}
+.header-divider{width:1px;height:36px;background:#bfdbfe;}
+.header-pills{display:flex;gap:6px;align-items:center;}
+.hpill{
+  padding:5px 14px;border-radius:20px;font-size:0.82rem;font-weight:700;cursor:pointer;
+  border:1.5px solid #bfdbfe;
+  background:rgba(255,255,255,0.7);
+  color:var(--dim);
+  transition:all .2s cubic-bezier(.4,0,.2,1);
+  user-select:none;white-space:nowrap;
+  font-family:'Sarabun',sans-serif;
+}
+.hpill:hover{
+  background:white;
+  color:var(--primary);
+  border-color:#93c5fd;
+  box-shadow:0 2px 8px rgba(30,64,175,.12);
+}
+.hpill.active{
+  background:linear-gradient(135deg,var(--primary),var(--primary-light));
+  color:#fff;
+  border-color:transparent;
+  box-shadow:0 3px 10px rgba(30,64,175,.25);
+}
+.logo{
+  width:42px;height:42px;
+  background:linear-gradient(135deg,var(--primary),var(--primary-light));
+  border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  box-shadow:0 3px 10px rgba(30,64,175,.3);
+}
+.header-text{position:relative;z-index:1;}
+.app-title{
+  font-size:1.5rem;font-weight:800;
+  color:var(--primary);
+  letter-spacing:-.2px;line-height:1.2;
+  font-family:'Sarabun',sans-serif;
+}
+.app-sub{
+  font-size:0.88rem;font-weight:600;color:#3b82f6;
+  font-family:'Sarabun',sans-serif;margin-top:1px;
+}
+
+
+/* BODY */
+.app-body{flex:1;display:flex;overflow:hidden;}
+
+/* ── LEFT SIDEBAR ── */
+.sidebar{width:360px;flex-shrink:0;background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.pills-wrap{flex-shrink:0;padding:12px 14px 8px;overflow:hidden;display:flex;align-items:center;gap:4px;}
+.pill-arrow{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border);background:#f8fafc;color:var(--dim);font-size:18px;line-height:1;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;padding:0;}
+.pill-arrow:hover{background:var(--accent-bg);color:var(--primary);border-color:#93c5fd;}
+.pill-arrow:disabled{opacity:0.3;cursor:default;}
+
+.sidebar-top{flex-shrink:0;padding:14px 14px 8px;}
+.search-wrap{position:relative;}
+.search-box{width:100%;background:#f8fafc;border:1.5px solid var(--border);border-radius:10px;padding:10px 14px 10px 42px;font-size:0.95rem;font-family:'Sarabun',sans-serif;color:var(--text);outline:none;transition:all .2s;}
+.search-box:focus{border-color:var(--primary-light);background:#fff;box-shadow:0 0 0 3px rgba(59,130,246,.1);}
+.search-box::placeholder{color:#94a3b8;}
+.search-ico{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#94a3b8;width:18px;height:18px;}
+
+.pills{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;margin-top:0;scrollbar-width:none;align-items:center;-webkit-overflow-scrolling:touch;cursor:grab;}
+.pills::-webkit-scrollbar{display:none;}
+.pills:active{cursor:grabbing;}
+.pill{padding:5px 12px;border-radius:20px;font-size:0.78rem;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:#f8fafc;color:var(--dim);transition:all .15s;user-select:none;white-space:nowrap;flex-shrink:0;font-family:'Sarabun',sans-serif;}
+.pill:hover,.pill.active{background:var(--accent-bg);color:var(--primary);border-color:#93c5fd;}
+.pill.pill-all{background:var(--primary);color:#fff;border-color:var(--primary);}
+
+.list-count{padding:6px 16px;font-size:0.75rem;color:var(--muted);font-family:'Sarabun',sans-serif;font-weight:600;}
+
+.items-list{flex:1;overflow-y:auto;padding:0 10px 14px;}
+.items-list::-webkit-scrollbar{width:4px;}
+.items-list::-webkit-scrollbar-thumb{background:#dde4ee;border-radius:4px;}
+
+.list-item{display:flex;align-items:center;gap:13px;padding:12px 13px;border-radius:10px;cursor:pointer;border:1.5px solid transparent;margin-bottom:4px;transition:all .2s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;}
+.list-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;background:linear-gradient(180deg,var(--primary-light),var(--primary));opacity:0;transition:opacity .2s;}
+.list-item:hover{background:linear-gradient(105deg,#eff6ff 0%,#f8fbff 100%);border-color:#bfdbfe;box-shadow:0 2px 10px rgba(30,64,175,.08);transform:translateX(3px);}
+.list-item:hover::before{opacity:1;}
+.list-item.active{background:linear-gradient(105deg,#dbeafe 0%,#eff6ff 100%);border-color:#93c5fd;box-shadow:0 2px 12px rgba(30,64,175,.12);transform:translateX(3px);}
+.list-item.active::before{opacity:1;}
+.item-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.item-info{flex:1;min-width:0;}
+.item-cat{font-size:0.95rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;font-family:'Sarabun',sans-serif;margin-bottom:3px;}
+.item-title{font-size:0.88rem;font-weight:500;color:var(--muted);white-space:normal;overflow:visible;text-overflow:unset;line-height:1.45;}
+.item-arrow{color:#cbd5e1;flex-shrink:0;transition:all .2s;}
+.list-item.active .item-arrow,.list-item:hover .item-arrow{color:var(--primary);transform:translateX(2px);}
+.no-result{text-align:center;padding:32px 16px;color:var(--muted);font-size:0.85rem;font-family:'Sarabun',sans-serif;}
+
+/* ── RIGHT CONTENT ── */
+.content-area{flex:1;overflow-y:auto;background:var(--bg);display:flex;flex-direction:column;}
+.content-area::-webkit-scrollbar{width:5px;}
+.content-area::-webkit-scrollbar-thumb{background:#dde4ee;border-radius:4px;}
+
+/* welcome */
+.welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:40px;text-align:center;color:var(--muted);}
+.welcome-emoji{font-size:52px;opacity:.35;}
+.welcome h2{font-size:1.1rem;font-weight:700;color:#94a3b8;font-family:'Sarabun',sans-serif;}
+.welcome p{font-size:0.85rem;color:#b0bec5;max-width:260px;line-height:1.7;font-family:'Sarabun',sans-serif;}
+.stat-row{display:flex;gap:16px;margin-top:6px;}
+.stat-box{background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px 18px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+.stat-n{font-size:1.4rem;font-weight:800;color:var(--primary);font-family:'Sarabun',sans-serif;}
+.stat-l{font-size:0.72rem;color:var(--muted);margin-top:2px;font-weight:600;}
+
+/* detail */
+.detail{padding:28px 32px 52px;max-width:780px;width:100%;margin:0 auto;animation:fadeIn .2s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.det-hero{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px;}
+.det-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;}
+.det-cat{font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;font-family:'Sarabun',sans-serif;margin-bottom:3px;}
+.det-title{font-size:1.5rem;font-weight:800;color:var(--text);line-height:1.25;font-family:'Sarabun',sans-serif;}
+
+.det-badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:0.8rem;padding:5px 14px;border-radius:20px;font-weight:700;font-family:'Sarabun',sans-serif;line-height:1;letter-spacing:.1px;}
+.tag-time{background:linear-gradient(135deg,#dbeafe,#bfdbfe);color:#1d4ed8;border:1.5px solid #93c5fd;}
+.tag-easy{background:linear-gradient(135deg,#dcfce7,#bbf7d0);color:#15803d;border:1.5px solid #86efac;}
+.tag-steps{background:linear-gradient(135deg,#fef3c7,#fde68a);color:#b45309;border:1.5px solid #fcd34d;}
+
+.det-symptoms{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:26px;}
+.det-symptoms-label{font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1.3px;color:#475569;font-family:'Sarabun',sans-serif;margin-bottom:10px;}
+.symptom-chip{font-size:0.88rem;padding:8px 16px;background:#fff;border:1.5px solid var(--border);border-radius:10px;color:var(--text);display:flex;align-items:center;gap:10px;font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,.05);transition:border-color .15s;font-family:'Sarabun',sans-serif;}
+.symptom-chip:hover{border-color:#fca5a5;}
+.symptom-pulse{position:relative;width:14px;height:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.symptom-pulse-ring{position:absolute;inset:0;border-radius:50%;border:2px solid #f87171;animation:pulseRing 1.6s ease-out infinite;opacity:0;}
+.symptom-pulse-dot{width:8px;height:8px;border-radius:50%;background:#f87171;position:relative;z-index:1;box-shadow:0 0 4px rgba(248,113,113,.5);}
+@keyframes pulseRing{
+  0%{transform:scale(.6);opacity:.8;}
+  70%{transform:scale(1.8);opacity:0;}
+  100%{transform:scale(1.8);opacity:0;}
+}
+
+/* steps card */
+.steps-card{background:#fff;border:1.5px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--sh);}
+.steps-hd{padding:11px 20px;background:#f8fafc;border-bottom:1px solid var(--border);font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:#475569;font-family:'Sarabun',sans-serif;}
+.steps-bd{padding:4px 20px 20px;}
+
+.step-item{display:flex;gap:16px;padding:16px 0;border-bottom:1px dashed var(--border);}
+.step-item:last-child{border-bottom:none;}
+.step-num{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;font-size:0.85rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:3px;font-family:'Sarabun',sans-serif;box-shadow:0 2px 8px rgba(30,64,175,.25);}
+.step-body{flex:1;min-width:0;}
+.step-body h5{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:6px;line-height:1.4;word-break:break-word;white-space:normal;font-family:'Sarabun',sans-serif;}
+.step-body p{font-size:0.9rem;color:#334155;line-height:1.85;margin-bottom:4px;font-weight:500;font-family:'Sarabun',sans-serif;}
+
+.illus-box{background:#f1f5f9;border:1.5px solid var(--border);border-radius:11px;margin-top:13px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:9px;overflow:hidden;}
+.illus-box svg{max-width:100%;height:auto;}
+.illus-caption{font-size:0.72rem;color:var(--muted);text-align:center;font-family:'Sarabun',sans-serif;}
+
+.contact-note{
+  margin-top:20px;
+  position:relative;
+  border-radius:14px;overflow:hidden;
+  background:linear-gradient(145deg,#eff6ff 0%,#dbeafe 100%);
+  box-shadow:0 4px 16px rgba(30,64,175,.10),inset 0 1px 0 rgba(255,255,255,.9);
+  display:flex;flex-direction:column;
+  border:1.5px solid #bfdbfe;
+  width:100%;
+}
+.contact-note::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 5% 50%,rgba(255,255,255,.65) 0%,transparent 50%);
+  pointer-events:none;
+}
+.contact-note-top{display:flex;align-items:center;gap:14px;padding:16px 20px 12px;position:relative;z-index:1;}
+.contact-note-icon{
+  width:44px;height:44px;border-radius:12px;
+  background:linear-gradient(140deg,#fff,#dbeafe);
+  border:1.5px solid #93c5fd;
+  display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;
+  box-shadow:0 2px 8px rgba(30,64,175,.13);
+}
+.contact-note-body{flex:1;}
+.contact-note-body strong{display:block;font-size:1rem;font-weight:700;color:#1e3a8a;margin-bottom:4px;font-family:'Sarabun',sans-serif;}
+.contact-note-body span{font-size:0.88rem;color:#334155;font-weight:500;line-height:1.65;font-family:'Sarabun',sans-serif;}
+.contact-note-footer{
+  padding:0 16px 16px;
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;gap:7px;
+}
+.contact-note-divider{height:1px;background:linear-gradient(90deg,transparent,#93c5fd,transparent);margin-bottom:2px;}
+.contact-team{
+  display:flex;align-items:center;gap:13px;
+  padding:12px 14px;
+  background:rgba(255,255,255,.8);
+  border:1px solid rgba(147,197,253,.55);
+  border-radius:10px;
+  transition:all .18s;
+}
+.contact-team:hover{background:#fff;border-color:#93c5fd;}
+.contact-team-icon{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#dbeafe,#bfdbfe);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid #bfdbfe;}
+.contact-team-info{flex:1;min-width:0;}
+.contact-team-label{font-size:18px;font-weight:700;color:#1e3a8a;font-family:'Noto Sans Thai',sans-serif;line-height:1.25;}
+.contact-team-sublabel{font-size:14px;color:#6490b8;font-family:'Noto Sans Thai',sans-serif;font-weight:400;line-height:1.3;}
+.contact-team-number{display:flex;gap:5px;align-items:center;flex-shrink:0;}
+.contact-ext-prefix{font-size:15px;color:#6490b8;font-family:'Noto Sans Thai',sans-serif;}
+.contact-ext{
+  padding:6px 16px;border-radius:20px;
+  background:linear-gradient(135deg,#3b82f6,#2563eb);
+  color:#fff;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:14px;font-weight:700;
+  box-shadow:0 2px 6px rgba(37,99,235,.22);
+  letter-spacing:.3px;
+  line-height:1.4;
+}
+.contact-ext-sep{color:#93c5fd;font-size:15px;font-weight:500;font-family:'Noto Sans Thai',sans-serif;}
+
+
+/* QUICK LINKS SECTION */
+.links-section{margin-top:20px;background:#fff;border:1.5px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--sh);}
+.links-section-hd{padding:11px 20px;background:#f8fafc;border-bottom:1px solid var(--border);font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:#475569;font-family:'Sarabun',sans-serif;display:flex;align-items:center;gap:8px;}
+.links-section-bd{padding:14px 20px;display:flex;flex-wrap:wrap;gap:10px;}
+.link-item{display:inline-flex;align-items:center;gap:9px;padding:9px 16px;border-radius:10px;background:#f8fafc;border:1.5px solid var(--border);color:var(--primary);font-size:0.85rem;font-weight:600;font-family:'Sarabun',sans-serif;text-decoration:none;transition:all .18s;cursor:pointer;}
+.link-item:hover{background:#eff6ff;border-color:#93c5fd;color:#1d4ed8;box-shadow:0 2px 10px rgba(30,64,175,.12);transform:translateY(-1px);}
+.link-item svg{flex-shrink:0;opacity:.7;}
+.link-item:hover svg{opacity:1;}
+.link-item-ext{font-size:11px;color:#94a3b8;margin-left:2px;}
+
+/* COPYABLE TEXT BOXES */
+.copy-section{margin-top:20px;background:#fff;border:1.5px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--sh);}
+.copy-section-hd{padding:11px 20px;background:#f8fafc;border-bottom:1px solid var(--border);font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:#475569;font-family:'Sarabun',sans-serif;display:flex;align-items:center;gap:8px;}
+.copy-section-bd{padding:14px 20px;display:flex;flex-wrap:wrap;gap:10px;}
+.copy-item{display:flex;align-items:center;gap:0;background:#f8fafc;border:1.5px solid var(--border);border-radius:10px;overflow:hidden;transition:all .15s;flex:1;min-width:200px;}
+.copy-item:hover{border-color:#93c5fd;background:#eff6ff;}
+.copy-item-text{flex:1;padding:10px 14px;font-size:0.85rem;font-family:'Sarabun',sans-serif;color:var(--text);font-weight:600;user-select:all;cursor:text;word-break:break-all;line-height:1.5;}
+.copy-item-label{font-size:0.7rem;color:#64748b;font-weight:400;display:block;margin-bottom:2px;font-family:'Sarabun',sans-serif;}
+.copy-btn{flex-shrink:0;padding:0 14px;height:100%;background:transparent;border:none;border-left:1.5px solid var(--border);cursor:pointer;color:#94a3b8;display:flex;align-items:center;justify-content:center;transition:all .15s;min-height:52px;}
+.copy-btn:hover{background:#eff6ff;color:var(--primary);border-left-color:#93c5fd;}
+.copy-btn.copied{background:#f0fdf4;color:#16a34a;border-left-color:#86efac;}
+.copy-btn svg{pointer-events:none;}
+
+/* PRINT / EXPORT BUTTON */
+.action-bar{display:flex;gap:8px;justify-content:flex-end;margin-bottom:16px;}
+.btn-print{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:7px 16px;border-radius:10px;font-size:0.82rem;font-weight:700;
+  cursor:pointer;border:1.5px solid #93c5fd;
+  background:#fff;color:var(--primary);
+  font-family:'Sarabun',sans-serif;
+  transition:all .15s;box-shadow:0 1px 4px rgba(30,64,175,.1);
+  user-select:none;
+}
+.btn-print:hover{background:#eff6ff;border-color:var(--primary-light);box-shadow:0 2px 8px rgba(30,64,175,.18);}
+.btn-export{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:7px 16px;border-radius:10px;font-size:0.82rem;font-weight:700;
+  cursor:pointer;border:1.5px solid var(--primary-light);
+  background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;
+  font-family:'Sarabun',sans-serif;
+  transition:all .15s;box-shadow:0 2px 8px rgba(30,64,175,.22);
+  user-select:none;
+}
+.btn-export:hover{background:linear-gradient(135deg,#1d3fa8,var(--primary));box-shadow:0 4px 14px rgba(30,64,175,.32);transform:translateY(-1px);}
+
+/* PRINT STYLES */
+@media print {
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  body { height: auto; overflow: visible; background: #fff; font-size: 11px; }
+  .app-header, .sidebar, .action-bar { display: none !important; }
+  .app-body { display: block; }
+  .content-area { overflow: visible; background: #fff; }
+  .welcome { display: none !important; }
+
+  /* ซ่อน illustration SVG ทั้งหมด — ตัวการหลักที่ทำให้ล้นหน้า */
+  .illus-box { display: none !important; }
+
+  /* compress detail layout */
+  .detail { padding: 8px 16px 16px; max-width: 100%; animation: none; }
+
+  /* header */
+  .det-hero { margin-bottom: 6px; }
+  .det-icon { width: 36px; height: 36px; font-size: 20px; }
+  .det-title { font-size: 17px; }
+  .det-cat { font-size: 11px; }
+
+  /* badges */
+  .det-badges { margin-bottom: 8px; gap: 5px; }
+  .tag { font-size: 10px; padding: 4px 10px; }
+
+  /* symptoms */
+  .det-symptoms-label { font-size: 11px; margin-bottom: 6px; }
+  .det-symptoms { margin-bottom: 10px !important; gap: 5px; }
+  .symptom-chip { font-size: 12px; padding: 6px 12px; box-shadow: none; }
+  .symptom-pulse-ring { animation: none; }
+
+  /* steps */
+  .steps-card { box-shadow: none; border: 1px solid #e2e8f0; }
+  .steps-hd { padding: 8px 14px; font-size: 10px; }
+  .steps-bd { padding: 0 14px 10px; }
+  .step-item { padding: 8px 0; break-inside: avoid; }
+  .step-num { width: 24px; height: 24px; font-size: 11px; box-shadow: none; flex-shrink: 0; }
+  .step-body h5 { font-size: 13px; margin-bottom: 3px; }
+  .step-body p { font-size: 11px; line-height: 1.55; margin-bottom: 0; }
+
+  /* contact note */
+  .contact-note { margin-top: 10px; break-inside: avoid; box-shadow: none; }
+  /* hide copy/link sections on print */
+  .copy-section, .links-section { display: none !important; }
+  .contact-note-top { padding: 10px 14px 8px; gap: 10px; }
+  .contact-note-icon { width: 32px; height: 32px; font-size: 16px; }
+  .contact-note-body strong { font-size: 13px; }
+  .contact-note-body span { font-size: 11px; }
+  .contact-note-footer { padding: 0 10px 10px; gap: 5px; }
+  .contact-team { padding: 7px 10px; gap: 8px; box-shadow: none; }
+  .contact-team-icon { width: 26px; height: 26px; }
+  .contact-team-label { font-size: 13px; }
+  .contact-team-sublabel { font-size: 10px; }
+  .contact-ext { font-size: 12px; padding: 3px 10px; box-shadow: none; }
+  .contact-ext-prefix, .contact-ext-sep { font-size: 11px; }
+
+  /* footer */
+  .contact-copyright { font-size: 9px; margin-top: 8px; }
+
+  @page { margin: 10mm 10mm; size: A4; }
+}
+
+/* MOBILE */
+@media(max-width:720px){
+  body{height:auto;overflow:auto;}
+  .app-body{flex-direction:column;overflow:visible;}
+  .sidebar{width:100%;border-right:none;border-bottom:1px solid var(--border);overflow:visible;}
+  .items-list{max-height:220px;overflow-y:auto;}
+  .content-area{overflow:visible;min-height:60vh;}
+  .detail{padding:20px 16px 40px;}
+  .det-title{font-size:19px;}
+  .step-body h5{font-size:15px;}
+  .step-body p{font-size:13px;}
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FEEDBACK & KPI SYSTEM
+   ═══════════════════════════════════════════════════════════ */
+.feedback-panel{margin-top:22px;background:#fff;border:2px solid #bfdbfe;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(30,64,175,.10);}
+.feedback-hd{padding:14px 22px;background:linear-gradient(135deg,#eff6ff,#dbeafe);border-bottom:1.5px solid #bfdbfe;font-size:0.82rem;font-weight:800;text-transform:uppercase;letter-spacing:1.3px;color:#1e40af;font-family:'Sarabun',sans-serif;display:flex;align-items:center;gap:8px;}
+.feedback-body{padding:20px 22px;}
+.feedback-question{font-size:1rem;font-weight:700;color:var(--text);font-family:'Sarabun',sans-serif;margin-bottom:16px;text-align:center;}
+.result-btns{display:flex;gap:12px;justify-content:center;margin-bottom:20px;}
+.result-btn{display:inline-flex;align-items:center;gap:9px;padding:12px 28px;border-radius:12px;font-size:0.95rem;font-weight:700;cursor:pointer;border:2px solid transparent;font-family:'Sarabun',sans-serif;transition:all .2s;user-select:none;min-width:140px;justify-content:center;}
+.result-btn-yes{background:#f0fdf4;color:#15803d;border-color:#86efac;}
+.result-btn-yes:hover,.result-btn-yes.active{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;border-color:transparent;box-shadow:0 4px 14px rgba(22,163,74,.35);transform:translateY(-2px);}
+.result-btn-no{background:#fef2f2;color:#dc2626;border-color:#fca5a5;}
+.result-btn-no:hover,.result-btn-no.active{background:linear-gradient(135deg,#f87171,#dc2626);color:#fff;border-color:transparent;box-shadow:0 4px 14px rgba(220,38,38,.35);transform:translateY(-2px);}
+.rating-section{margin-bottom:20px;text-align:center;display:none;}
+.rating-label{font-size:0.88rem;font-weight:700;color:var(--dim);font-family:'Sarabun',sans-serif;margin-bottom:12px;}
+.stars{display:flex;gap:6px;justify-content:center;}
+.star{font-size:32px;cursor:pointer;transition:all .15s;filter:grayscale(1);opacity:.35;user-select:none;}
+.star:hover,.star.active{filter:grayscale(0);opacity:1;transform:scale(1.2);}
+.star-labels{display:flex;justify-content:space-between;font-size:0.72rem;color:#94a3b8;font-family:'Sarabun',sans-serif;margin-top:6px;padding:0 4px;}
+.ticket-section{background:#fef2f2;border:1.5px solid #fecaca;border-radius:12px;padding:18px;margin-bottom:16px;display:none;}
+.ticket-section-hd{font-size:0.88rem;font-weight:700;color:#dc2626;font-family:'Sarabun',sans-serif;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.ticket-fields{display:flex;flex-direction:column;gap:10px;}
+.ticket-field label{font-size:0.78rem;font-weight:700;color:#475569;font-family:'Sarabun',sans-serif;display:block;margin-bottom:4px;}
+.ticket-field input,.ticket-field textarea,.ticket-field select{width:100%;padding:9px 13px;border-radius:8px;border:1.5px solid #fca5a5;background:#fff;font-size:0.88rem;font-family:'Sarabun',sans-serif;outline:none;color:var(--text);transition:border-color .15s;}
+.ticket-field input:focus,.ticket-field textarea:focus,.ticket-field select:focus{border-color:#f87171;box-shadow:0 0 0 3px rgba(248,113,113,.15);}
+.ticket-field textarea{resize:vertical;min-height:72px;}
+.feedback-actions{display:flex;gap:10px;justify-content:center;}
+.btn-submit-ticket{display:inline-flex;align-items:center;gap:8px;padding:10px 24px;border-radius:10px;font-size:0.88rem;font-weight:700;cursor:pointer;border:none;background:linear-gradient(135deg,#f87171,#dc2626);color:#fff;font-family:'Sarabun',sans-serif;box-shadow:0 3px 10px rgba(220,38,38,.3);transition:all .2s;}
+.btn-submit-ticket:hover{box-shadow:0 5px 16px rgba(220,38,38,.4);transform:translateY(-1px);}
+.btn-submit-feedback{display:inline-flex;align-items:center;gap:8px;padding:10px 24px;border-radius:10px;font-size:0.88rem;font-weight:700;cursor:pointer;border:none;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;font-family:'Sarabun',sans-serif;box-shadow:0 3px 10px rgba(30,64,175,.3);transition:all .2s;}
+.btn-submit-feedback:hover{box-shadow:0 5px 16px rgba(30,64,175,.4);transform:translateY(-1px);}
+.feedback-thanks{display:none;text-align:center;padding:10px 0 4px;}
+.feedback-thanks-icon{font-size:48px;margin-bottom:10px;}
+.feedback-thanks-title{font-size:1.1rem;font-weight:800;color:var(--text);font-family:'Sarabun',sans-serif;margin-bottom:6px;}
+.feedback-thanks-sub{font-size:0.88rem;color:var(--muted);font-family:'Sarabun',sans-serif;}
+
+/* ═══════════════════════════════════════════════════════
+   DASHBOARD MODAL
+   ═══════════════════════════════════════════════════════ */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px);}
+.modal-overlay.open{display:flex;}
+.modal-box{background:#fff;border-radius:20px;width:min(960px,96vw);max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(15,23,42,.25);animation:modalIn .25s cubic-bezier(.34,1.56,.64,1);}
+@keyframes modalIn{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:none}}
+.modal-box::-webkit-scrollbar{width:5px;}
+.modal-box::-webkit-scrollbar-thumb{background:#dde4ee;border-radius:4px;}
+.modal-hd{position:sticky;top:0;z-index:2;padding:18px 24px 14px;background:linear-gradient(135deg,#1e40af,#3b82f6);display:flex;align-items:center;justify-content:space-between;border-radius:20px 20px 0 0;}
+.modal-title{font-size:1.1rem;font-weight:800;color:#fff;font-family:'Sarabun',sans-serif;}
+.modal-close{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.18);border:none;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;}
+.modal-close:hover{background:rgba(255,255,255,.3);}
+.modal-body{padding:0!important;background:#f0f4f8;}
+
+/* Dashboard inner */
+.dash-unit-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:16px 24px 0;}
+.dash-unit-label{font-size:0.75rem;font-weight:800;color:#64748b;font-family:'Sarabun',sans-serif;letter-spacing:.5px;text-transform:uppercase;}
+.dash-inner{padding:16px 24px 32px;display:flex;flex-direction:column;gap:20px;}
+
+/* KPI Cards */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+@media(max-width:680px){.kpi-grid{grid-template-columns:repeat(2,1fr);}}
+.kpi-card{position:relative;overflow:hidden;background:#fff;border-radius:16px;padding:20px 20px 16px;box-shadow:0 2px 12px rgba(30,64,175,.08),0 1px 3px rgba(0,0,0,.04);border:1.5px solid rgba(191,219,254,.6);transition:transform .18s,box-shadow .18s;}
+.kpi-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(30,64,175,.13);}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--primary),var(--primary-light));border-radius:16px 16px 0 0;}
+.kpi-card.kpi-green::before{background:linear-gradient(90deg,#16a34a,#22c55e);}
+.kpi-card.kpi-red::before{background:linear-gradient(90deg,#dc2626,#f87171);}
+.kpi-card.kpi-amber::before{background:linear-gradient(90deg,#d97706,#fbbf24);}
+.kpi-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:12px;background:linear-gradient(135deg,#eff6ff,#dbeafe);}
+.kpi-card.kpi-green .kpi-icon{background:linear-gradient(135deg,#f0fdf4,#dcfce7);}
+.kpi-card.kpi-red   .kpi-icon{background:linear-gradient(135deg,#fef2f2,#fee2e2);}
+.kpi-card.kpi-amber .kpi-icon{background:linear-gradient(135deg,#fffbeb,#fef3c7);}
+.kpi-val{font-size:2.2rem;font-weight:800;color:var(--primary);font-family:'Sarabun',sans-serif;line-height:1;margin-bottom:6px;}
+.kpi-card.kpi-green .kpi-val{color:#16a34a;}
+.kpi-card.kpi-red   .kpi-val{color:#dc2626;}
+.kpi-card.kpi-amber .kpi-val{color:#d97706;}
+.kpi-label{font-size:0.75rem;font-weight:700;color:#64748b;font-family:'Sarabun',sans-serif;line-height:1.4;}
+
+/* Donut + viz row */
+.viz-row{display:grid;grid-template-columns:220px 1fr;gap:16px;align-items:stretch;}
+@media(max-width:680px){.viz-row{grid-template-columns:1fr;}}
+.donut-card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 2px 12px rgba(30,64,175,.08);border:1.5px solid rgba(191,219,254,.6);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
+.donut-wrap{position:relative;width:130px;height:130px;}
+.donut-wrap svg{width:130px;height:130px;}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;}
+.donut-pct{font-size:1.6rem;font-weight:800;color:var(--primary);font-family:'Sarabun',sans-serif;line-height:1;}
+.donut-sub{font-size:0.65rem;font-weight:700;color:#94a3b8;font-family:'Sarabun',sans-serif;margin-top:2px;}
+.donut-legend{display:flex;flex-direction:column;gap:7px;width:100%;}
+.donut-leg-row{display:flex;align-items:center;gap:8px;font-size:0.78rem;font-weight:600;color:var(--dim);font-family:'Sarabun',sans-serif;}
+.donut-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.donut-leg-val{margin-left:auto;font-weight:800;color:var(--text);}
+
+/* Chart sections */
+.chart-section{background:#fff;border-radius:16px;padding:20px;box-shadow:0 2px 12px rgba(30,64,175,.08);border:1.5px solid rgba(191,219,254,.6);margin-bottom:0;}
+.chart-title{font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1.3px;color:#64748b;font-family:'Sarabun',sans-serif;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.bar-chart{display:flex;flex-direction:column;gap:10px;}
+.bar-row{display:flex;align-items:center;gap:10px;}
+.bar-label{font-size:0.78rem;font-weight:600;color:var(--dim);font-family:'Sarabun',sans-serif;width:170px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bar-track{flex:1;background:#f1f5f9;border-radius:8px;height:26px;overflow:hidden;position:relative;}
+.bar-fill{height:100%;border-radius:8px;background:linear-gradient(90deg,#1e40af,#3b82f6);display:flex;align-items:center;justify-content:flex-end;padding-right:10px;transition:width .9s cubic-bezier(.4,0,.2,1);min-width:34px;position:relative;overflow:hidden;}
+.bar-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 60%,rgba(255,255,255,.15));}
+.bar-fill.bar-green{background:linear-gradient(90deg,#16a34a,#22c55e);}
+.bar-fill.bar-red{background:linear-gradient(90deg,#dc2626,#f87171);}
+.bar-val{font-size:0.72rem;font-weight:800;color:#fff;font-family:'Sarabun',sans-serif;position:relative;z-index:1;}
+.bar-count{font-size:0.75rem;color:var(--muted);font-family:'Sarabun',sans-serif;width:36px;text-align:right;flex-shrink:0;font-weight:700;}
+
+/* Log Table */
+.log-table{width:100%;border-collapse:collapse;font-family:'Sarabun',sans-serif;}
+.log-table thead tr{background:linear-gradient(135deg,#f8fafc,#f1f5f9);}
+.log-table th{padding:11px 14px;font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#475569;border-bottom:2px solid #e2e8f0;text-align:left;}
+.log-table td{padding:11px 14px;font-size:0.82rem;color:var(--text);font-weight:500;border-bottom:1px solid #f1f5f9;transition:background .1s;}
+.log-table tbody tr:hover td{background:#f8fbff;}
+.badge-ok{display:inline-flex;align-items:center;gap:4px;padding:4px 11px;border-radius:20px;background:#f0fdf4;color:#15803d;border:1.5px solid #86efac;font-size:0.72rem;font-weight:700;}
+.badge-fail{display:inline-flex;align-items:center;gap:4px;padding:4px 11px;border-radius:20px;background:#fef2f2;color:#dc2626;border:1.5px solid #fca5a5;font-size:0.72rem;font-weight:700;}
+.empty-state{text-align:center;padding:40px;color:#94a3b8;font-family:'Sarabun',sans-serif;font-size:0.88rem;}
+
+/* Pagination */
+.pagination-bar{display:flex;align-items:center;justify-content:space-between;margin-top:14px;flex-wrap:wrap;gap:8px;}
+.pagination-info{font-size:0.75rem;color:var(--muted);font-family:'Sarabun',sans-serif;font-weight:600;}
+.pagination-btns{display:flex;gap:5px;align-items:center;}
+.pg-btn{padding:5px 12px;border-radius:8px;border:1.5px solid var(--border);background:#f8fafc;color:var(--dim);font-size:0.78rem;font-weight:700;cursor:pointer;font-family:'Sarabun',sans-serif;transition:all .15s;}
+.pg-btn:hover:not(:disabled){background:var(--accent-bg);color:var(--primary);border-color:#93c5fd;}
+.pg-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+.pg-btn:disabled{opacity:.35;cursor:default;}
+
+/* Filter bar */
+.filter-bar{display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap;}
+.filter-btn{padding:5px 14px;border-radius:20px;border:1.5px solid var(--border);background:#f8fafc;color:var(--dim);font-size:0.78rem;font-weight:700;cursor:pointer;font-family:'Sarabun',sans-serif;transition:all .15s;user-select:none;}
+.filter-btn:hover{background:var(--accent-bg);color:var(--primary);border-color:#93c5fd;}
+.filter-btn.f-all.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+.filter-btn.f-yes.active{background:#16a34a;color:#fff;border-color:#16a34a;}
+.filter-btn.f-no.active{background:#dc2626;color:#fff;border-color:#dc2626;}
+
+/* Result strip */
+.result-strip{display:flex;gap:10px;margin-bottom:0;flex-wrap:wrap;}
+.rs-box{flex:1;min-width:110px;border-radius:14px;padding:14px 18px;text-align:center;border:1.5px solid;box-shadow:0 1px 6px rgba(0,0,0,.04);transition:transform .15s;}
+.rs-box:hover{transform:translateY(-2px);}
+.rs-n{font-size:1.8rem;font-weight:800;font-family:'Sarabun',sans-serif;}
+.rs-l{font-size:0.72rem;font-weight:700;margin-top:4px;font-family:'Sarabun',sans-serif;}
+
+/* History modal */
+.hist-overlay{position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:1100;display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px);}
+.hist-overlay.open{display:flex;}
+.hist-box{background:#fff;border-radius:20px;width:min(960px,96vw);max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(15,23,42,.25);animation:modalIn .25s cubic-bezier(.34,1.56,.64,1);}
+.hist-box::-webkit-scrollbar{width:5px;}
+.hist-box::-webkit-scrollbar-thumb{background:#dde4ee;border-radius:4px;}
+.hist-hd{position:sticky;top:0;z-index:2;padding:18px 24px 14px;background:linear-gradient(135deg,#0f172a,#1e3a8a);display:flex;align-items:center;justify-content:space-between;border-radius:20px 20px 0 0;}
+.hist-title{font-size:1.05rem;font-weight:800;color:#fff;font-family:'Sarabun',sans-serif;}
+.hist-body{padding:24px;}
+
+/* Dashboard button */
+.btn-dashboard{display:inline-flex;align-items:center;gap:7px;padding:7px 16px;border-radius:10px;font-size:0.82rem;font-weight:700;cursor:pointer;border:1.5px solid #fde68a;background:linear-gradient(135deg,#fef9c3,#fef3c7);color:#92400e;font-family:'Sarabun',sans-serif;transition:all .15s;box-shadow:0 1px 4px rgba(180,83,9,.1);user-select:none;}
+.btn-dashboard:hover{background:linear-gradient(135deg,#fef3c7,#fde68a);box-shadow:0 2px 10px rgba(180,83,9,.2);transform:translateY(-1px);}
+
+/* ปุ่มแจ้งปัญหา ใน feedback panel */
+.btn-report-ticket{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:11px 24px;border-radius:12px;font-size:0.92rem;font-weight:700;
+  cursor:pointer;border:none;
+  background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;
+  font-family:'Sarabun',sans-serif;
+  box-shadow:0 4px 14px rgba(30,64,175,.35);
+  transition:all .2s;
+  width:100%;justify-content:center;margin-top:14px;
+}
+.btn-report-ticket:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 6px 18px rgba(30,64,175,.4);}
+.report-divider{display:flex;align-items:center;gap:10px;margin-top:18px;}
+.report-divider::before,.report-divider::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,#bfdbfe,transparent);}
+.report-divider-text{font-size:0.72rem;color:#94a3b8;font-weight:700;font-family:'Sarabun',sans-serif;white-space:nowrap;letter-spacing:.5px;text-transform:uppercase;}
+
+/* ══════════════════════════════════════════
+   MOBILE RESPONSIVE
+   ══════════════════════════════════════════ */
+@media(max-width:720px){
+  body { height:auto; overflow-y:auto; overflow-x:hidden; font-size:15px; }
+  .app-body { flex-direction:column; overflow:visible; height:auto; }
+  .app-header { height:auto; padding:10px 14px 0; gap:0; flex-wrap:wrap; position:sticky; top:0; z-index:100; }
+  .header-left  { order:1; flex:1; min-width:0; padding-bottom:8px; }
+  .header-right { order:2; flex-shrink:0; padding-bottom:8px; }
+  .header-center { order:3; width:calc(100% + 28px); min-width:0; display:flex; align-items:center; justify-content:flex-start; overflow-x:auto; overflow-y:visible; -webkit-overflow-scrolling:touch; scrollbar-width:none; border-top:1px solid #dbeafe; padding:8px 14px; margin:0 -14px; background:inherit; }
+  .header-center::-webkit-scrollbar { display:none; }
+  .header-pills { flex-wrap:nowrap; gap:7px; padding:0; display:flex; align-items:center; min-width:max-content; }
+  .hpill { font-size:0.82rem; padding:7px 16px; flex-shrink:0; height:36px; display:inline-flex; align-items:center; touch-action:manipulation; -webkit-tap-highlight-color:transparent; cursor:pointer; user-select:none; }
+  .header-clock, .header-divider { display:none; }
+  .app-title { font-size:1.05rem; }
+  .app-sub   { font-size:0.72rem; }
+  .sidebar { width:100%; border-right:none; border-bottom:2px solid var(--border); overflow:visible; flex-shrink:0; }
+  .sidebar-top { padding:10px 12px 6px; }
+  .search-box  { font-size:0.9rem; padding:9px 12px 9px 40px; }
+  .items-list { max-height:240px; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:0 8px 10px; }
+  .list-item { padding:10px 11px; }
+  .item-icon { width:36px; height:36px; font-size:20px; }
+  .item-cat  { font-size:0.82rem; }
+  .item-title{ font-size:0.8rem; }
+  .content-area { overflow:visible; min-height:50vh; background:var(--bg); }
+  .detail { padding:16px 14px 48px; max-width:100%; }
+  .det-hero  { gap:10px; margin-bottom:10px; }
+  .det-icon  { width:42px; height:42px; font-size:22px; border-radius:10px; }
+  .det-title { font-size:1.2rem; }
+  .det-cat   { font-size:0.68rem; }
+  .det-badges { gap:6px; margin-bottom:12px; }
+  .tag { font-size:0.72rem; padding:4px 10px; }
+  .det-symptoms  { gap:7px; margin-bottom:18px; }
+  .symptom-chip  { font-size:0.82rem; padding:7px 13px; }
+  .steps-hd { padding:9px 14px; }
+  .steps-bd  { padding:4px 14px 16px; }
+  .step-item { gap:12px; padding:13px 0; }
+  .step-num  { width:28px; height:28px; font-size:0.78rem; margin-top:2px; }
+  .step-body h5 { font-size:0.95rem; margin-bottom:4px; }
+  .step-body p  { font-size:0.85rem; line-height:1.7; }
+  .illus-box { padding:12px; }
+  .contact-note      { margin-top:14px; }
+  .contact-note-top  { padding:12px 14px 10px; gap:10px; }
+  .contact-note-icon { width:38px; height:38px; font-size:18px; }
+  .contact-note-body strong { font-size:0.92rem; }
+  .contact-note-body span   { font-size:0.82rem; }
+  .contact-note-footer { padding:0 12px 12px; gap:6px; }
+  .contact-team { padding:10px 12px; gap:10px; }
+  .contact-team-label    { font-size:15px; }
+  .contact-team-sublabel { font-size:12px; }
+  .contact-ext           { font-size:13px; padding:5px 13px; }
+  .links-section-bd { padding:12px 14px; gap:8px; }
+  .copy-section-bd  { padding:12px 14px; gap:8px; }
+  .link-item  { font-size:0.8rem; padding:8px 13px; }
+  .copy-item  { min-width:0; flex:1 1 100%; }
+  .action-bar { flex-wrap:wrap; margin-bottom:10px; }
+  .btn-print, .btn-export { flex:1; justify-content:center; font-size:0.78rem; padding:8px 12px; }
+  .welcome { padding:28px 16px; }
+  .welcome-emoji { font-size:40px; }
+  .welcome h2 { font-size:0.95rem; }
+  .welcome p  { font-size:0.8rem; }
+  .stat-row { gap:10px; }
+  .stat-n { font-size:1.2rem; }
+  .stat-l { font-size:0.65rem; }
+  .btn-dashboard { font-size:0.72rem; padding:6px 10px; }
+  .result-btns { gap:8px !important; }
+  .result-btn  { padding:10px 16px !important; font-size:0.85rem !important; min-width:110px !important; }
+  .btn-report-ticket { font-size:0.88rem !important; padding:10px 18px !important; }
+  /* Dashboard modal */
+  .modal-overlay { align-items:flex-start !important; padding:0 !important; }
+  .modal-box { width:100vw !important; max-width:100vw !important; max-height:100dvh !important; max-height:100vh !important; border-radius:0 !important; margin:0 !important; }
+  .modal-hd { padding:12px 14px 10px !important; border-radius:0 !important; }
+  .modal-title { font-size:0.9rem !important; }
+  .modal-close { width:40px !important; height:40px !important; font-size:18px !important; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
+  .dash-unit-bar { padding:10px 14px 0 !important; gap:6px !important; flex-wrap:wrap !important; }
+  .dash-unit-bar button { font-size:0.78rem !important; padding:6px 14px !important; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
+  .dash-inner { padding:10px 12px 32px !important; gap:10px !important; }
+  .kpi-grid { grid-template-columns:1fr 1fr !important; gap:8px !important; }
+  .kpi-card { padding:12px 10px 10px !important; }
+  .kpi-icon { width:26px !important; height:26px !important; font-size:13px !important; margin-bottom:7px !important; }
+  .kpi-val  { font-size:1.6rem !important; margin-bottom:4px !important; }
+  .kpi-label { font-size:0.7rem !important; line-height:1.35 !important; }
+  .viz-row { grid-template-columns:1fr !important; gap:10px !important; }
+  .bar-label  { width:100px !important; font-size:0.76rem !important; line-height:1.3 !important; white-space:normal !important; }
+  .bar-val    { font-size:0.72rem !important; }
+  .bar-count  { font-size:0.76rem !important; width:28px !important; }
+  .bar-row    { gap:7px !important; }
+  #_dash_dept_grid   { grid-template-columns:1fr !important; }
+  #_dash_rating_grid { grid-template-columns:1fr !important; gap:10px !important; }
+  .log-table th, .log-table td { padding:6px 8px !important; font-size:0.72rem !important; }
+  #dashLogSection { overflow-x:auto !important; }
+  .pagination-bar { flex-direction:column !important; gap:6px !important; align-items:flex-start !important; }
+  .pg-btn { padding:5px 10px !important; font-size:0.75rem !important; touch-action:manipulation; }
+}
+@media(max-width:400px){
+  .app-title { font-size:0.95rem; }
+  .hpill     { font-size:0.7rem; padding:4px 10px; }
+  .det-title { font-size:1.05rem; }
+  .step-body h5 { font-size:0.88rem; }
+  .bar-label { width:90px; font-size:0.72rem; }
+  .contact-ext { font-size:12px; padding:4px 10px; }
+}
+/* Mobile Category Burger (hidden desktop) */
+#mob-cat-bar { display:none; }
+@media(max-width:720px){
+  .header-center, .header-clock, .header-divider { display:none !important; }
+  .app-header { height:auto !important; padding:10px 14px !important; flex-wrap:nowrap !important; gap:10px !important; }
+  .header-left { flex:1; min-width:0; }
+  .app-title { font-size:1rem; }
+  .btn-dashboard { font-size:0.75rem; padding:6px 10px; white-space:nowrap; }
+  .btn-dashboard svg { width:12px; height:12px; }
+  #mob-cat-bar { display:block; position:sticky; top:52px; z-index:99; background:white; border-bottom:1px solid var(--border); box-shadow:0 2px 6px rgba(0,0,0,0.06); }
+  #mob-cat-btn { width:100%; display:flex; align-items:center; gap:10px; padding:11px 16px; background:white; border:none; cursor:pointer; font-family:'Sarabun',sans-serif; font-size:0.9rem; font-weight:700; color:var(--primary); touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
+  #mob-cat-dropdown { display:none; flex-direction:column; border-top:1px solid #e8f0fe; background:white; }
+  #mob-cat-dropdown.open { display:flex; }
+  .mob-cat-item { padding:13px 20px; font-family:'Sarabun',sans-serif; font-size:0.92rem; font-weight:600; color:var(--dim); cursor:pointer; border-bottom:1px solid #f1f5f9; touch-action:manipulation; -webkit-tap-highlight-color:transparent; transition:background .15s; }
+  .mob-cat-item:last-child { border-bottom:none; }
+  .mob-cat-item:active { background:#eff6ff; color:var(--primary); }
+  .mob-cat-item.mob-cat-active { color:var(--primary); background:#eff6ff; font-weight:800; }
+}
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="header-left">
+    <div class="header-text">
+      <div class="app-title">IT Self-Service Guide</div>
+      <div class="app-sub">IT Support · คู่มือแก้ปัญหาด้วยตนเอง</div>
+    </div>
+  </div>
+  <div class="header-center">
+    <div class="header-pills">
+      <span class="hpill hpill-all active" onclick="setCat('all',this)">ทั้งหมด</span>
+      <span class="hpill" onclick="setCat('computer',this)">💻 คอม</span>
+      <span class="hpill" onclick="setCat('printer',this)">🖨️ ปริ้น</span>
+      <span class="hpill" onclick="setCat('pos',this)">🏪 POS</span>
+      <span class="hpill" onclick="setCat('network',this)">🌐 เน็ต</span>
+      <span class="hpill" onclick="setCat('device',this)">📱 อุปกรณ์</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <button class="btn-dashboard" onclick="openDashboard()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+      Dashboard KPI
+    </button>
+    <div class="header-divider"></div>
+    <div class="header-clock">
+      <div class="header-clock-time" id="hClock">--:--</div>
+      <div class="header-clock-date" id="hDate">--/--/--</div>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile Category Burger Menu -->
+<div id="mob-cat-bar">
+  <button id="mob-cat-btn" onclick="toggleMobCat()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    <span id="mob-cat-label">หมวดหมู่ทั้งหมด</span>
+    <svg id="mob-cat-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:auto;transition:transform .2s;"><polyline points="6 9 12 15 18 9"/></svg>
+  </button>
+  <div id="mob-cat-dropdown">
+    <div class="mob-cat-item mob-cat-active" onclick="mobSetCat('all','ทั้งหมด',this)">🔖 ทั้งหมด</div>
+    <div class="mob-cat-item" onclick="mobSetCat('computer','💻 คอม',this)">💻 คอมพิวเตอร์</div>
+    <div class="mob-cat-item" onclick="mobSetCat('printer','🖨️ ปริ้น',this)">🖨️ เครื่องปริ้น</div>
+    <div class="mob-cat-item" onclick="mobSetCat('pos','🏪 POS',this)">🏪 POS</div>
+    <div class="mob-cat-item" onclick="mobSetCat('network','🌐 เน็ต',this)">🌐 เครือข่าย / เน็ต</div>
+    <div class="mob-cat-item" onclick="mobSetCat('device','📱 อุปกรณ์',this)">📱 อุปกรณ์ต่อพ่วง</div>
+  </div>
+</div>
+
+<div class="app-body">
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="search-wrap">
+        <svg class="search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input class="search-box" type="text" id="searchBox" placeholder="ค้นหาหัวข้อ..." oninput="filterList()" autocomplete="off">
+      </div>
+    </div>
+    <div class="list-count" id="listCount"></div>
+    <div class="items-list" id="itemsList"></div>
+  </aside>
+
+  <main class="content-area" id="contentArea">
+    <div class="welcome" id="welcomeEl">
+      <div class="welcome-emoji">🛠️</div>
+      <h2>เลือกหัวข้อที่ต้องการ</h2>
+      <p>คลิกรายการทางซ้ายเพื่อดูขั้นตอนการแก้ไขปัญหา</p>
+      <div class="stat-row">
+        <div class="stat-box"><div class="stat-n">11</div><div class="stat-l">หัวข้อ</div></div>
+        <div class="stat-box"><div class="stat-n">5</div><div class="stat-l">หมวดหมู่</div></div>
+        <div class="stat-box"><div class="stat-n">~1'</div><div class="stat-l">เฉลี่ย</div></div>
+      </div>
+    </div>
+    <div id="detailEl" style="display:none;"></div>
+  </main>
+</div>
+
+<script>
+const CARDS = [
+  {
+    id:1,
+    cat:'network',
+    search:'อินเตอร์เน็ต ใช้ไม่ได้ LAN WIFI เว็บ LINE Email',
+    icon:'🌐',
+    iconBg:'rgba(6,182,212,0.12)',
+    catColor:'#0891b2',
+    catText:'เครือข่าย',
+    title:'Internet ใช้งานไม่ได้ (LAN / Wi-Fi)',
+    badges:`<span class="tag tag-time"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>ใช้เวลาแก้ : ~2 นาที</span><span class="tag tag-easy" style="color:#059669;background:#f0fdf4;border-color:#6ee7b7;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>ระดับ : เบื้องต้น</span><span class="tag tag-steps"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="8 12 12 16 16 12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>7 ขั้นตอน</span>`,
+    symptoms:`<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>เปิดเว็บไซต์ไม่ได้ (Browser Error)</span>
+<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>โปรแกรมออนไลน์ใช้งานไม่ได้ ( LINE , Email )</span>
+`,
+    steps:`<div class="step-item">
+  <div class="step-num">1</div>
+  <div class="step-body">
+    <h5>ตรวจสอบสาย LAN</h5>
+    <p>ตรวจสอบสาย LAN ดูที่ด้านหลังเครื่องหรือข้างโน้ตบุ๊ก ตรวจสอบว่าสายเสียบแน่นและมีไฟกระพริบหรือไม่ เสียบให้สุดจนมีเสียง "คลิก"</p>
+    <div class="illus-box"><svg height="120" viewbox="0 0 280 120" width="280" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#1a2332" height="100" rx="15" width="240" x="20" y="10"></rect>
+<rect fill="#0f172a" height="40" rx="4" stroke="#334155" stroke-width="2" width="50" x="40" y="35"></rect>
+<circle cx="80" cy="45" fill="#22c55e" r="3">
+<animate attributename="opacity" dur="1s" repeatcount="indefinite" values="1;0.4;1"></animate>
+</circle>
+<g>
+<animatetransform attributename="transform" dur="2s" from="60,0" repeatcount="indefinite" to="0,0" type="translate"></animatetransform>
+<rect fill="#cbd5e1" height="30" rx="4" width="60" x="130" y="40"></rect>
+<rect fill="#475569" height="10" rx="5" width="60" x="190" y="50"></rect>
+<path d="M140 32 L170 32 L170 40 L140 40 Z" fill="#94a3b8"></path>
+</g>
+<text fill="#22c55e" font-size="12" font-weight="bold" text-anchor="middle" x="140" y="100">เสียบให้สุดจนมีเสียง "คลิก"</text>
+</svg><span class="illus-caption"></span></div>
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">2</div>
+  <div class="step-body">
+    <h5>เช็คสถานะอินเตอร์เน็ตมุมขวาล่าง</h5>
+    <p>เช็คสถานะอินเตอร์เน็ตมุมขวาล่างว่ามีสถานะแบบไหน สังเกตสัญลักษณ์ที่ Taskbar มุมขวาล่าง (ใกล้กับนาฬิกา) เพื่อดูสถานะการเชื่อมต่อบน Windows เชื่อมต่อสาย LAN (รูปคอมพิวเตอร์)</p>
+    <div class="illus-box">
+<svg width="420" height="160" viewBox="0 0 420 160" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- ===== CASE 1: LAN เชื่อมต่อปกติ ===== -->
+  <text x="60" y="18" fill="#64748b" font-size="11" font-weight="700" font-family="'IBM Plex Mono',monospace" text-anchor="middle">✅ เชื่อมต่อแล้ว (LAN)</text>
+
+  <!-- Taskbar strip -->
+  <rect x="10" y="28" width="100" height="36" rx="4" fill="#1a1a2e"/>
+  <!-- Clock area -->
+  <text x="26" y="42" fill="#e2e8f0" font-size="9" font-family="monospace">10:30</text>
+  <text x="26" y="54" fill="#e2e8f0" font-size="9" font-family="monospace">15/3/25</text>
+  <!-- LAN icon (monitor shape = connected) -->
+  <g transform="translate(75, 35)">
+    <!-- Monitor body -->
+    <rect x="0" y="2" width="20" height="14" rx="2" fill="none" stroke="#e2e8f0" stroke-width="1.5"/>
+    <!-- Screen fill -->
+    <rect x="2" y="4" width="16" height="10" rx="1" fill="#3b82f6" opacity="0.6"/>
+    <!-- Stand -->
+    <line x1="7" y1="16" x2="13" y2="16" stroke="#e2e8f0" stroke-width="1.5"/>
+    <line x1="10" y1="16" x2="10" y2="20" stroke="#e2e8f0" stroke-width="1.5"/>
+    <!-- Network lines on screen (signal) -->
+    <line x1="5" y1="8" x2="15" y2="8" stroke="#fff" stroke-width="1" opacity="0.8"/>
+    <line x1="5" y1="11" x2="12" y2="11" stroke="#fff" stroke-width="1" opacity="0.5"/>
+  </g>
+  <!-- Tooltip bubble -->
+  <rect x="10" y="72" width="100" height="28" rx="5" fill="#2d3748" stroke="#4a5568" stroke-width="1"/>
+  <text x="60" y="84" fill="#68d391" font-size="9" font-weight="700" text-anchor="middle" font-family="sans-serif">เชื่อมต่ออินเทอร์เน็ต</text>
+  <text x="60" y="94" fill="#a0aec0" font-size="8" text-anchor="middle" font-family="sans-serif">Ethernet · Connected</text>
+  <!-- Arrow up from taskbar to tooltip -->
+  <polygon points="55,72 60,65 65,72" fill="#2d3748" stroke="#4a5568" stroke-width="1"/>
+
+  <!-- ===== CASE 2: ไม่มี Internet (สาย LAN เสีย) ===== -->
+  <text x="260" y="18" fill="#64748b" font-size="11" font-weight="700" font-family="'IBM Plex Mono',monospace" text-anchor="middle">❌ ไม่มีอินเทอร์เน็ต (LAN)</text>
+
+  <!-- Taskbar strip -->
+  <rect x="210" y="28" width="100" height="36" rx="4" fill="#1a1a2e"/>
+  <text x="226" y="42" fill="#e2e8f0" font-size="9" font-family="monospace">10:30</text>
+  <text x="226" y="54" fill="#e2e8f0" font-size="9" font-family="monospace">15/3/25</text>
+  <!-- Globe icon (no internet) -->
+  <g transform="translate(272, 34)">
+    <!-- Globe circle -->
+    <circle cx="10" cy="11" r="9" fill="none" stroke="#e2e8f0" stroke-width="1.5"/>
+    <!-- Latitude line -->
+    <ellipse cx="10" cy="11" rx="5" ry="9" fill="none" stroke="#e2e8f0" stroke-width="1" opacity="0.6"/>
+    <!-- Longitude lines -->
+    <line x1="1" y1="11" x2="19" y2="11" stroke="#e2e8f0" stroke-width="1" opacity="0.6"/>
+    <!-- Red X badge -->
+    <circle cx="17" cy="18" r="5" fill="#ef4444"/>
+    <line x1="14.5" y1="15.5" x2="19.5" y2="20.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>
+    <line x1="19.5" y1="15.5" x2="14.5" y2="20.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>
+  </g>
+  <!-- Tooltip -->
+  <rect x="210" y="72" width="100" height="28" rx="5" fill="#2d3748" stroke="#4a5568" stroke-width="1"/>
+  <text x="260" y="84" fill="#fc8181" font-size="9" font-weight="700" text-anchor="middle" font-family="sans-serif">ไม่มีอินเทอร์เน็ต</text>
+  <text x="260" y="94" fill="#a0aec0" font-size="8" text-anchor="middle" font-family="sans-serif">No Internet Access</text>
+  <polygon points="255,72 260,65 265,72" fill="#2d3748" stroke="#4a5568" stroke-width="1"/>
+
+  <!-- Divider arrow between cases -->
+  <text x="175" y="55" fill="#94a3b8" font-size="22" text-anchor="middle">→</text>
+  <text x="175" y="72" fill="#64748b" font-size="9" text-anchor="middle" font-family="sans-serif">ตรวจสอบ</text>
+
+  <!-- Bottom label -->
+  <text x="210" y="120" fill="#94a3b8" font-size="10" text-anchor="middle" font-family="'IBM Plex Mono',monospace">สังเกตไอคอนมุมขวาล่าง Taskbar</text>
+</svg>
+<span class="illus-caption">ไอคอน จอ monitor = เชื่อมต่อ LAN ปกติ · ไอคอน โลก+กากบาทแดง = ไม่มีอินเทอร์เน็ต</span></div>
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">3</div>
+  <div class="step-body">
+    <h5>ตรวจสอบสถานะ Wi-Fi</h5>
+    <p>ตรวจสอบสถานะ Wi-Fi ตรวจสอบสัญลักษณ์ Wi-Fi ที่มุมขวาล่าง หากเป็นสีเทาหรือมีกากบาท ให้คลิกเปิดให้เป็นสีฟ้า สถานะ: ปิด สถานะ: เปิด</p>
+    <div class="illus-box"><svg height="120" viewbox="0 0 280 120" width="280" xmlns="http://www.w3.org/2000/svg">
+<g transform="translate(30, 10)">
+<rect fill="#1a2332" height="100" rx="15" width="90" x="0" y="0"></rect>
+<path d="M25 45 Q45 25 65 45 M35 55 Q45 45 55 55" fill="none" stroke="#475569" stroke-linecap="round" stroke-width="4"></path>
+<circle cx="45" cy="65" fill="#475569" r="4"></circle>
+<line stroke="#ef4444" stroke-width="3" x1="70" x2="80" y1="15" y2="25"></line>
+<line stroke="#ef4444" stroke-width="3" x1="80" x2="70" y1="15" y2="25"></line>
+<text fill="#94a3b8" font-size="11" text-anchor="middle" x="45" y="90">สถานะ: ปิด</text>
+</g>
+<path d="M130 60 L150 60" marker-end="url(#arrow)" stroke="#0284c7" stroke-dasharray="4" stroke-width="2"></path>
+<defs><marker id="arrow" markerheight="6" markerwidth="6" orient="auto" refx="5" refy="3"><polygon fill="#0284c7" points="0 0, 6 3, 0 6"></polygon></marker></defs>
+<g transform="translate(160, 10)">
+<rect fill="#1a2332" height="100" rx="15" width="90" x="0" y="0"></rect>
+<g fill="none" stroke="#3b82f6" stroke-linecap="round" stroke-width="4">
+<path d="M25 45 Q45 25 65 45">
+<animate attributename="stroke-opacity" dur="1.5s" repeatcount="indefinite" values="1;0.4;1"></animate>
+</path>
+<path d="M35 55 Q45 45 55 55"></path>
+</g>
+<circle cx="45" cy="65" fill="#3b82f6" r="4"></circle>
+<circle cx="75" cy="20" fill="#22c55e" r="4"></circle>
+<text fill="#3b82f6" font-size="11" font-weight="bold" text-anchor="middle" x="45" y="90">สถานะ: เปิด</text>
+</g>
+</svg><span class="illus-caption"></span></div>
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">4</div>
+  <div class="step-body">
+    <h5>ปิดและเปิด Wi-Fi ใหม่</h5>
+    <p>ปิดและเปิด Wi-Fi ใหม่ คลิกที่ไอคอน Wi-Fi ตรงมุมขวาล่าง เลือก รอ 5 วินาที แล้วกด 'Turn On' อีกครั้ง</p>
+    
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">5</div>
+  <div class="step-body">
+    <h5>ตรวจเช็คจากคอมพิวเตอร์เครื่องใกล้เคียง</h5>
+    <p>ตรวจเช็คจากคอมพิวเตอร์เครื่องใกล้เคียง สอบถามเพื่อนร่วมงานเครื่องบริเวณใกล้เคียงว่าสามารถใช้งาน Internet ได้ตามปกติหรือไม่</p>
+    
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">6</div>
+  <div class="step-body">
+    <h5>ลองเปิดเว็บไซต์อื่นเพื่อทดสอบ</h5>
+    <p>ลองเปิดเว็บไซต์อื่น ทดสอบเข้า Google หรือ YouTube เพื่อตรวจสอบว่าปัญหาเกิดจากเว็บไซต์เดียวหรือทั้งระบบ</p>
+    
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">7</div>
+  <div class="step-body">
+    <h5>Restart เครื่อง 1 ครั้ง</h5>
+    <p>รีสตาร์ทเครื่อง (Restart) หากทำตามขั้นตอนข้างต้นแล้วยังไม่ได้ ให้ทำการ เพื่อรีเซ็ตระบบเน็ตเวิร์ก</p>
+    
+  </div>
+</div>
+`,
+    contact:`หากทำตามขั้นตอนข้างต้นแล้วยังไม่สามารถใช้งานได้ โปรดติดต่อ IT Support`
+  },
+  {
+    id:0,
+    cat:'computer',
+    search:'คอมพิวเตอร์ช้า ค้าง เปิดโปรแกรมช้า ไม่ตอบสนอง',
+    icon:'💻',
+    iconBg:'rgba(139,92,246,0.12)',
+    catColor:'#7c3aed',
+    catText:'คอมพิวเตอร์',
+    title:'คอมพิวเตอร์ทำงานช้า หรือค้าง',
+    badges:`<span class="tag tag-time"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>ใช้เวลาแก้ : 3–5 นาที</span><span class="tag tag-easy" style="color:#059669;background:#f0fdf4;border-color:#6ee7b7;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>ระดับ : เบื้องต้น</span><span class="tag tag-steps"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="8 12 12 16 16 12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>4 ขั้นตอน</span>`,
+    symptoms:`<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>เปิดโปรแกรมช้า หรือรอนาน</span>
+<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>คลิกแล้วเครื่องไม่ตอบสนอง</span>
+<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>โปรแกรมค้าง หรือหน้าจอหยุดทำงาน</span>
+`,
+    steps:`<div class="step-item">
+  <div class="step-num">1</div>
+  <div class="step-body">
+    <h5>ปิดโปรแกรมที่ไม่ได้ใช้งาน</h5>
+    <p>ปิดโปรแกรมที่ไม่ได้ใช้งาน หากเปิดหลายโปรแกรมพร้อมกัน เครื่องอาจทำงานช้าลง ให้ไล่ปิดหน้าต่างหรือโปรแกรมที่ไม่ได้ใช้ออกไป เพื่อคืนหน่วยความจำ (RAM) ให้ระบบ</p>
+    
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">2</div>
+  <div class="step-body">
+    <h5>รีสตาร์ทคอมพิวเตอร์</h5>
+    <p>รีสตาร์ทคอมพิวเตอร์ กดปุ่ม (โลโก้ Windows) → เลือกไอคอน Power → กด Restart แล้วรอให้เครื่องเปิดขึ้นมาใหม่อีกครั้ง Sleep Shut down Restart Restarting...</p>
+    <div class="illus-box"><svg height="130" viewbox="0 0 280 130" width="280" xmlns="http://www.w3.org/2000/svg">
+<!-- Background Desktop -->
+<rect fill="#004a8e" height="120" rx="10" width="260" x="10" y="5"></rect>
+<!-- Taskbar -->
+<rect fill="rgba(0,0,0,0.5)" height="25" width="260" x="10" y="100"></rect>
+<!-- Windows Logo (Start Button) -->
+<g transform="translate(25, 105)">
+<path d="M0 2 L5.5 1.2 L5.5 6 L0 6 Z M6.5 1.1 L13 0 L13 6 L6.5 6 Z M0 7 L5.5 7 L5.5 11.8 L0 11 Z M6.5 7 L13 7 L13 13 L6.5 11.9 Z" fill="#fff"></path>
+</g>
+<!-- Start Menu Simulation -->
+<g transform="translate(15, 25)">
+<rect fill="#1f1f1f" height="75" rx="5" stroke="rgba(255,255,255,0.1)" width="100" x="0" y="0"></rect>
+<!-- List items -->
+<rect fill="rgba(255,255,255,0.05)" height="8" rx="2" width="90" x="5" y="10"></rect>
+<rect fill="rgba(255,255,255,0.05)" height="8" rx="2" width="90" x="5" y="22"></rect>
+<!-- Power Flyout -->
+<rect fill="#2d2d2d" height="45" rx="4" stroke="#444" width="60" x="50" y="35"></rect>
+<text fill="#ccc" font-size="8" x="58" y="50">Sleep</text>
+<text fill="#ccc" font-size="8" x="58" y="62">Shut down</text>
+<!-- Highlighted Restart -->
+<rect fill="#0078d4" height="10" rx="2" width="54" x="53" y="66"></rect>
+<text fill="white" font-size="8" font-weight="bold" x="58" y="74">Restart</text>
+<!-- Power Icon -->
+<circle cx="10" cy="65" fill="none" r="5" stroke="white" stroke-width="1.2"></circle>
+<line stroke="white" stroke-width="1.2" x1="10" x2="10" y1="60" y2="65"></line>
+</g>
+<!-- Rebooting Text with animation -->
+<g transform="translate(180, 55)">
+<circle cx="0" cy="0" fill="none" r="18" stroke="rgba(255,255,255,0.1)" stroke-width="3"></circle>
+<path d="M-15 0 A15 15 0 0 1 15 0" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="3">
+<animatetransform attributename="transform" dur="1.5s" from="0" repeatcount="indefinite" to="360" type="rotate"></animatetransform>
+</path>
+<text fill="white" font-size="9" font-weight="bold" text-anchor="middle" x="-40" y="35">Restarting...</text>
+</g>
+</svg><span class="illus-caption">คลิกที่ปุ่ม Start และเลือก Restart เพื่อเริ่มระบบใหม่</span></div>
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">3</div>
+  <div class="step-body">
+    <h5>ปิดแล้วเปิดโปรแกรมใหม่</h5>
+    <p>ปิดแล้วเปิดโปรแกรมใหม่ หากเฉพาะบางโปรแกรมค้าง ให้ทำการปิดโปรแกรมนั้น (Force Close) แล้วทดลองเปิดใช้งานใหม่อีกครั้ง</p>
+    
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">4</div>
+  <div class="step-body">
+    <h5>ตรวจสอบพื้นที่ว่างใน Drive C:</h5>
+    <p>ตรวจสอบพื้นที่ว่างในเครื่อง เปิด หากพบว่าแถบ Drive C: เป็นสีแดง (ใกล้เต็ม) ให้ลบไฟล์ที่ไม่จำเป็นออก This PC Local Disk (C:) STATUS: LOW DISK SPACE WARNING</p>
+    <div class="illus-box"><svg height="120" viewbox="0 0 280 120" width="280" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#1a2332" height="100" rx="15" width="240" x="20" y="10"></rect>
+<path d="M45 35 L55 35 L58 38 L85 38 L85 55 L45 55 Z" fill="#0284c7"></path>
+<text fill="#cbd5e1" font-size="14" font-weight="bold" x="95" y="48">This PC</text>
+<g transform="translate(45, 65)">
+<rect fill="#0f172a" height="35" rx="6" stroke="#334155" stroke-width="1" width="190" x="0" y="0"></rect>
+<text fill="#94a3b8" font-size="11" x="10" y="22">Local Disk (C:)</text>
+<rect fill="#334155" height="10" rx="2" width="80" x="100" y="12"></rect>
+<rect fill="#ef4444" height="10" rx="2" width="75" x="100" y="12">
+<animate attributename="opacity" dur="1.5s" repeatcount="indefinite" values="1;0.6;1"></animate>
+</rect>
+</g>
+<circle cx="45" cy="105" fill="#ef4444" r="4"><animate attributename="opacity" dur="1s" repeatcount="indefinite" values="1;0.2;1"></animate></circle>
+<text fill="#ef4444" font-size="10" font-weight="bold" x="55" y="109">STATUS: LOW DISK SPACE WARNING</text>
+</svg><span class="illus-caption"></span></div>
+  </div>
+</div>
+`,
+    contact:`หากทำตามขั้นตอนข้างต้นแล้วยังแก้ไม่ได้ โปรดติดต่อ IT Support`
+  },
+  {
+    id:6,
+    cat:'pos',
+    search:'POS ปริ้นใบเสร็จ ไม่ออก thermal',
+    icon:'🏪',
+    iconBg:'rgba(239,68,68,0.12)',
+    catColor:'#dc2626',
+    catText:'POS',
+    title:'เครื่อง POS ปริ้นใบเสร็จไม่ออก',
+    badges:`<span class="tag tag-time"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>ใช้เวลาแก้ : 1 นาที</span><span class="tag tag-easy" style="color:#059669;background:#f0fdf4;border-color:#6ee7b7;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>ระดับ : ระดับง่าย</span><span class="tag tag-steps"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="8 12 12 16 16 12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>4 ขั้นตอน</span>`,
+    symptoms:`<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>สั่งปริ้นแล้วใบเสร็จไม่ออก</span>
+<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>ปริ้นได้ครึ่งเดียวแล้วเครื่องค้าง ใบเสร็จออกไม่หมด</span>
+<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>เครื่องปริ้นไฟไม่เข้า</span>
+`,
+    steps:`<div class="step-item">
+  <div class="step-num">1</div>
+  <div class="step-body">
+    <h5>ตรวจสอบไฟสถานะเครื่องปริ้น</h5>
+    <p>ตรวจสอบไฟสถานะเครื่องปริ้น ตรวจสอบดูว่ามีไฟสีแดงหรือไฟกระพริบที่ผิดปกติหรือไม่</p>
+    <div class="illus-box">
+<svg width="400" height="155" viewBox="0 0 400 155" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- ===== Shared Printer Body ===== -->
+  <!-- Case 1 bg -->
+  <rect x="12" y="10" width="115" height="120" rx="8" fill="#1e2533" stroke="#22c55e" stroke-width="1.5"/>
+  <!-- Case 2 bg -->
+  <rect x="142" y="10" width="115" height="120" rx="8" fill="#1e2533" stroke="#f59e0b" stroke-width="1.5"/>
+  <!-- Case 3 bg -->
+  <rect x="272" y="10" width="115" height="120" rx="8" fill="#1e2533" stroke="#ef4444" stroke-width="1.5"/>
+
+  <!-- ===== Printer shape repeated x3 ===== -->
+  <!-- Printer 1 -->
+  <rect x="28" y="22" width="82" height="52" rx="5" fill="#334155"/>
+  <rect x="36" y="16" width="66" height="16" rx="3" fill="#475569"/>
+  <rect x="38" y="70" width="62" height="7" rx="2" fill="#1e293b"/>
+  <!-- Paper out -->
+  <rect x="44" y="62" width="50" height="10" rx="1" fill="#f8fafc">
+    <animate attributeName="y" dur="2.5s" repeatCount="indefinite" values="62;57;62"/>
+  </rect>
+  <!-- Control panel strip -->
+  <rect x="30" y="26" width="78" height="14" rx="3" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+  <!-- GREEN LED -->
+  <circle cx="98" cy="33" r="5" fill="#22c55e">
+    <animate attributeName="opacity" dur="2s" repeatCount="indefinite" values="1;0.4;1"/>
+  </circle>
+  <!-- Small screen text -->
+  <text x="58" y="37" fill="#22c55e" font-size="7" font-weight="bold" text-anchor="middle" font-family="monospace">READY</text>
+  <!-- Label -->
+  <rect x="18" y="96" width="103" height="28" rx="5" fill="#14532d"/>
+  <text x="70" y="109" fill="#86efac" font-size="9" font-weight="700" text-anchor="middle" font-family="sans-serif">✓ ไฟเขียว</text>
+  <text x="70" y="120" fill="#86efac" font-size="8" text-anchor="middle" font-family="sans-serif">พร้อมใช้งาน</text>
+
+  <!-- Printer 2 -->
+  <rect x="158" y="22" width="82" height="52" rx="5" fill="#334155"/>
+  <rect x="166" y="16" width="66" height="16" rx="3" fill="#475569"/>
+  <rect x="168" y="70" width="62" height="7" rx="2" fill="#1e293b"/>
+  <rect x="160" y="26" width="78" height="14" rx="3" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+  <!-- ORANGE LED blinking -->
+  <circle cx="228" cy="33" r="5" fill="#f59e0b">
+    <animate attributeName="opacity" dur="0.8s" repeatCount="indefinite" values="1;0.1;1"/>
+  </circle>
+  <text x="188" y="37" fill="#f59e0b" font-size="7" font-weight="bold" text-anchor="middle" font-family="monospace">PAUSE</text>
+  <!-- Warning triangle on printer -->
+  <g transform="translate(184,52)">
+    <polygon points="15,0 30,26 0,26" fill="#f59e0b" opacity="0.85"/>
+    <text x="15" y="20" fill="#000" font-size="11" font-weight="900" text-anchor="middle">!</text>
+  </g>
+  <!-- Label -->
+  <rect x="148" y="96" width="103" height="28" rx="5" fill="#451a03"/>
+  <text x="200" y="109" fill="#fcd34d" font-size="9" font-weight="700" text-anchor="middle" font-family="sans-serif">⚠ ไฟส้มกระพริบ</text>
+  <text x="200" y="120" fill="#fcd34d" font-size="8" text-anchor="middle" font-family="sans-serif">หมึก / กระดาษ / ฝาเปิด</text>
+
+  <!-- Printer 3 -->
+  <rect x="288" y="22" width="82" height="52" rx="5" fill="#2d1a1a"/>
+  <rect x="296" y="16" width="66" height="16" rx="3" fill="#3d2222"/>
+  <rect x="298" y="70" width="62" height="7" rx="2" fill="#1e293b"/>
+  <rect x="290" y="26" width="78" height="14" rx="3" fill="#0f172a" stroke="#7f1d1d" stroke-width="1"/>
+  <!-- RED LED fast blink -->
+  <circle cx="358" cy="33" r="5" fill="#ef4444">
+    <animate attributeName="opacity" dur="0.4s" repeatCount="indefinite" values="1;0.05;1"/>
+  </circle>
+  <text x="318" y="35" fill="#ef4444" font-size="7" font-weight="bold" text-anchor="middle" font-family="monospace">ERROR</text>
+  <!-- X marks -->
+  <line x1="292" y1="44" x2="368" y2="70" stroke="#ef4444" stroke-width="1.2" opacity="0.35"/>
+  <line x1="368" y1="44" x2="292" y2="70" stroke="#ef4444" stroke-width="1.2" opacity="0.35"/>
+  <!-- Error badge -->
+  <circle cx="340" cy="57" r="12" fill="#7f1d1d" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="340" y="62" fill="#fca5a5" font-size="13" font-weight="900" text-anchor="middle">✕</text>
+  <!-- Label -->
+  <rect x="278" y="96" width="103" height="28" rx="5" fill="#450a0a"/>
+  <text x="330" y="109" fill="#fca5a5" font-size="9" font-weight="700" text-anchor="middle" font-family="sans-serif">✕ ไฟแดงค้าง/กระพริบ</text>
+  <text x="330" y="120" fill="#fca5a5" font-size="8" text-anchor="middle" font-family="sans-serif">มีข้อผิดพลาด Error</text>
+
+  <!-- Bottom caption -->
+  <text x="200" y="147" fill="#475569" font-size="9" text-anchor="middle" font-family="'IBM Plex Mono',monospace">สังเกตสีและจังหวะกระพริบของไฟที่แผงควบคุมเครื่องพิมพ์</text>
+</svg>
+<span class="illus-caption">ไฟเขียว = ปกติ · ไฟส้มกระพริบ = ต้องการความสนใจ · ไฟแดง = เกิด Error</span>
+    </div>
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">2</div>
+  <div class="step-body">
+    <h5>ปิดเปิดเครื่องปริ้นใหม่</h5>
+    <p>ปิดเปิดเครื่องปริ้นใหม่ ลองปิดสวิตช์เครื่องพิมพ์ รอ 5 วินาที แล้วเปิดใหม่อีกครั้ง</p>
+    
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">3</div>
+  <div class="step-body">
+    <h5>ตรวจสอบว่ามีกระดาษติดเครื่องปริ้นหรือไม่</h5>
+    <p>ตรวจสอบว่ามีกระดาษติดเครื่องปริ้นหรือไม่ เปิดฝาครอบเครื่องพิมพ์เพื่อดูว่ามีเศษกระดาษติดขัดอยู่ภายในเครื่องหรือไม่</p>
+    
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">4</div>
+  <div class="step-body">
+    <h5>ออกจากโปรแกรม POS และรีสตาร์ทเครื่อง</h5>
+    <p>ออกจากโปรแกรม POS และรีสตาร์ทเครื่อง ปิดโปรแกรมขายหน้าร้าน แล้วทำการ Reboot เครื่องคอมพิวเตอร์ใหม่ RESTARTING SYSTEM</p>
+    <div class="illus-box"><svg height="150" viewbox="0 0 280 150" width="280" xmlns="http://www.w3.org/2000/svg">
+<!-- Monitor Body -->
+<rect fill="#1e293b" height="85" rx="8" stroke="#475569" stroke-width="2" width="120" x="80" y="20"></rect>
+<rect fill="#0f172a" height="65" rx="4" width="110" x="85" y="25"></rect>
+<!-- Stand -->
+<path d="M125 105 L120 125 L160 125 L155 105 Z" fill="#475569"></path>
+<rect fill="#334155" height="6" rx="3" width="60" x="110" y="125"></rect>
+<!-- Loading/Restart Circle -->
+<g transform="translate(140, 58)">
+<circle cx="0" cy="0" fill="none" r="18" stroke="#1e293b" stroke-width="4"></circle>
+<path d="M0 -18 A18 18 0 0 1 18 0" fill="none" stroke="#22c55e" stroke-linecap="round" stroke-width="4">
+<animatetransform attributename="transform" dur="1.5s" from="0 0 0" repeatcount="indefinite" to="360 0 0" type="rotate"></animatetransform>
+</path>
+</g>
+<!-- UI Elements (Simulated Buttons/Icons) -->
+<rect fill="#334155" height="4" rx="2" width="15" x="92" y="75"></rect>
+<rect fill="#334155" height="4" rx="2" width="15" x="112" y="75"></rect>
+<circle cx="185" cy="77" fill="#ef4444" r="3"></circle>
+<!-- Restart Text -->
+<text fill="#0284c7" font-family="Sarabun, sans-serif" font-size="12" font-weight="800" text-anchor="middle" x="140" y="145">
+                                    RESTARTING SYSTEM
+                                </text>
+</svg><span class="illus-caption"></span></div>
+  </div>
+</div>
+`,
+    contact:`หากทำตามขั้นตอนข้างต้นแล้วยังไม่สามารถใช้งานได้ หากยังพบปัญหา โปรดติดต่อ IT Support`
+  },
+  {
+    id:7,
+    cat:'pos',
+    search:'POS เปิดไม่ติด คอมพิวเตอร์ไม่เปิด',
+    icon:'🖥️',
+    iconBg:'rgba(239,68,68,0.12)',
+    catColor:'#dc2626',
+    catText:'POS',
+    title:'เครื่อง POS เปิดไม่ติด / คอมพิวเตอร์',
+    badges:`<span class="tag tag-time"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>ใช้เวลาแก้ : 1 นาที</span><span class="tag tag-easy" style="color:#059669;background:#f0fdf4;border-color:#6ee7b7;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>ระดับ : ระดับง่าย</span><span class="tag tag-steps"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="8 12 12 16 16 12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>2 ขั้นตอน</span>`,
+    symptoms:`<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>เปิดเครื่องไม่ติด</span>
+<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>ไฟไม่เข้า</span>
+`,
+    steps:`<div class="step-item">
+  <div class="step-num">1</div>
+  <div class="step-body">
+    <h5>กรณีเครื่องมี UPS — ตรวจสายไฟและสถานะ UPS</h5>
+    <p>กรณีเครื่องมี ups - ตรวจสายไฟเครื่อง POSที่เสียบกับ UPS ว่าเสียบแน่นไหม - ตรวจสอบสถานะผิดปกติของไฟแสดงผล UPSถ้ามีไฟกระพริบผิดปกติด ปิดเปิด UPS ใหม่ - ไฟสถานะ UPS ไม่แสดงและมีเสียงเตือน ให้ปิด UPS แล้วย้ายสายไฟเครื่อง POS ไปเสียบปลั๊กไฟปกติใช้งานชั่วคราวก่อน Check Status ตรวจสอบสายไฟหลัง UPS</p>
+    <div class="illus-box"><svg height="120" viewbox="0 0 220 120" width="220" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#334155" height="80" rx="4" width="100" x="60" y="20"></rect>
+<rect fill="#1e293b" height="15" rx="2" width="70" x="75" y="35"></rect>
+<circle cx="85" cy="70" fill="#ef4444" r="4">
+<animate attributename="opacity" dur="1s" repeatcount="indefinite" values="1;0.2;1"></animate>
+</circle>
+<text fill="#cbd5e1" font-family="sans-serif" font-size="10" x="100" y="74">Check Status</text>
+<path d="M160 60 L190 60 L190 90" fill="none" stroke="#0284c7" stroke-linecap="round" stroke-width="4"></path>
+<rect fill="#475569" height="15" rx="2" width="20" x="180" y="90"></rect>
+<text fill="#0284c7" font-family="sans-serif" font-size="10" font-weight="bold" text-anchor="middle" x="110" y="115">ตรวจสอบสายไฟหลัง UPS</text>
+</svg><span class="illus-caption"></span></div>
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">2</div>
+  <div class="step-body">
+    <h5>กรณีไม่มี UPS — ตรวจสอบสายไฟเครื่อง POS</h5>
+    <p>กรณีไม่มี UPS -ตรวจสอบสายไฟเครื่อง POS ว่าเสียบที่ปลั๊กไฟแน่นไหม เสียบปลั๊กให้แน่น</p>
+    <div class="illus-box"><svg height="100" viewbox="0 0 200 100" width="200" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#e2e8f0" height="60" rx="4" stroke="#cbd5e1" stroke-width="2" width="40" x="130" y="20"></rect>
+<circle cx="150" cy="40" fill="#94a3b8" r="4"></circle>
+<circle cx="150" cy="60" fill="#94a3b8" r="4"></circle>
+<g>
+<rect fill="#475569" height="20" rx="2" width="30" x="70" y="45"></rect>
+<path d="M100 55 L130 55" stroke="#475569" stroke-width="4"></path>
+<path d="M20 55 L70 55" stroke="#475569" stroke-width="3"></path>
+<animatetransform attributename="transform" dur="1.5s" repeatcount="indefinite" type="translate" values="-10,0; 0,0; -10,0"></animatetransform>
+</g>
+<text fill="#0284c7" font-family="sans-serif" font-size="10" font-weight="bold" text-anchor="middle" x="100" y="90">เสียบปลั๊กให้แน่น</text>
+</svg><span class="illus-caption"></span></div>
+  </div>
+</div>
+`,
+    contact:`หากทำตามขั้นตอนข้างต้นแล้วยังไม่สามารถใช้งานได้ หากยังพบปัญหา โปรดติดต่อ IT Support`
+  },
+  {
+    id:2,
+    cat:'printer',
+    search:'ปริ้นเตอร์ เครื่องถ่ายเอกสาร ปริ้นไม่ได้ offline',
+    icon:'🖨️',
+    iconBg:'rgba(59,130,246,0.12)',
+    catColor:'#2563eb',
+    catText:'เครื่องพิมพ์',
+    title:'ปริ้นเตอร์ / เครื่องถ่ายเอกสาร ปริ้นไม่ได้',
+    badges:`<span class="tag tag-time"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>ใช้เวลาแก้ : 1 นาที</span><span class="tag tag-easy" style="color:#059669;background:#f0fdf4;border-color:#6ee7b7;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>ระดับ : ง่าย</span><span class="tag tag-steps"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="8 12 12 16 16 12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>4 ขั้นตอน</span>`,
+    symptoms:`<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>สั่งปริ้นแล้วไม่มีเอกสารออกมา</span>
+<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>เครื่องไม่ตอบสนองต่อคำสั่ง</span>
+<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>ขึ้นสถานะ Printer Offline</span>
+`,
+    steps:`<div class="step-item">
+  <div class="step-num">1</div>
+  <div class="step-body">
+    <h5>ตรวจสอบการเปิดเครื่องพิมพ์</h5>
+    <p>ตรวจสอบการเปิดเครื่อง ตรวจสอบดูว่าปุ่ม Power ของเครื่องปริ้นมีไฟติดอยู่หรือไม่ หากดับอยู่ให้กดเปิด และเช็คว่าหน้าจอของเครื่องแสดงข้อความ Error ใดๆ หรือไม่</p>
+    
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">2</div>
+  <div class="step-body">
+    <h5>ตรวจสอบสายเชื่อมต่อหรือ Wi-Fi</h5>
+    <p>ตรวจสอบสายเชื่อมต่อหรือ Wi-Fi เช็คสาย USB หรือสาย Lan ว่าเสียบแน่นดีหรือไม่ หากเชื่อมต่อผ่าน Wi-Fi ให้ดูว่าสัญลักษณ์สัญญาณที่เครื่องปริ้นติดเป็นปกติหรือไม่ Connection OK ! CHECK OFFLINE</p>
+    <div class="illus-box"><svg height="130" viewbox="0 0 280 130" width="280" xmlns="http://www.w3.org/2000/svg">
+<!-- Printer Body -->
+<rect fill="#e2e8f0" height="60" rx="8" stroke="#cbd5e1" stroke-width="2" width="120" x="80" y="40"></rect>
+<rect fill="#f1f5f9" height="20" rx="4" stroke="#cbd5e1" stroke-width="2" width="80" x="100" y="25"></rect>
+<!-- Paper exiting -->
+<rect fill="#fff" height="15" stroke="#cbd5e1" stroke-width="1" width="70" x="105" y="90"></rect>
+<!-- Status Screen -->
+<rect fill="#1e293b" height="15" rx="2" width="30" x="155" y="55"></rect>
+<circle cx="162" cy="62.5" fill="#22c55e" r="2">
+<animate attributename="opacity" dur="1s" repeatcount="indefinite" values="1;0.2;1"></animate>
+</circle>
+<!-- Connection Symbol (Wi-Fi) -->
+<g transform="translate(40, 60)">
+<circle cx="0" cy="15" fill="#0284c7" r="3"></circle>
+<path d="M-8 8 A12 12 0 0 1 8 8" fill="none" stroke="#0284c7" stroke-linecap="round" stroke-width="2"></path>
+<path d="M-13 3 A18 18 0 0 1 13 3" fill="none" stroke="#0284c7" stroke-linecap="round" stroke-width="2"></path>
+<text fill="#0284c7" font-size="10" font-weight="bold" text-anchor="middle" x="0" y="35">Connection OK</text>
+</g>
+<!-- Red Alert (when offline simulation) -->
+<g transform="translate(220, 60)">
+<circle cx="0" cy="15" fill="none" r="18" stroke="#ef4444" stroke-dasharray="4,2" stroke-width="2"></circle>
+<text fill="#ef4444" font-size="14" font-weight="bold" text-anchor="middle" x="0" y="19">!</text>
+<text fill="#ef4444" font-size="9" font-weight="bold" text-anchor="middle" x="0" y="45">CHECK OFFLINE</text>
+</g>
+</svg><span class="illus-caption">ตรวจสอบไฟสถานะและสัญญาณเชื่อมต่อที่ตัวเครื่อง</span></div>
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">3</div>
+  <div class="step-body">
+    <h5>ปิดและเปิดเครื่องพิมพ์ใหม่</h5>
+    <p>ลองปิดและเปิดเครื่องใหม่ ปิดสวิตซ์เครื่องปริ้น รอประมาณ 10 วินาทีแล้วจึงเปิดใหม่อีกครั้ง เพื่อให้เครื่องทำการ Reset การเชื่อมต่อกับคอมพิวเตอร์</p>
+    
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">4</div>
+  <div class="step-body">
+    <h5>ลองสั่งปริ้นเอกสารอีกครั้ง</h5>
+    <p>ลองสั่งปริ้นเอกสารอีกครั้ง เมื่อสถานะเครื่องพิมพ์ในคอมพิวเตอร์เปลี่ยนเป็น หรือ Online ให้ทดลองสั่งพิมพ์ใหม่อีกครั้ง</p>
+    
+  </div>
+</div>
+`,
+    contact:`หากทำตามขั้นตอนข้างต้นแล้วยังแก้ไม่ได้ โปรดติดต่อ IT Support`
+  },
+  {
+    id:3,
+    cat:'printer',
+    search:'กระดาษติด paper jam ถ่ายเอกสาร',
+    icon:'📄',
+    iconBg:'rgba(249,115,22,0.12)',
+    catColor:'#ea580c',
+    catText:'เครื่องพิมพ์',
+    title:'กระดาษติดในเครื่องถ่ายเอกสาร',
+    badges:`<span class="tag tag-time"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>ใช้เวลาแก้ : 2-5 นาที</span><span class="tag tag-easy" style="color:#059669;background:#f0fdf4;border-color:#6ee7b7;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>ระดับ : เบื้องต้น</span><span class="tag tag-steps"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="8 12 12 16 16 12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>5 ขั้นตอน</span>`,
+    symptoms:`<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>เครื่องแจ้งเตือนว่ากระดาษติดบนหน้าจอ</span>
+<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>เครื่องพิมพ์หรือถ่ายเอกสารไม่ออก</span>
+<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>มีข้อความแจ้งให้เปิด "ฝาด้านข้าง" (Side Cover)</span>
+`,
+    steps:`<div class="step-item">
+  <div class="step-num">1</div>
+  <div class="step-body">
+    <h5>เปิดฝาครอบเครื่องด้านข้าง</h5>
+    <p>เปิดฝาครอบเครื่องด้านข้าง มองหา ที่อยู่บริเวณด้านข้างของตัวเครื่อง (มักอยู่ฝั่งขวา) ให้ยกสลักขึ้นแล้วค่อยๆ ดึงฝาครอบลงด้านข้างเพื่อเข้าถึงทางเดินกระดาษหลัก</p>
+    
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">2</div>
+  <div class="step-body">
+    <h5>ดึงออกช้าๆ ตามทิศทางของเครื่อง</h5>
+    <p>ค่อยๆ ดึงกระดาษออก ใช้สองมือจับขอบกระดาษแล้ว เพื่อป้องกันไม่ให้กระดาษขาดค้างอยู่ภายใน ดึงออกช้าๆ ตามแนวลูกศร</p>
+    <div class="illus-box"><svg height="120" viewbox="0 0 280 120" width="280" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#1a2332" height="100" rx="15" width="240" x="20" y="10"></rect>
+<rect fill="#0f172a" height="15" rx="2" stroke="#334155" stroke-width="1" width="180" x="50" y="50"></rect>
+<g>
+<animatetransform attributename="transform" dur="2s" repeatcount="indefinite" type="translate" values="0,0; 40,0; 0,0"></animatetransform>
+<rect fill="white" height="45" rx="2" stroke="#cbd5e1" stroke-width="1" width="80" x="80" y="35"></rect>
+<line stroke="#e2e8f0" stroke-width="2" x1="90" x2="150" y1="45" y2="45"></line>
+<line stroke="#e2e8f0" stroke-width="2" x1="90" x2="130" y1="55" y2="55"></line>
+</g>
+<path d="M190 60 L230 60" marker-end="url(#arrowhead)" stroke="#22c55e" stroke-linecap="round" stroke-width="3"></path>
+<defs>
+<marker id="arrowhead" markerheight="6" markerwidth="6" orient="auto" refx="5" refy="3">
+<polygon fill="#22c55e" points="0 0, 6 3, 0 6"></polygon>
+</marker>
+</defs>
+<text fill="#22c55e" font-size="12" font-weight="bold" text-anchor="middle" x="140" y="100">ดึงออกช้าๆ ตามแนวลูกศร</text>
+</svg><span class="illus-caption"></span></div>
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">3</div>
+  <div class="step-body">
+    <h5>ตรวจสอบเศษกระดาษที่หลงเหลือ</h5>
+    <p>ตรวจสอบเศษกระดาษ ตรวจดูบริเวณลูกกลิ้งและซอกต่างๆ ว่ามี หลงเหลืออยู่หรือไม่ หากมีให้ดึงออกให้หมดเพื่อป้องกันการติดซ้ำ</p>
+    
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">4</div>
+  <div class="step-body">
+    <h5>ปิดฝาเครื่องและตรวจสอบสถานะ</h5>
+    <p>ปิดฝาเครื่องและการแจ้งเตือนต้องไม่แสดง ดันฝาข้างกลับขึ้นไปให้สนิทจนได้ยินเสียงล็อก เครื่องจะทำการ Warm-up และหน้าจอควรกลับสู่สภาวะปกติโดยไม่มีข้อความแจ้งเตือนกระดาษติด Status: Error Paper Jam! Status: Ready Normal</p>
+    <div class="illus-box"><svg height="120" viewbox="0 0 280 120" width="280" xmlns="http://www.w3.org/2000/svg">
+<!-- Error Status Screen -->
+<g transform="translate(30, 10)">
+<rect fill="#1a2332" height="100" rx="12" width="90" x="0" y="0"></rect>
+<rect fill="#0f172a" height="40" rx="4" width="70" x="10" y="15"></rect>
+<!-- Status LED Red -->
+<circle cx="45" cy="70" fill="#ef4444" r="5">
+<animate attributename="opacity" dur="1s" repeatcount="indefinite" values="1;0.3;1"></animate>
+</circle>
+<text fill="#ef4444" font-size="10" font-weight="bold" text-anchor="middle" x="45" y="88">Status: Error</text>
+<text fill="#cbd5e1" font-size="8" text-anchor="middle" x="45" y="38">Paper Jam!</text>
+</g>
+<!-- Arrow -->
+<path d="M130 60 L150 60" marker-end="url(#arrow-small)" stroke="#94a3b8" stroke-dasharray="4" stroke-width="2"></path>
+<defs><marker id="arrow-small" markerheight="6" markerwidth="6" orient="auto" refx="5" refy="3"><polygon fill="#94a3b8" points="0 0, 6 3, 0 6"></polygon></marker></defs>
+<!-- Success Status Screen -->
+<g transform="translate(160, 10)">
+<rect fill="#1a2332" height="100" rx="12" width="90" x="0" y="0"></rect>
+<rect fill="#0f172a" height="40" rx="4" width="70" x="10" y="15"></rect>
+<!-- Status LED Green -->
+<circle cx="45" cy="70" fill="#22c55e" r="5"></circle>
+<text fill="#22c55e" font-size="10" font-weight="bold" text-anchor="middle" x="45" y="88">Status: Ready</text>
+<text fill="#22c55e" font-size="8" text-anchor="middle" x="45" y="38">Normal</text>
+</g>
+</svg><span class="illus-caption"></span></div>
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">5</div>
+  <div class="step-body">
+    <h5>ตรวจสอบกระดาษที่ใช้ และลองพิมพ์อีกครั้ง</h5>
+    <p>ตรวจสอบกระดาษที่ใช้ และลองพิมพ์อีกครั้ง ตรวจดูว่ากระดาษเรียงตรง ไม่งอ และไม่ยับ ใส่กระดาษให้พอดีกับถาด จากนั้นลองสั่งพิมพ์หรือถ่ายเอกสารอีกครั้งเพื่อตรวจสอบว่าเครื่องทำงานปกติ</p>
+    
+  </div>
+</div>
+`,
+    contact:`หากทำตามขั้นตอนข้างต้นแล้วยังไม่สามารถแก้ไขได้ โปรดติดต่อ IT Support`
+  },
+  {
+    id:4,
+    cat:'printer',
+    search:'เครื่องปริ้น offline ไม่ทำงาน',
+    icon:'🖨️',
+    iconBg:'rgba(16,185,129,0.12)',
+    catColor:'#059669',
+    catText:'เครื่องพิมพ์',
+    title:'เครื่องปริ้นใช้งานไม่ได้',
+    badges:`<span class="tag tag-time"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>ใช้เวลาแก้ : ~2 นาที</span><span class="tag tag-easy" style="color:#059669;background:#f0fdf4;border-color:#6ee7b7;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>ระดับ : เบื้องต้น</span><span class="tag tag-steps"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="8 12 12 16 16 12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>5 ขั้นตอน</span>`,
+    symptoms:`<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>ปริ้นไม่ออก</span>
+<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>หมึกหมด</span>
+<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>กระดาษติด</span>
+`,
+    steps:`<div class="step-item">
+  <div class="step-num">1</div>
+  <div class="step-body">
+    <h5>ตรวจสอบสถานะปริ้นเตอร์</h5>
+    <p>ตรวจสอบสถานะปริ้นเตอร์ ว่ามีความผิดปกติอะไรไหม ตรวจดูการเชื่อมต่อและสถานะทั่วไปของเครื่อง</p>
+    <div class="illus-box">
+<svg width="420" height="185" viewBox="0 0 420 185" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- ===== Title ===== -->
+  <text x="210" y="14" fill="#64748b" font-size="10" font-weight="700" font-family="'IBM Plex Mono',monospace" text-anchor="middle">Devices and Printers · สถานะเครื่องพิมพ์</text>
+
+  <!-- ===== Windows Devices Panel background ===== -->
+  <rect x="10" y="22" width="400" height="150" rx="8" fill="#1e2533" stroke="#334155" stroke-width="1.2"/>
+  <!-- Title bar -->
+  <rect x="10" y="22" width="400" height="22" rx="8" fill="#252d3d"/>
+  <rect x="10" y="36" width="400" height="8" fill="#252d3d"/>
+  <circle cx="28" cy="33" r="5" fill="#ef4444" opacity="0.7"/>
+  <circle cx="44" cy="33" r="5" fill="#f59e0b" opacity="0.7"/>
+  <circle cx="60" cy="33" r="5" fill="#22c55e" opacity="0.7"/>
+  <text x="210" y="37" fill="#94a3b8" font-size="9" font-family="monospace" text-anchor="middle">Control Panel › Devices and Printers</text>
+
+  <!-- ===== CARD 1: Ready / Online ===== -->
+  <rect x="25" y="52" width="110" height="105" rx="7" fill="#0f172a" stroke="#22c55e" stroke-width="1.5"/>
+  <!-- Printer body -->
+  <rect x="40" y="65" width="80" height="48" rx="5" fill="#334155"/>
+  <rect x="50" y="58" width="60" height="16" rx="3" fill="#475569"/>
+  <!-- Paper tray -->
+  <rect x="52" y="108" width="56" height="6" rx="2" fill="#1e293b"/>
+  <!-- Paper coming out -->
+  <rect x="58" y="100" width="44" height="10" rx="1" fill="#f8fafc">
+    <animate attributeName="y" dur="2s" repeatCount="indefinite" values="100;95;100"/>
+  </rect>
+  <!-- Status LED green -->
+  <circle cx="110" cy="72" r="4" fill="#22c55e">
+    <animate attributeName="opacity" dur="2s" repeatCount="indefinite" values="1;0.5;1"/>
+  </circle>
+  <!-- Screen on printer -->
+  <rect x="52" y="70" width="46" height="20" rx="2" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+  <text x="75" y="84" fill="#22c55e" font-size="8" font-weight="bold" text-anchor="middle" font-family="monospace">READY</text>
+  <!-- Label -->
+  <rect x="30" y="142" width="100" height="11" rx="3" fill="#14532d"/>
+  <text x="80" y="151" fill="#86efac" font-size="9" font-weight="700" text-anchor="middle" font-family="sans-serif">✓ Online / พร้อมใช้</text>
+
+  <!-- ===== CARD 2: Offline ===== -->
+  <rect x="155" y="52" width="110" height="105" rx="7" fill="#0f172a" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <!-- Printer body (grey) -->
+  <rect x="170" y="65" width="80" height="48" rx="5" fill="#1e293b"/>
+  <rect x="180" y="58" width="60" height="16" rx="3" fill="#334155"/>
+  <!-- Paper tray empty -->
+  <rect x="182" y="108" width="56" height="6" rx="2" fill="#1e293b"/>
+  <!-- Status LED grey -->
+  <circle cx="240" cy="72" r="4" fill="#475569"/>
+  <!-- Screen showing offline -->
+  <rect x="182" y="70" width="46" height="20" rx="2" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+  <text x="205" y="84" fill="#94a3b8" font-size="8" font-weight="bold" text-anchor="middle" font-family="monospace">OFFLINE</text>
+  <!-- X overlay -->
+  <line x1="170" y1="65" x2="250" y2="113" stroke="#ef4444" stroke-width="1.5" opacity="0.4"/>
+  <line x1="250" y1="65" x2="170" y2="113" stroke="#ef4444" stroke-width="1.5" opacity="0.4"/>
+  <!-- Label -->
+  <rect x="160" y="142" width="100" height="11" rx="3" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+  <text x="210" y="151" fill="#94a3b8" font-size="9" font-weight="700" text-anchor="middle" font-family="sans-serif">⊘ Offline / ไม่เชื่อมต่อ</text>
+
+  <!-- ===== CARD 3: Error ===== -->
+  <rect x="285" y="52" width="110" height="105" rx="7" fill="#0f172a" stroke="#ef4444" stroke-width="1.5"/>
+  <!-- Printer body -->
+  <rect x="300" y="65" width="80" height="48" rx="5" fill="#2d1a1a"/>
+  <rect x="310" y="58" width="60" height="16" rx="3" fill="#3d2222"/>
+  <!-- Paper jammed - sticking out wrong -->
+  <rect x="312" y="78" width="35" height="30" rx="1" fill="#fef3c7" transform="rotate(15 330 93)"/>
+  <!-- Status LED red blinking -->
+  <circle cx="370" cy="72" r="4" fill="#ef4444">
+    <animate attributeName="opacity" dur="0.6s" repeatCount="indefinite" values="1;0.1;1"/>
+  </circle>
+  <!-- Screen error -->
+  <rect x="312" y="70" width="46" height="20" rx="2" fill="#0f172a" stroke="#7f1d1d" stroke-width="1"/>
+  <text x="335" y="79" fill="#ef4444" font-size="7" font-weight="bold" text-anchor="middle" font-family="monospace">ERROR</text>
+  <text x="335" y="88" fill="#fca5a5" font-size="6" text-anchor="middle" font-family="monospace">PAPER JAM</text>
+  <!-- Warning badge -->
+  <g transform="translate(325,100)">
+    <polygon points="10,0 20,18 0,18" fill="#f59e0b" opacity="0.9"/>
+    <text x="10" y="14" fill="#000" font-size="9" font-weight="900" text-anchor="middle">!</text>
+  </g>
+  <!-- Label -->
+  <rect x="290" y="142" width="100" height="11" rx="3" fill="#450a0a"/>
+  <text x="340" y="151" fill="#fca5a5" font-size="9" font-weight="700" text-anchor="middle" font-family="sans-serif">⚠ Error / มีข้อผิดพลาด</text>
+
+  <!-- Bottom note -->
+  <text x="210" y="175" fill="#475569" font-size="9" text-anchor="middle" font-family="'IBM Plex Mono',monospace">คลิกขวาที่ไอคอนเครื่องพิมพ์ → See what's printing / Printer properties</text>
+</svg>
+<span class="illus-caption">สถานะเครื่องพิมพ์ใน Windows: Ready (พร้อมใช้) · Offline (ไม่เชื่อมต่อ) · Error (มีปัญหา)</span>
+    </div>
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">2</div>
+  <div class="step-body">
+    <h5>ตรวจเช็คกระดาษในถาด</h5>
+    <p>ตรวจเช็คกระดาษว่าเหลือหรือไม่ ตรวจสอบถาดกระดาษ หากกระดาษหมดให้ทำการเติมกระดาษใหม่</p>
+    
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">3</div>
+  <div class="step-body">
+    <h5>ตรวจสอบระดับหมึก</h5>
+    <p>ตรวจสอบสถานะหมึก ดูที่หน้าจอเครื่องหรือซอฟต์แวร์ว่าหมึกอยู่ในระดับที่พร้อมใช้งานหรือไม่ ระดับหมึกบนหน้าจอเครื่องพิมพ์</p>
+    <div class="illus-box"><svg height="120" viewbox="0 0 280 120" width="280" xmlns="http://www.w3.org/2000/svg">
+<!-- Device Screen Container -->
+<rect fill="#1e293b" height="80" rx="10" stroke="#334155" stroke-width="2" width="160" x="60" y="20"></rect>
+<rect fill="#0f172a" height="50" rx="4" width="140" x="70" y="30"></rect>
+<!-- Ink Levels (CMYK) -->
+<!-- Cyan -->
+<rect fill="#334155" height="30" rx="2" width="15" x="85" y="40"></rect>
+<rect fill="#06b6d4" height="20" rx="2" width="15" x="85" y="50"></rect>
+<!-- Magenta -->
+<rect fill="#334155" height="30" rx="2" width="15" x="115" y="40"></rect>
+<rect fill="#db2777" height="25" rx="2" width="15" x="115" y="45"></rect>
+<!-- Yellow -->
+<rect fill="#334155" height="30" rx="2" width="15" x="145" y="40"></rect>
+<rect fill="#eab308" height="5" rx="2" width="15" x="145" y="65"></rect>
+<!-- Black -->
+<rect fill="#334155" height="30" rx="2" width="15" x="175" y="40"></rect>
+<rect fill="#f8fafc" height="28" rx="2" width="15" x="175" y="42"></rect>
+<text fill="#64748b" font-size="12" font-weight="bold" text-anchor="middle" x="140" y="112">ระดับหมึกบนหน้าจอเครื่องพิมพ์</text>
+</svg><span class="illus-caption"></span></div>
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">4</div>
+  <div class="step-body">
+    <h5>ตรวจสอบไฟแจ้งเตือนสถานะเครื่อง</h5>
+    <p>ตรวจสอบไฟแจ้งเตือนสถานะเครื่อง ว่ามีโค้ด error หรือสถานะไฟแจ้งเตือนอะไรหรือไม่ ตรวจเช็คไฟแจ้งเตือนและความผิดปกติ ⚠️ ถ้าเจอโค้ดนอกเหนือจากกระดาษติดให้ติดต่อ IT Support</p>
+    <div class="illus-box"><svg height="120" viewbox="0 0 280 120" width="280" xmlns="http://www.w3.org/2000/svg">
+<!-- Printer Main Body -->
+<rect fill="#e2e8f0" height="60" rx="8" stroke="#94a3b8" stroke-width="2" width="160" x="60" y="40"></rect>
+<rect fill="#cbd5e1" height="15" rx="2" width="120" x="80" y="25"></rect>
+<!-- Control Panel Area -->
+<rect fill="#1e293b" height="30" rx="4" width="40" x="170" y="50"></rect>
+<!-- Flashing Warning Icon -->
+<g>
+<animate attributename="opacity" dur="1s" repeatcount="indefinite" values="1;0;1"></animate>
+<!-- Warning Triangle -->
+<path d="M190 55 L200 75 L180 75 Z" fill="#f59e0b"></path>
+<!-- Exclamation Mark -->
+<rect fill="#000" height="8" width="2" x="189" y="60"></rect>
+<circle cx="190" cy="71" fill="#000" r="1.5"></circle>
+</g>
+<text fill="#64748b" font-size="12" font-weight="bold" text-anchor="middle" x="140" y="115">ตรวจเช็คไฟแจ้งเตือนและความผิดปกติ</text>
+</svg><span class="illus-caption"></span></div>
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">5</div>
+  <div class="step-body">
+    <h5>กรณีมีกระดาษติดในเครื่อง</h5>
+    <p>กรณีมีกระดาษติดในเครื่อง 5.1 ปิดเครื่องปริ้นเตอร์ และถอดปลั๊ก 5.2 เปิดฝาครอบด้านหน้า 5.3 เปิดเครื่องสแกนเนอร์จนได้ยินเสียงคลิก 5.4 นำกระดาษที่ติดออก 5.5 ปิดเครื่องแสกนเนอร์ 5.6 ปิดฝาครอบด้านหน้า เปิดฝาและดึงกระดาษออกเบาๆ</p>
+    <div class="illus-box"><svg height="120" viewbox="0 0 240 120" width="240" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#475569" height="60" rx="8" width="120" x="60" y="40"></rect>
+<path d="M60 40 L180 40 L200 10 L80 10 Z" fill="#94a3b8" stroke="#64748b">
+<animatetransform attributename="transform" dur="2s" from="0 60 40" repeatcount="indefinite" to="-30 60 40" type="rotate"></animatetransform>
+</path>
+<path d="M90 35 L150 35 L160 55 L80 55 Z" fill="#fff" opacity="0.8">
+<animate attributename="opacity" dur="1s" repeatcount="indefinite" values="0.8;0.2;0.8"></animate>
+</path>
+<text fill="#ef4444" font-size="12" font-weight="bold" text-anchor="middle" x="120" y="110">เปิดฝาและดึงกระดาษออกเบาๆ</text>
+</svg><span class="illus-caption"></span></div>
+  </div>
+</div>
+`,
+    contact:`หากทำตามขั้นตอนข้างต้นแล้วยังไม่สามารถใช้งานได้ โปรดติดต่อ IT Support`
+  },
+  {
+    id:5,
+    cat:'device',
+    search:'UPS เสียงร้อง แบตเตอรี่ สำรองไฟ',
+    icon:'🔋',
+    iconBg:'rgba(234,179,8,0.12)',
+    catColor:'#ca8a04',
+    catText:'อุปกรณ์',
+    title:'เครื่องสำรองไฟ (UPS) มีเสียงร้องเตือน',
+    badges:`<span class="tag tag-time"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>ใช้เวลาแก้ : 1 นาที</span><span class="tag tag-easy" style="color:#059669;background:#f0fdf4;border-color:#6ee7b7;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>ระดับ : ง่าย</span><span class="tag tag-steps"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="8 12 12 16 16 12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>4 ขั้นตอน</span>`,
+    symptoms:`<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>เครื่องสำรองไฟมีเสียง ปี๊บ ๆ</span>
+<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>ไฟที่เครื่องสำรองไฟกระพริบ</span>
+<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>คอมพิวเตอร์ยังใช้งานได้ แต่มีเสียงเตือน</span>
+`,
+    steps:`<div class="step-item">
+  <div class="step-num">1</div>
+  <div class="step-body">
+    <h5>ตรวจสอบไฟฟ้าภายในอาคาร</h5>
+    <p>ตรวจสอบไฟฟ้าภายในอาคาร ตรวจสอบว่าไฟฟ้าในห้องหรืออาคารดับหรือไม่ หากไฟดับเครื่องจะร้องเตือนเพื่อบอกว่ากำลังใช้พลังงานจากแบตเตอรี่</p>
+    
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">2</div>
+  <div class="step-body">
+    <h5>ตรวจสอบการเสียบปลั๊ก UPS</h5>
+    <p>ตรวจสอบการเสียบปลั๊ก เช็คว่าปลั๊กไฟของตัวเครื่อง UPS เสียบเข้ากับเต้ารับที่ผนังแน่นดีหรือไม่ หากปลั๊กหลวมเครื่องจะร้องเตือนเหมือนไฟดับ BEEP! BEEP!</p>
+    <div class="illus-box"><svg height="140" viewbox="0 0 280 140" width="280" xmlns="http://www.w3.org/2000/svg">
+<!-- UPS Body -->
+<rect fill="#334155" height="100" rx="4" width="80" x="100" y="20"></rect>
+<rect fill="#1e293b" height="30" rx="2" width="60" x="110" y="35"></rect>
+<!-- Status Light (Beeping) -->
+<circle cx="140" cy="50" fill="#f97316" r="4">
+<animate attributename="opacity" dur="0.5s" repeatcount="indefinite" values="1;0;1"></animate>
+</circle>
+<!-- Sound waves -->
+<g fill="none" stroke="#f97316" stroke-width="2">
+<path d="M190 40 Q210 50 190 60">
+<animate attributename="opacity" dur="1s" repeatcount="indefinite" values="0;1;0"></animate>
+</path>
+<path d="M200 30 Q230 50 200 70">
+<animate attributename="opacity" begin="0.2s" dur="1s" repeatcount="indefinite" values="0;1;0"></animate>
+</path>
+</g>
+<!-- Warning Text -->
+<text fill="#ef4444" font-size="12" font-weight="bold" text-anchor="middle" x="140" y="135">BEEP! BEEP!</text>
+</svg><span class="illus-caption">ตรวจสอบไฟสถานะและเสียงเตือนที่ตัวเครื่อง</span></div>
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">3</div>
+  <div class="step-body">
+    <h5>ลดอุปกรณ์ที่เสียบพ่วง (Overload)</h5>
+    <p>ลดอุปกรณ์ที่เสียบพ่วง (Overload) หากเสียบอุปกรณ์มากเกินไป เครื่องอาจร้องเตือน ให้ถอดปลั๊กอุปกรณ์ที่ไม่จำเป็นออก เช่น พรินเตอร์ หรือพัดลม</p>
+    
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">4</div>
+  <div class="step-body">
+    <h5>รอให้ไฟฟ้ากลับมาเป็นปกติ</h5>
+    <p>รอไฟฟ้ากลับมาเป็นปกติ หากไฟฟ้ากลับมาทำงานปกติ หรือแก้ปัญหาปลั๊กหลวมแล้ว เสียงเตือนจะหยุดลงเองโดยอัตโนมัติ</p>
+    
+  </div>
+</div>
+`,
+    contact:`หากเสียงยังไม่หยุดหรือมีไฟสีแดงค้าง (แบตเตอรี่เสื่อม) โปรดติดต่อ IT Support`
+  },
+  {
+    id:8,
+    cat:'device',
+    search:'บาร์โค้ด เครื่องยิง สแกน USB',
+    icon:'📟',
+    iconBg:'rgba(99,102,241,0.12)',
+    catColor:'#4f46e5',
+    catText:'อุปกรณ์',
+    title:'เครื่องยิงบาร์โค้ดใช้ไม่ได้',
+    badges:`<span class="tag tag-time"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>ใช้เวลาแก้ : 1 นาที</span><span class="tag tag-easy" style="color:#059669;background:#f0fdf4;border-color:#6ee7b7;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>ระดับ : ระดับง่าย</span><span class="tag tag-steps"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="8 12 12 16 16 12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>3 ขั้นตอน</span>`,
+    symptoms:`<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>ไฟไม่เข้า</span>
+<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>แสกนไม่ติด</span>
+`,
+    steps:`<div class="step-item">
+  <div class="step-num">1</div>
+  <div class="step-body">
+    <h5>ตรวจสอบสาย Port USB ที่เครื่อง POS</h5>
+    <p>ตรวจสอบสาย Port USB ตรวจสอบสาย Port USB ที่เครื่อง POS ว่า Port หลวมหรือไม่ Check Connection</p>
+    <div class="illus-box"><svg height="120" viewbox="0 0 280 120" width="280" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#1a2332" height="100" rx="15" width="240" x="20" y="10"></rect>
+<!-- USB Port -->
+<rect fill="#0f172a" height="30" rx="4" stroke="#334155" width="60" x="110" y="40"></rect>
+<rect fill="#cbd5e1" height="8" width="50" x="115" y="45"></rect>
+<!-- USB Cable -->
+<path d="M140 70 L140 100" stroke="#94a3b8" stroke-linecap="round" stroke-width="8"></path>
+<path d="M125 70 L155 70 L155 85 L125 85 Z" fill="#334155"></path>
+<!-- Action Arrow -->
+<path d="M140 100 L140 85" marker-end="url(#arrowhead)" stroke="#22c55e" stroke-linecap="round" stroke-width="3"></path>
+<defs>
+<marker id="arrowhead" markerheight="7" markerwidth="10" orient="auto" refx="0" refy="3.5">
+<polygon fill="#22c55e" points="0 0, 10 3.5, 0 7"></polygon>
+</marker>
+</defs>
+<text fill="#94a3b8" font-size="10" x="175" y="60">Check Connection</text>
+</svg><span class="illus-caption">ตรวจสอบการเชื่อมต่อพอร์ต USB ให้แน่นสนิท</span></div>
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">2</div>
+  <div class="step-body">
+    <h5>เปลี่ยน Port USB ช่องอื่น</h5>
+    <p>เปลี่ยน Port USB ลองย้ายสายไปเสียบที่ช่อง USB อื่นๆ ของเครื่อง POS เพื่อทดสอบว่าพอร์ตเดิมเสียหรือไม่</p>
+    
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">3</div>
+  <div class="step-body">
+    <h5>รีสตาร์ทเครื่อง POS</h5>
+    <p>รีสตาร์ทเครื่อง ทำการ Restart เครื่อง POS เพื่อให้ระบบทำการค้นหาและเชื่อมต่ออุปกรณ์ใหม่อีกครั้ง POS REBOOTING... PLEASE WAIT</p>
+    <div class="illus-box"><svg height="130" viewbox="0 0 280 130" width="280" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#1a2332" height="120" rx="10" width="260" x="10" y="5"></rect>
+<!-- POS Screen -->
+<rect fill="#0f172a" height="85" rx="4" stroke="#334155" stroke-width="2" width="150" x="65" y="15"></rect>
+<!-- POS Body/Stand -->
+<path d="M110 100 L170 100 L180 115 L100 115 Z" fill="#334155"></path>
+<!-- Reboot Screen Content -->
+<g transform="translate(140, 50)">
+<!-- Rotating circle -->
+<circle cx="0" cy="0" fill="none" r="18" stroke="rgba(255,255,255,0.1)" stroke-width="3"></circle>
+<path d="M-18 0 A18 18 0 0 1 18 0" fill="none" stroke="#22c55e" stroke-linecap="round" stroke-width="3">
+<animatetransform attributename="transform" dur="1.5s" from="0" repeatcount="indefinite" to="360" type="rotate"></animatetransform>
+</path>
+<text fill="white" font-size="10" font-weight="bold" text-anchor="middle" x="0" y="32">POS REBOOTING...</text>
+<text fill="#64748b" font-size="8" text-anchor="middle" x="0" y="45">PLEASE WAIT</text>
+</g>
+<!-- Power Symbol on Screen -->
+<circle cx="140" cy="50" fill="none" opacity="0.5" r="5" stroke="#22c55e" stroke-width="1.5"></circle>
+<line opacity="0.5" stroke="#22c55e" stroke-width="1.5" x1="140" x2="140" y1="45" y2="50"></line>
+</svg><span class="illus-caption">ปิดและเปิดเครื่อง POS ใหม่ หรือเลือกคำสั่ง Restart จากเมนู</span></div>
+  </div>
+</div>
+`,
+    contact:`หากทำตามขั้นตอนข้างต้นแล้วยังแก้ไม่ได้ โปรดติดต่อ IT Support`
+  },
+  {
+    id:9,
+    cat:'device',
+    search:'รูดบัตร EDC ติดต่อ server',
+    icon:'💳',
+    iconBg:'rgba(234,179,8,0.12)',
+    catColor:'#b45309',
+    catText:'อุปกรณ์',
+    title:'เครื่องรูดบัตรใช้งานไม่ได้',
+    badges:`<span class="tag tag-time"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>ใช้เวลาแก้ : 1 นาที</span><span class="tag tag-easy" style="color:#059669;background:#f0fdf4;border-color:#6ee7b7;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>ระดับ : ระดับง่าย</span><span class="tag tag-steps"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="8 12 12 16 16 12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>4 ขั้นตอน</span>`,
+    symptoms:`<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>เปิดไม่ติด</span>
+<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>ติดต่อServer ไม่ได้</span>
+<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>รูดบัตรไม่ได้</span>
+`,
+    steps:`<div class="step-item">
+  <div class="step-num">1</div>
+  <div class="step-body">
+    <h5>ตรวจสอบอแดปเตอร์ว่าหลวมหรือไม่</h5>
+    <p>ตรวจสอบอแดปเตอร์ ตรวจสอบอแดปเตอร์ ว่าหลวมไหม</p>
+    
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">2</div>
+  <div class="step-body">
+    <h5>ตรวจเช็คสายแลนหลังเครื่องรูดบัตร</h5>
+    <p>ตรวจเช็คสายแลน ตรวจเช็คสายแลน หลังเครื่องรูดบัตรว่าหลวมหรือไม่ REAR PANEL (LAN PORT) PUSH UNTIL CLICK!</p>
+    <div class="illus-box"><svg height="150" viewbox="0 0 300 150" width="300" xmlns="http://www.w3.org/2000/svg">
+<!-- Background of EDC Rear -->
+<rect fill="#1e293b" height="130" rx="10" width="240" x="30" y="10"></rect>
+<rect fill="#0f172a" height="110" rx="5" width="220" x="40" y="20"></rect>
+<!-- LAN Port Header Label -->
+<text fill="#94a3b8" font-size="12" font-weight="bold" text-anchor="middle" x="150" y="35">REAR PANEL (LAN PORT)</text>
+<!-- LAN Port (RJ45 Female) -->
+<g transform="translate(125, 50)">
+<rect fill="#334155" height="45" rx="2" stroke="#475569" stroke-width="2" width="50" x="0" y="0"></rect>
+<rect fill="#020617" height="25" rx="1" width="30" x="10" y="10"></rect>
+<!-- Port Pins -->
+<line stroke="#94a3b8" stroke-width="1" x1="15" x2="15" y1="15" y2="25"></line>
+<line stroke="#94a3b8" stroke-width="1" x1="20" x2="20" y1="15" y2="25"></line>
+<line stroke="#94a3b8" stroke-width="1" x1="25" x2="25" y1="15" y2="25"></line>
+<line stroke="#94a3b8" stroke-width="1" x1="30" x2="30" y1="15" y2="25"></line>
+<line stroke="#94a3b8" stroke-width="1" x1="35" x2="35" y1="15" y2="25"></line>
+</g>
+<!-- LAN Cable (RJ45 Male) -->
+<g transform="translate(130, 105)">
+<!-- Animation for plugging in -->
+<animatetransform attributename="transform" dur="2s" repeatcount="indefinite" type="translate" values="130,120; 130,105; 130,120"></animatetransform>
+<!-- Connector Body -->
+<rect fill="#3b82f6" height="20" rx="2" width="40" x="0" y="0"></rect>
+<rect fill="#60a5fa" height="15" width="20" x="10" y="-15"></rect>
+<!-- Plastic Clip -->
+<path d="M15 -20 L25 -20 L22 -15 L18 -15 Z" fill="#93c5fd"></path>
+<!-- Cable wire -->
+<rect fill="#cbd5e1" height="20" width="10" x="15" y="20"></rect>
+</g>
+<!-- Instruction Arrow -->
+<path d="M150 140 L150 115" fill="none" stroke="#22c55e" stroke-linecap="round" stroke-width="3">
+<animate attributename="stroke-dasharray" dur="1s" from="0, 50" repeatcount="indefinite" to="50, 0"></animate>
+</path>
+<polygon fill="#22c55e" points="150,110 145,118 155,118"></polygon>
+<text fill="#22c55e" font-size="11" font-weight="bold" x="210" y="80">PUSH UNTIL CLICK!</text>
+</svg><span class="illus-caption">เสียบสาย LAN เข้าที่ช่องหลังเครื่องให้ดัง "คลิก"</span></div>
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">3</div>
+  <div class="step-body">
+    <h5>รีสตาร์ทเครื่องรูดบัตร</h5>
+    <p>รีสตาร์ทเครื่อง ทำการปิดและเปิดเครื่องใหม่ เพื่อเริ่มการทำงานใหม่</p>
+    
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">4</div>
+  <div class="step-body">
+    <h5>รูดบัตรไม่ได้ — ตรวจสอบการปิดยอดประจำวัน</h5>
+    <p>รูดบัตรไม่ได้ ตรวจสอบว่าได้ทำการปิดยอดและสรุปยอดของเมื่อวานหรือยัง SYSTEM STATUS SETTLEMENT REQUIRED Press ENTER to finish VISA / MC DAILY REPORT OK Swipe / Insert Here</p>
+    <div class="illus-box"><svg height="200" viewbox="0 0 340 200" width="340" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<lineargradient id="edcGradient" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#475569;stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:#1e293b;stop-opacity:1"></stop>
+</lineargradient>
+<filter height="120%" id="shadow" width="120%" x="-10%" y="-10%">
+<fedropshadow dx="2" dy="2" flood-opacity="0.3" stddeviation="3"></fedropshadow>
+</filter>
+</defs>
+<!-- Modern EDC Terminal Body -->
+<rect fill="url(#edcGradient)" filter="url(#shadow)" height="155" rx="15" width="140" x="80" y="30"></rect>
+<!-- Top Printer Part -->
+<rect fill="#334155" height="40" rx="15" width="140" x="80" y="30"></rect>
+<rect fill="#0f172a" height="4" rx="2" width="110" x="95" y="45"></rect> <!-- Paper slot -->
+<!-- High-Tech Screen -->
+<rect fill="#000" height="65" rx="6" stroke="#475569" stroke-width="2" width="120" x="90" y="75"></rect>
+<!-- Screen Content -->
+<text fill="#38bdf8" font-family="monospace" font-size="9" font-weight="bold" text-anchor="middle" x="150" y="92">SYSTEM STATUS</text>
+<rect fill="#166534" height="20" rx="4" width="100" x="100" y="100"></rect>
+<text fill="#fff" font-size="9" font-weight="bold" text-anchor="middle" x="150" y="114">SETTLEMENT REQUIRED</text>
+<text fill="#94a3b8" font-size="7" text-anchor="middle" x="150" y="130">Press ENTER to finish</text>
+<!-- Card Swiper Detail (Side) -->
+<rect fill="#0f172a" height="100" rx="2" width="8" x="220" y="60"></rect>
+<rect fill="#334155" height="80" width="2" x="223" y="70"></rect>
+<!-- Modern Keypad -->
+<g transform="translate(95, 148)">
+<circle cx="10" cy="5" fill="#64748b" r="4"></circle>
+<circle cx="30" cy="5" fill="#64748b" r="4"></circle>
+<circle cx="50" cy="5" fill="#64748b" r="4"></circle>
+<circle cx="70" cy="5" fill="#64748b" r="4"></circle>
+<rect fill="#ef4444" height="10" rx="2" width="20" x="0" y="15"></rect> <!-- Cancel -->
+<rect fill="#eab308" height="10" rx="2" width="20" x="30" y="15"></rect> <!-- Clear -->
+<rect fill="#22c55e" height="10" rx="2" width="50" x="60" y="15"></rect> <!-- Enter -->
+</g>
+<!-- Floating Credit Card -->
+<g transform="translate(240, 50)">
+<rect fill="#2563eb" filter="url(#shadow)" height="42" rx="4" width="70" x="0" y="0"></rect>
+<rect fill="#1e293b" height="10" width="70" x="0" y="8"></rect> <!-- Magnetic Stripe -->
+<rect fill="#fbbf24" height="9" rx="1" width="12" x="8" y="24"></rect> <!-- Chip -->
+<text fill="#fff" font-size="5" font-weight="bold" x="50" y="36">VISA / MC</text>
+<animatetransform attributename="transform" dur="3s" repeatcount="indefinite" type="translate" values="240,50; 240,45; 240,50"></animatetransform>
+</g>
+<!-- Settlement Slip (Paper coming out) -->
+<g transform="translate(100, -10)">
+<rect fill="#fff" filter="url(#shadow)" height="50" width="100" x="0" y="0"></rect>
+<rect fill="#e2e8f0" height="2" width="70" x="15" y="10"></rect>
+<rect fill="#e2e8f0" height="2" width="50" x="15" y="16"></rect>
+<rect fill="#e2e8f0" height="2" width="70" x="15" y="22"></rect>
+<text fill="#166534" font-size="7" font-weight="bold" text-anchor="middle" x="50" y="38">DAILY REPORT OK</text>
+<animatetransform attributename="transform" dur="4s" repeatcount="indefinite" type="translate" values="100,5; 100,-15; 100,5"></animatetransform>
+</g>
+<!-- Label pointing to swiper -->
+<text fill="#3b82f6" font-size="9" font-weight="bold" text-anchor="middle" x="260" y="120">Swipe / Insert Here</text>
+<path d="M250 105 L230 90" fill="none" stroke="#3b82f6" stroke-width="1.5"></path>
+</svg><span class="illus-caption">ตรวจสอบการกดเมนู Settlement เพื่อสรุปยอดค้างส่ง</span></div>
+  </div>
+</div>
+`,
+    contact:`หากทำตามขั้นตอนข้างต้นแล้วยังแก้ไม่ได้ โปรดติดต่อ IT Support`
+  },
+  {
+    id:10,
+    cat:'device',
+    search:'แอปถุงเงิน PromptPay เข้าใช้ไม่ได้',
+    icon:'📲',
+    iconBg:'rgba(6,182,212,0.12)',
+    catColor:'#0e7490',
+    catText:'แอปพลิเคชัน',
+    title:'แอปถุงเงิน เข้าใช้งานไม่ได้',
+    badges:`<span class="tag tag-time"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>ใช้เวลาแก้ : 1 นาที</span><span class="tag tag-easy" style="color:#059669;background:#f0fdf4;border-color:#6ee7b7;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>ระดับ : ระดับง่าย</span><span class="tag tag-steps"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="8 12 12 16 16 12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>3 ขั้นตอน</span>`,
+    symptoms:`<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>เปิดแอปถุงเงินไม่ได้</span>
+<span class="symptom-chip"><span class="symptom-pulse"><span class="symptom-pulse-ring"></span><span class="symptom-pulse-dot"></span></span>แอปถุงเงินติดต่อ server ไม่ได้</span>
+`,
+    steps:`<div class="step-item">
+  <div class="step-num">1</div>
+  <div class="step-body">
+    <h5>ออกจากแอปถุงเงินแล้วเข้าใช้งานใหม่</h5>
+    <p>ออกจากแอปถุงเงินแล้วเข้าใช้งานใหม่ ปิดแอปพลิเคชันให้สนิท (Force Close) แล้วลองกดเข้าแอปใหม่อีกครั้ง</p>
+    
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">2</div>
+  <div class="step-body">
+    <h5>ตรวจสอบ Wi-Fi และสัญญาณอินเตอร์เน็ต</h5>
+    <p>ตรวจสอบ Wi-Fi ตรวจสอบว่าเชื่อมต่อ และมีสัญญาณอินเตอร์เน็ตไหม</p>
+    
+  </div>
+</div>
+<div class="step-item">
+  <div class="step-num">3</div>
+  <div class="step-body">
+    <h5>รีสตาร์ทเครื่อง (Reboot)</h5>
+    <p>รีสตาร์ทเครื่อง ทำการ Reboot เครื่องใหม่ เพื่อเคลียร์หน่วยความจำและเริ่มระบบใหม่ RESTARTING...</p>
+    <div class="illus-box"><svg height="150" viewbox="0 0 280 150" width="280" xmlns="http://www.w3.org/2000/svg">
+<!-- Smartphone Body -->
+<rect fill="#1e293b" height="110" rx="10" stroke="#475569" stroke-width="2" width="60" x="110" y="10"></rect>
+<rect fill="#0f172a" height="90" rx="4" width="50" x="115" y="15"></rect>
+<!-- Home Button area -->
+<circle cx="140" cy="112" fill="#334155" r="4"></circle>
+<!-- Loading/Restart Circle -->
+<g transform="translate(140, 55)">
+<circle cx="0" cy="0" fill="none" r="15" stroke="#1e293b" stroke-width="3"></circle>
+<path d="M0 -15 A15 15 0 0 1 15 0" fill="none" stroke="#22c55e" stroke-linecap="round" stroke-width="3">
+<animatetransform attributename="transform" dur="1.5s" from="0 0 0" repeatcount="indefinite" to="360 0 0" type="rotate"></animatetransform>
+</path>
+</g>
+<!-- App Icon Placeholder -->
+<rect fill="#0284c7" height="10" opacity="0.5" rx="2" width="10" x="135" y="25"></rect>
+<!-- Restart Text -->
+<text fill="#0284c7" font-family="Sarabun, sans-serif" font-size="12" font-weight="800" text-anchor="middle" x="140" y="140">
+                                    RESTARTING...
+                                </text>
+</svg><span class="illus-caption"></span></div>
+  </div>
+</div>
+`,
+    contact:`หากทำตามขั้นตอนข้างต้นแล้วยังไม่สามารถใช้งานได้ โปรดติดต่อ IT Support`
+  }
+];
+
+let activeCat = 'all';
+let activeId  = -1;
+
+function filtered() {
+  const q = (document.getElementById('searchBox')?.value || '').toLowerCase().trim();
+  return CARDS.filter(c => {
+    if (activeCat !== 'all' && c.cat !== activeCat) return false;
+    if (!q) return true;
+    return c.title.toLowerCase().includes(q) ||
+           (c.search || '').toLowerCase().includes(q) ||
+           c.catText.toLowerCase().includes(q);
+  });
+}
+
+function filterList() { renderList(); }
+
+function renderList() {
+  const list = filtered();
+  document.getElementById('listCount').textContent = list.length + ' รายการ';
+  const el = document.getElementById('itemsList');
+  if (!list.length) {
+    el.innerHTML = '<div class="no-result">ไม่พบรายการที่ค้นหา</div>';
+    return;
+  }
+  el.innerHTML = list.map(c => `
+    <div class="list-item ${c.id === activeId ? 'active' : ''}" onclick="select(${c.id})">
+      <div class="item-icon" style="${c.iconBg}">${c.icon}</div>
+      <div class="item-info">
+        <div class="item-cat" style="color:${c.catColor}">${c.catText}</div>
+        <div class="item-title">${c.title}</div>
+      </div>
+      <svg class="item-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>`).join('');
+}
+
+function doSearch() { renderList(); }
+
+function setCat(cat, el) {
+  activeCat = cat;
+  activeId = -1;
+  document.getElementById('welcomeEl').style.display = '';
+  document.getElementById('detailEl').style.display = 'none';
+  document.querySelectorAll('.hpill').forEach(p => p.classList.remove('active','hpill-all'));
+  el.classList.add('active');
+  if (cat === 'all') el.classList.add('hpill-all');
+  renderList();
+}
+
+function select(id) {
+  // ถ้าคลิก item เดิมที่ active อยู่ → กลับหน้า welcome
+  if (activeId === id) {
+    activeId = -1;
+    renderList();
+    document.getElementById('welcomeEl').style.display = '';
+    document.getElementById('detailEl').style.display = 'none';
+    return;
+  }
+
+  activeId = id;
+  const c  = CARDS.find(x => x.id === id);
+  if (!c) return;
+  renderList();   // update active highlight
+
+  // Reset feedback state
+  fbState = { result: null, rating: 0, cardId: null };
+
+  document.getElementById('welcomeEl').style.display = 'none';
+  const det = document.getElementById('detailEl');
+  det.style.display = 'block';
+  det.innerHTML = `<div class="detail">
+    <div class="action-bar">
+      <button class="btn-print" onclick="doPrint()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        พิมพ์
+      </button>
+      <button class="btn-export" onclick="doExportPDF()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export PDF
+      </button>
+    </div>
+    <div class="det-hero">
+      <div class="det-icon" style="${c.iconBg}">${c.icon}</div>
+      <div>
+        <div class="det-cat" style="color:${c.catColor}">${c.catText}</div>
+        <div class="det-title">${c.title}</div>
+      </div>
+    </div>
+    <div class="det-badges">${c.badges}</div>
+    <div style="margin-bottom:26px;">
+      <div class="det-symptoms-label">🔍 อาการที่พบ</div>
+      <div class="det-symptoms">${c.symptoms}</div>
+    </div>
+    <div class="steps-card">
+      <div class="steps-hd">// ขั้นตอนการแก้ไข</div>
+      <div class="steps-bd">${c.steps}</div>
+    </div>
+    ${buildLinksSection(c)}
+    ${buildFeedbackPanel(c.id, c.title)}
+    ${c.contact ? `<div class="contact-note">
+      <div class="contact-note-top">
+        <div class="contact-note-icon">🖥️</div>
+        <div class="contact-note-body">
+          <strong>ทีม IT พร้อมช่วยเหลือคุณ</strong>
+          <span>หากทำตามขั้นตอนข้างต้นแล้วยังแก้ไม่ได้ โปรดติดต่อ IT Support</span>
+        </div>
+      </div>
+      <div class="contact-note-footer">
+        <div class="contact-note-divider"></div>
+        <div class="contact-team">
+          <div class="contact-team-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          </div>
+          <div class="contact-team-info">
+            <span class="contact-team-label">IT HO</span>
+            <span class="contact-team-sublabel">สำนักงานใหญ่</span>
+          </div>
+          <div class="contact-team-number">
+            <span class="contact-ext-prefix">ต่อ</span>
+            <span class="contact-ext">1111</span>
+            <span class="contact-ext-sep">หรือ</span>
+            <span class="contact-ext">1610</span>
+          </div>
+        </div>
+        <div class="contact-team">
+          <div class="contact-team-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          <div class="contact-team-info">
+            <span class="contact-team-label">IT FARM</span>
+            <span class="contact-team-sublabel">สำนักงานฟาร์ม</span>
+          </div>
+          <div class="contact-team-number">
+            <span class="contact-ext-prefix">ต่อ</span>
+            <span class="contact-ext">107</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="contact-copyright">
+      IT Support Self-Service Guide<br>
+      © 2026 FARMCHOKCHAI &nbsp;·&nbsp; IT Support &nbsp;·&nbsp; AI-Assisted &nbsp;·&nbsp; v1.1
+    </div>` : ''}
+  </div>`;
+  document.getElementById('contentArea').scrollTop = 0;
+  // บนมือถือ → scroll ลงไปดู content ทันที
+  if (window.innerWidth <= 720) {
+    setTimeout(() => {
+      document.getElementById('contentArea')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
+  }
+}
+
+renderList();
+
+
+
+// Copy to clipboard
+function copyText(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add('copied');
+    const origHTML = btn.innerHTML;
+    btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = origHTML; }, 1800);
+  }).catch(() => {
+    // fallback
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    btn.classList.add('copied');
+    setTimeout(() => btn.classList.remove('copied'), 1800);
+  });
+}
+
+function makeCopyItem(label, value) {
+  const esc = value.replace(/'/g, "\\'");
+  return `<div class="copy-item">
+    <div class="copy-item-text"><span class="copy-item-label">${label}</span>${value}</div>
+    <button class="copy-btn" onclick="copyText(this,'${esc}')" title="คัดลอก">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    </button>
+  </div>`;
+}
+
+function buildCopySection(c) {
+  const msg = `[IT Support] พบปัญหา: ${c.title} — กรุณาช่วยตรวจสอบด้วยครับ/ค่ะ`;
+  return `<div class="copy-section">
+    <div class="copy-section-hd">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      ข้อความสำหรับคัดลอก
+    </div>
+    <div class="copy-section-bd">${makeCopyItem('ข้อความแจ้งปัญหา', msg)}</div>
+  </div>`;
+}
+
+// ============================================================
+// 🔗 QUICK LINKS — แก้ไขลิงก์แยกตามหัวข้อได้ที่นี่
+// แต่ละ id ตรงกับ CARDS id ด้านบน
+// ============================================================
+const CARD_LINKS = {
+  0: [ // คอมพิวเตอร์ทำงานช้า หรือค้าง
+    { label: 'ภาพขั้นตอนวิธีแก้ปัญหาเบื้องต้น', url: 'https://i.ibb.co/1JLmpFHs/image.png' },
+    //{ label: 'Task Manager คืออะไร', url: 'https://support.microsoft.com/th-th/windows/open-task-manager-in-windows-10-and-11-f0e4ba7d-b3e5-b1bd-96d7-eab82b2bef93' },
+  ],
+  1: [ // Internet ใช้งานไม่ได้
+    { label: 'ภาพขั้นตอนวิธีแก้ปัญหาเบื้องต้น', url: 'https://i.ibb.co/ycH1C0Ct/LANWIFI.jpg' },
+    //{ label: 'วิธี Reset Network Windows', url: 'https://support.microsoft.com/th-th/windows/how-to-reset-tcp-ip-by-using-the-netshell-utility-in-windows-xp-c4611f24-a2f0-d6bb-5a1b-e479c7cb3c8b' },
+  ],
+  2: [ // ปริ้นเตอร์ / เครื่องถ่ายเอกสาร ปริ้นไม่ได้
+    { label: 'ภาพขั้นตอนวิธีแก้ปัญหาเบื้องต้น', url: 'https://i.ibb.co/prMwsN8s/image.jpg' },
+    //{ label: 'วิธีลบ Print Queue ค้าง', url: 'https://support.microsoft.com/th-th/windows/clear-a-print-queue-in-windows-90b3b18a-84ef-48d3-82b4-6f80e8c2c56e' },
+  ],
+  3: [ // กระดาษติดในเครื่องถ่ายเอกสาร
+    { label: 'ภาพขั้นตอนวิธีแก้ปัญหาเบื้องต้น', url: 'https://i.ibb.co/HDgxBVtz/image.png' },
+    //{ label: 'วิดีโอสาธิตแก้กระดาษติด', url: 'https://www.youtube.com/results?search_query=paper+jam+copier+fix' },
+  ],
+  4: [ // เครื่องปริ้นใช้งานไม่ได้
+    { label: 'ภาพขั้นตอนวิธีแก้ปัญหาเบื้องต้น', url: 'https://support.microsoft.com/th-th/windows/install-a-printer-in-windows-10-cc0724cf-793e-3542-d1ff-727e4978638b' },
+    //{ label: 'Driver ปริ้นเตอร์ทั่วไป', url: 'https://support.hp.com/th-th/drivers/printers' },
+  ],
+  5: [ // เครื่องสำรองไฟ (UPS) มีเสียงร้องเตือน
+    { label: 'ภาพขั้นตอนวิธีแก้ปัญหาเบื้องต้น', url: 'https://i.ibb.co/DP4rGwsx/image.png' },
+    //{ label: 'ตรวจสอบอายุแบตเตอรี่ UPS', url: 'https://www.apc.com/th/th/faqs/FA159936/' },
+  ],
+  6: [ // เครื่อง POS ปริ้นใบเสร็จไม่ออก
+    { label: 'ภาพขั้นตอนวิธีแก้ปัญหาเบื้องต้น', url: 'https://i.ibb.co/fGV8w68x/POS.jpg' },
+    //{ label: 'Driver Thermal Printer', url: 'https://www.epson.com/th/en/viewcon/corporatesite/cms/index?page=drivers' },
+  ],
+  7: [ // เครื่อง POS เปิดไม่ติด
+    { label: 'ภาพขั้นตอนวิธีแก้ปัญหาเบื้องต้น', url: 'https://i.ibb.co/Ndcpj6BG/POS.jpg' },
+    //{ label: 'วิธีตรวจสอบ Power Supply', url: 'https://www.youtube.com/results?search_query=how+to+check+computer+power+supply' },
+  ],
+  8: [ // เครื่องยิงบาร์โค้ดใช้ไม่ได้
+    { label: 'ภาพขั้นตอนวิธีแก้ปัญหาเบื้องต้น', url: 'https://i.ibb.co/fVtj7t36/image.png' },
+    //{ label: 'วิธีตั้งค่า USB HID Scanner', url: 'https://www.youtube.com/results?search_query=barcode+scanner+USB+setup+windows' },
+  ],
+  9: [ // เครื่องรูดบัตรใช้งานไม่ได้
+    { label: 'ภาพขั้นตอนวิธีแก้ปัญหาเบื้องต้น', url: 'https://i.ibb.co/DgDPWRK0/image.png' },
+    //{ label: 'คู่มือเครื่อง EDC ธนาคาร', url: 'https://www.kasikornbank.com/th/business/merchant/Pages/EDC.aspx' },
+  ],
+  10: [ // แอปถุงเงิน เข้าใช้งานไม่ได้
+    { label: 'ภาพขั้นตอนวิธีแก้ปัญหาเบื้องต้น', url: 'https://i.ibb.co/pvqFtc0g/image.png' },
+    //{ label: 'PromptPay / ถุงเงิน FAQ', url: 'https://www.bot.or.th/Thai/PaymentSystems/Pages/PromptPay.aspx' },
+  ],
+};
+// ============================================================
+
+const LINK_ICON_EXT = `<svg class="link-item-ext" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
+const LINK_ICON_DEFAULT = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`;
+
+function buildLinksSection(c) {
+  const links = CARD_LINKS[c.id];
+  if (!links || links.length === 0) return '';
+  const linksHtml = links.map(lk => `
+    <a class="link-item" href="${lk.url}" target="_blank" rel="noopener">
+      ${LINK_ICON_DEFAULT}
+      ${lk.label}
+      ${LINK_ICON_EXT}
+    </a>`).join('');
+  return `<div class="links-section">
+    <div class="links-section-hd">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      ลิงก์ที่เกี่ยวข้อง
+    </div>
+    <div class="links-section-bd">${linksHtml}</div>
+  </div>`;
+}
+
+// Clock
+function tickClock(){
+  const now=new Date();
+  const pad=n=>String(n).padStart(2,'0');
+  const el=document.getElementById('hClock'), de=document.getElementById('hDate');
+  if(el) el.textContent=pad(now.getHours())+':'+pad(now.getMinutes());
+  if(de) de.textContent=pad(now.getDate())+'/'+pad(now.getMonth()+1)+'/'+now.getFullYear();
+}
+tickClock(); setInterval(tickClock,10000);
+
+// Header search
+function doHeaderSearch(){}
+function closeHeaderSearch(){}
+
+// Print
+function doPrint() { window.print(); }
+
+// Export PDF — ตั้งชื่อไฟล์ตามหัวข้อ แล้วเปิด print dialog (เลือก Save as PDF)
+function doExportPDF() {
+  const c = CARDS.find(x => x.id === activeId);
+  const orig = document.title;
+  if (c) document.title = c.title + ' — IT Guide';
+  window.print();
+  setTimeout(() => { document.title = orig; }, 1000);
+}
+</script>
+
+<!-- ═══════════════ DASHBOARD MODAL ═══════════════ -->
+<div class="modal-overlay" id="dashboardModal">
+  <div class="modal-box">
+    <div class="modal-hd">
+      <div class="modal-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:6px"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+        Dashboard — IT Self-Service KPI
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button onclick="openHistory()" style="padding:6px 14px;border-radius:8px;border:1.5px solid rgba(255,255,255,.4);background:rgba(255,255,255,.15);color:#fff;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:'Sarabun',sans-serif;display:inline-flex;align-items:center;gap:6px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          ดูย้อนหลังทั้งหมด
+        </button>
+        <button onclick="openSheets()" style="padding:6px 14px;border-radius:8px;border:1.5px solid rgba(255,255,255,.4);background:rgba(255,255,255,.15);color:#fff;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:'Sarabun',sans-serif;display:inline-flex;align-items:center;gap:6px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Google Sheets
+        </button>
+        <button class="modal-close" onclick="closeDashboard()">✕</button>
+      </div>
+    </div>
+    <div class="modal-body" id="dashboardBody">
+      <div class="empty-state">กำลังโหลดข้อมูล...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ HISTORY MODAL ═══════════════ -->
+<div class="hist-overlay" id="historyModal">
+  <div class="hist-box">
+    <div class="hist-hd">
+      <div class="hist-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:7px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        ประวัติการใช้งานทั้งหมด
+      </div>
+      <button class="modal-close" onclick="closeHistory()">✕</button>
+    </div>
+    <div class="hist-body" id="historyBody">
+      <div class="empty-state">กำลังโหลด...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// ⚙️  CONFIG — วาง URL ที่นี่
+// ═══════════════════════════════════════════════════════
+const GAS_URL         = "https://script.google.com/macros/s/AKfycbxKNig3g4PC6UhJmMaGpNAZBgZDkb_pnqu-2oodrMLNwU3kI6tl38OcINZ5bNUxPc_c/exec";
+const SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1cWeKw5-WPLoxZ_2E3Pg6j3sBYcD7XFY9WW5snFEsALY/edit?gid=1938995547#gid=1938995547";
+
+// ═══════════════════════════════════════════════════════
+// KPI DATA STORE  (localStorage)
+// ═══════════════════════════════════════════════════════
+function getLogs() {
+  try { return JSON.parse(localStorage.getItem('it_kpi_logs') || '[]'); }
+  catch(e){ return []; }
+}
+function saveLogLocal(log) {
+  const logs = getLogs();
+  logs.push(log);
+  if (logs.length > 200) logs.splice(0, logs.length - 200);
+  localStorage.setItem('it_kpi_logs', JSON.stringify(logs));
+}
+
+function sendToGAS(log) {
+  if (!GAS_URL || GAS_URL === "YOUR_APPS_SCRIPT_WEB_APP_URL_HERE") return;
+  try {
+    const params = new URLSearchParams({
+      action: "log", dateStr: log.dateStr, cardTitle: log.cardTitle,
+      result: log.result, rating: log.rating, name: log.name,
+      unit: log.unit, dept: log.dept, ts: log.ts
+    });
+    fetch(GAS_URL + "?" + params.toString(), { method:"GET", mode:"no-cors" })
+      .catch(()=>{});
+  } catch(e) { /* silent */ }
+}
+
+// ═══════════════════════════════════════════════════════
+// BUILD FEEDBACK PANEL
+// ═══════════════════════════════════════════════════════
+function buildFeedbackPanel(cardId, cardTitle) {
+  return `
+<div class="feedback-panel" id="feedbackPanel">
+  <div class="feedback-hd">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+    ประเมินผลการแก้ปัญหา
+  </div>
+  <div class="feedback-body" id="feedbackBodyInner">
+
+    <!-- STEP 1: Result Buttons -->
+    <div id="stepResult">
+      <div class="feedback-question">✅ ทำตามขั้นตอนแล้ว — แก้ปัญหาได้หรือไม่?</div>
+      <div class="result-btns">
+        <button class="result-btn result-btn-yes" id="btnYes" onclick="selectResult(${cardId},'yes')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          แก้ได้ ✔
+        </button>
+        <button class="result-btn result-btn-no" id="btnNo" onclick="selectResult(${cardId},'no')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          ยังแก้ไม่ได้ ✖
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Rating + ชื่อ/ฝ่าย -->
+    <div class="rating-section" id="stepRating">
+      <div class="rating-label">⭐ ให้คะแนนความเข้าใจคู่มือนี้</div>
+      <div class="stars" id="starRow">
+        <span class="star" data-val="1" onclick="setRating(1)">⭐</span>
+        <span class="star" data-val="2" onclick="setRating(2)">⭐</span>
+        <span class="star" data-val="3" onclick="setRating(3)">⭐</span>
+        <span class="star" data-val="4" onclick="setRating(4)">⭐</span>
+        <span class="star" data-val="5" onclick="setRating(5)">⭐</span>
+      </div>
+      <div class="star-labels"><span>ยากมาก</span><span>ง่ายมาก</span></div>
+      <div class="ticket-fields" style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
+        <div class="ticket-field" style="flex:1;min-width:180px;">
+          <label>👤 ชื่อ-สกุล ผู้แจ้งปัญหา</label>
+          <input type="text" id="tkName" placeholder="กรอกชื่อ-สกุล" style="border-color:#bfdbfe;">
+        </div>
+        <div class="ticket-field" style="flex:0 0 140px;">
+          <label>🏬 หน่วยงาน</label>
+          <select id="tkUnit" onchange="updateDeptList()" style="border-color:#bfdbfe;">
+            <option value="">-- เลือก --</option>
+            <option value="HO">HO</option>
+            <option value="FARM">FARM</option>
+          </select>
+        </div>
+        <div class="ticket-field" style="flex:1;min-width:160px;">
+          <label>🏢 ฝ่าย</label>
+          <select id="tkDept" style="border-color:#bfdbfe;">
+            <option value="">กรุณาเลือกฝ่ายของท่าน</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div id="ticketSection" style="display:none;"></div>
+
+    <!-- Submit Button -->
+    <div class="feedback-actions" id="feedbackActions" style="display:none;">
+      <button class="btn-submit-feedback" id="btnSubmitFeedback" onclick="submitFeedback(${cardId},'${cardTitle.replace(/'/g,"\\'")}')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        ส่งผลการประเมิน
+      </button>
+    </div>
+
+    <!-- Thank You -->
+    <div class="feedback-thanks" id="feedbackThanks">
+      <div class="feedback-thanks-icon" id="thanksIcon">🎉</div>
+      <div class="feedback-thanks-title" id="thanksTitle">บันทึกข้อมูลเรียบร้อย!</div>
+      <div class="feedback-thanks-sub" id="thanksSub">ขอบคุณที่ประเมินผล ข้อมูลถูกบันทึกเพื่อวิเคราะห์ KPI แล้ว</div>
+    </div>
+
+    <!-- ── ปุ่มแจ้งปัญหา ── -->
+    <div class="report-divider"><span class="report-divider-text">หรือต้องการแจ้งปัญหาโดยตรง</span></div>
+    <button class="btn-report-ticket"
+      onclick="window.parent.postMessage('go-submit-ticket','*')"
+      onmouseover="this.style.opacity='.88';this.style.transform='translateY(-2px)'"
+      onmouseout="this.style.opacity='1';this.style.transform=''">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      แจ้งปัญหาไอที (Submit Ticket)
+    </button>
+
+  </div>
+</div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// FEEDBACK LOGIC
+// ═══════════════════════════════════════════════════════
+let fbState = { result: null, rating: 0, cardId: null };
+
+function selectResult(cardId, result) {
+  fbState.result = result;
+  fbState.cardId = cardId;
+  document.getElementById('btnYes').classList.toggle('active', result==='yes');
+  document.getElementById('btnNo').classList.toggle('active', result==='no');
+  document.getElementById('stepRating').style.display = 'block';
+  const ticketSec = document.getElementById('ticketSection');
+  ticketSec.style.display = result === 'no' ? 'block' : 'none';
+  const actDiv = document.getElementById('feedbackActions');
+  actDiv.style.display = 'flex';
+  const btn = document.getElementById('btnSubmitFeedback');
+  if (result === 'no') {
+    btn.className = 'btn-submit-feedback';
+    btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>บันทึกสถิติของตนเอง`;
+  } else {
+    btn.className = 'btn-submit-feedback';
+    btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>ส่งผลการประเมิน`;
+  }
+  setTimeout(()=>{ result==='no' && document.getElementById('ticketSection').scrollIntoView({behavior:'smooth',block:'nearest'}); },100);
+}
+
+function setRating(val) {
+  fbState.rating = val;
+  document.querySelectorAll('.star').forEach((s,i)=> {
+    s.classList.toggle('active', i < val);
+  });
+}
+
+const DEPT_OPTIONS = {
+  HO:   ['ฝ่ายบัญชี','ฝ่ายการเงิน','ฝ่ายจัดซื้อ','ฝ่าย CMK','ฝ่ายบริหารบุคคล HR','ฝ่ายขาย','ฝ่ายการตลาด','ฝ่าย SHRS','ฝ่ายสำนักงาน','ฝ่ายเบเกอรี่'],
+  FARM: ['ฝ่ายจัดซื้อ','ฝ่ายบริหารบุคคล HR','ฝ่าย SHFR','ฝ่ายสำนักงานฟาร์ม','ฝ่ายท่องเที่ยว','ฝ่ายวิศวกรรม','ฝ่ายพืชอาหารสัตว์','ฝ่ายปศุสัตว์','ฝ่ายโรงงานนม','ฝ่ายพืชสวนไม้ผล','ฝ่ายบริการเครื่องกลเกษตร'],
+};
+function updateDeptList() {
+  const unit = (document.getElementById('tkUnit')||{}).value;
+  const sel  = document.getElementById('tkDept');
+  if (!sel) return;
+  const opts = DEPT_OPTIONS[unit] || [];
+  sel.innerHTML = opts.length
+    ? opts.map(d=>`<option value="${d}">${d}</option>`).join('')
+    : '<option value="">กรุณาเลือกฝ่ายของท่าน</option>';
+}
+
+function submitFeedback(cardId, cardTitle) {
+  if (!fbState.result) { alert('กรุณาเลือกผลลัพธ์ก่อน (แก้ได้ / ไม่ได้)'); return; }
+  if (!fbState.rating) { alert('กรุณาให้คะแนนความเข้าใจก่อน'); return; }
+  const now = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  const dateStr = `${pad(now.getDate())}/${pad(now.getMonth()+1)}/${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  const log = {
+    ts: now.toISOString(), dateStr, cardId, cardTitle,
+    result: fbState.result, rating: fbState.rating,
+    name:   (document.getElementById('tkName')||{}).value || '-',
+    unit:   (document.getElementById('tkUnit')||{}).value || '-',
+    dept:   (document.getElementById('tkDept')||{}).value || '-',
+    detail: '-', urgency: '-',
+  };
+  saveLogLocal(log);
+  sendToGAS(log);
+  document.getElementById('stepResult').style.display = 'none';
+  document.getElementById('stepRating').style.display = 'none';
+  document.getElementById('ticketSection').style.display = 'none';
+  document.getElementById('feedbackActions').style.display = 'none';
+  const thanks = document.getElementById('feedbackThanks');
+  thanks.style.display = 'block';
+  if (fbState.result === 'no') {
+    document.getElementById('thanksIcon').textContent = '📋';
+    document.getElementById('thanksTitle').textContent = 'ส่ง Ticket เรียบร้อย!';
+    document.getElementById('thanksSub').textContent = 'IT Support จะติดต่อกลับโดยเร็ว • ข้อมูลถูกบันทึกเพื่อวิเคราะห์ KPI แล้ว';
+  }
+  fbState = { result: null, rating: 0, cardId: null };
+}
+
+// ═══════════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════════
+function openDashboard() {
+  renderDashboard();
+  document.getElementById('dashboardModal').classList.add('open');
+}
+function closeDashboard() {
+  document.getElementById('dashboardModal').classList.remove('open');
+}
+document.getElementById('dashboardModal').addEventListener('click', function(e){
+  if(e.target === this) closeDashboard();
+});
+
+let _dashUnitFilter = 'all';
+function setDashUnit(unit) { _dashUnitFilter = unit; renderDashboard(); }
+
+function renderDashboard() {
+  const allLogsRaw = getLogs();
+  const body = document.getElementById('dashboardBody');
+
+  const btnS = (active, g1, g2, sh) =>
+    `padding:7px 20px;border-radius:20px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:'Sarabun',sans-serif;transition:all .18s;` +
+    (active
+      ? `border:1.5px solid transparent;background:linear-gradient(135deg,${g1},${g2});color:#fff;box-shadow:0 3px 10px ${sh};`
+      : `border:1.5px solid #bfdbfe;background:#fff;color:#475569;`);
+
+  const unitBar = `
+    <div class="dash-unit-bar">
+      <span class="dash-unit-label">🏬 หน่วยงาน</span>
+      <button onclick="setDashUnit('all')"  style="${btnS(_dashUnitFilter==='all','#1e40af','#3b82f6','rgba(30,64,175,.3)')}">🌐 ทั้งหมด</button>
+      <button onclick="setDashUnit('HO')"   style="${btnS(_dashUnitFilter==='HO','#0ea5e9','#38bdf8','rgba(14,165,233,.3)')}">🏢 HO</button>
+      <button onclick="setDashUnit('FARM')" style="${btnS(_dashUnitFilter==='FARM','#16a34a','#22c55e','rgba(22,163,74,.3)')}">🌾 FARM</button>
+    </div>`;
+
+  const logs = _dashUnitFilter === 'all' ? allLogsRaw : allLogsRaw.filter(l => l.unit === _dashUnitFilter);
+  const unitLabel = _dashUnitFilter === 'all' ? 'ทุกหน่วยงาน' : _dashUnitFilter;
+
+  if (!logs.length) {
+    body.innerHTML = unitBar + `
+      <div class="dash-inner">
+        <div class="empty-state" style="background:#fff;border-radius:16px;border:1.5px solid rgba(191,219,254,.6);box-shadow:0 2px 12px rgba(30,64,175,.06);">
+          <div style="font-size:52px;margin-bottom:14px;opacity:.4">📊</div>
+          <div style="font-size:1rem;font-weight:700;color:#475569;margin-bottom:6px">ยังไม่มีข้อมูล${_dashUnitFilter!=='all'?' — '+_dashUnitFilter:''}</div>
+          <div style="color:#94a3b8;">ยังไม่มีการประเมินผล — ลองใช้คู่มือแล้วให้คะแนนด้านล่าง</div>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const total     = logs.length;
+  const solved    = logs.filter(l=>l.result==='yes').length;
+  const failed    = total - solved;
+  const solveRate = Math.round(solved/total*100);
+  const avgRating = (logs.reduce((a,l)=>a+l.rating,0)/total).toFixed(1);
+
+  const topicMap = {};
+  logs.forEach(l=>{
+    if(!topicMap[l.cardTitle]) topicMap[l.cardTitle]={total:0,solved:0};
+    topicMap[l.cardTitle].total++; if(l.result==='yes') topicMap[l.cardTitle].solved++;
+  });
+  const topics   = Object.entries(topicMap).sort((a,b)=>b[1].total-a[1].total);
+  const maxTopic = Math.max(...topics.map(t=>t[1].total),1);
+
+  const deptMap = {};
+  logs.filter(l=>l.result==='no').forEach(l=>{ const d=l.dept||'-'; deptMap[d]=(deptMap[d]||0)+1; });
+  const depts   = Object.entries(deptMap).sort((a,b)=>b[1]-a[1]);
+  const maxDept = Math.max(...depts.map(d=>d[1]),1);
+
+  const allLogs = [...logs].reverse();
+
+  function donutSVG(pct, colorFg, colorBg) {
+    const r=52,cx=65,cy=65,sw=13, circ=2*Math.PI*r;
+    const dash=circ*Math.min(pct,100)/100;
+    return `<svg viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${colorBg}" stroke-width="${sw}"/>
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${colorFg}" stroke-width="${sw}"
+        stroke-dasharray="${dash} ${circ}" stroke-dashoffset="${circ*.25}" stroke-linecap="round"
+        style="transition:stroke-dasharray .9s cubic-bezier(.4,0,.2,1)"/>
+    </svg>`;
+  }
+
+  body.innerHTML = unitBar + `<div class="dash-inner">
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-icon">📋</div>
+        <div class="kpi-val">${total}</div>
+        <div class="kpi-label">ครั้งที่ใช้คู่มือ<br>${unitLabel}</div>
+      </div>
+      <div class="kpi-card kpi-green">
+        <div class="kpi-icon">✅</div>
+        <div class="kpi-val">${solveRate}%</div>
+        <div class="kpi-label">อัตราแก้ได้เอง</div>
+      </div>
+      <div class="kpi-card kpi-amber">
+        <div class="kpi-icon">⭐</div>
+        <div class="kpi-val">${avgRating}</div>
+        <div class="kpi-label">คะแนนความเข้าใจ<br>เฉลี่ย (จาก 5)</div>
+      </div>
+      <div class="kpi-card kpi-red">
+        <div class="kpi-icon">🎫</div>
+        <div class="kpi-val">${failed}</div>
+        <div class="kpi-label">Tickets ที่ส่ง IT</div>
+      </div>
+    </div>
+
+    <!-- Donut + Topic Bar -->
+    <div class="viz-row">
+      <div class="donut-card">
+        <div style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;color:#64748b;font-family:'Sarabun',sans-serif;align-self:flex-start;">อัตราแก้ได้เอง</div>
+        <div class="donut-wrap">
+          ${donutSVG(solveRate,'#22c55e','#dcfce7')}
+          <div class="donut-center">
+            <div class="donut-pct" style="color:#16a34a">${solveRate}%</div>
+            <div class="donut-sub">SOLVE RATE</div>
+          </div>
+        </div>
+        <div class="donut-legend">
+          <div class="donut-leg-row"><span class="donut-dot" style="background:#22c55e"></span>✅ แก้ได้เอง<span class="donut-leg-val" style="color:#16a34a">${solved}</span></div>
+          <div class="donut-leg-row"><span class="donut-dot" style="background:#f87171"></span>❌ ส่ง Ticket<span class="donut-leg-val" style="color:#dc2626">${failed}</span></div>
+          <div class="donut-leg-row" style="border-top:1px dashed #e2e8f0;padding-top:7px;margin-top:2px;"><span class="donut-dot" style="background:#93c5fd"></span>📋 รวมทั้งหมด<span class="donut-leg-val" style="color:var(--primary)">${total}</span></div>
+        </div>
+      </div>
+      <div class="chart-section" style="margin-bottom:0;">
+        <div class="chart-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          หัวข้อที่ใช้บ่อย — ${unitLabel}
+        </div>
+        <div class="bar-chart">
+          ${topics.map(([title,d])=>`
+            <div class="bar-row">
+              <div class="bar-label" title="${title}">${title}</div>
+              <div class="bar-track"><div class="bar-fill" style="width:${Math.max(d.total/maxTopic*100,5)}%"><span class="bar-val">${d.total}</span></div></div>
+              <div class="bar-count" style="color:#16a34a">${Math.round(d.solved/d.total*100)}%</div>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <!-- Solve vs Fail + Dept -->
+    <div id="_dash_rating_grid" style="display:grid;grid-template-columns:1fr${depts.length?' 1fr':''};gap:16px;">
+      <div class="chart-section" style="margin-bottom:0;">
+        <div class="chart-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          ผลลัพธ์การแก้ปัญหา
+        </div>
+        <div class="bar-chart">
+          <div class="bar-row"><div class="bar-label">✅ แก้ได้เอง</div><div class="bar-track"><div class="bar-fill bar-green" style="width:${Math.max(solved/total*100,2)}%"><span class="bar-val">${solved}</span></div></div><div class="bar-count">${solveRate}%</div></div>
+          <div class="bar-row"><div class="bar-label">❌ ส่ง Ticket</div><div class="bar-track"><div class="bar-fill bar-red" style="width:${Math.max(failed/total*100,2)}%"><span class="bar-val">${failed}</span></div></div><div class="bar-count">${100-solveRate}%</div></div>
+        </div>
+      </div>
+      ${depts.length ? `
+      <div class="chart-section" style="margin-bottom:0;">
+        <div class="chart-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          แผนกที่ส่ง Ticket บ่อย
+        </div>
+        <div class="bar-chart">
+          ${depts.slice(0,6).map(([dept,cnt])=>`
+            <div class="bar-row"><div class="bar-label">${dept}</div><div class="bar-track"><div class="bar-fill bar-red" style="width:${Math.max(cnt/maxDept*100,5)}%"><span class="bar-val">${cnt}</span></div></div><div class="bar-count">${cnt}</div></div>`).join('')}
+        </div>
+      </div>` : ''}
+    </div>
+
+    <!-- Log Table with Pagination -->
+    <div class="chart-section" id="dashLogSection" style="margin-bottom:0;">
+      <div class="chart-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        รายการล่าสุด — ${unitLabel} (${total} รายการ)
+        <button onclick="clearLogs()" style="margin-left:auto;padding:4px 12px;border-radius:6px;border:1.5px solid #fca5a5;background:#fef2f2;color:#dc2626;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:'Sarabun',sans-serif;">🗑 ล้างข้อมูล</button>
+      </div>
+      <div id="dashLogTable"></div>
+    </div>
+
+  </div>`;
+
+  renderLogTable(allLogs, 'dashLogTable', 'dash', 'all', 1);
+}
+
+// ─── Paginated Log Table ──────────────────────────────────────
+function renderLogTable(allLogs, containerId, prefix, filter, page) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const filtered = filter === 'all' ? allLogs : allLogs.filter(l => l.result === filter);
+  const PAGE_SIZE = 5;
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  page = Math.min(Math.max(1, page), totalPages);
+  const slice = filtered.slice((page-1)*PAGE_SIZE, page*PAGE_SIZE);
+  container.innerHTML = `
+    <div class="filter-bar">
+      <span style="font-size:0.75rem;font-weight:700;color:var(--muted);font-family:'Sarabun',sans-serif;">กรองผลลัพธ์:</span>
+      <button class="filter-btn f-all ${filter==='all'?'active':''}" onclick="renderLogTable(window._dashLogs_${prefix},'${containerId}','${prefix}','all',1)">ทั้งหมด (${allLogs.length})</button>
+      <button class="filter-btn f-yes ${filter==='yes'?'active':''}" onclick="renderLogTable(window._dashLogs_${prefix},'${containerId}','${prefix}','yes',1)">✅ แก้ได้ (${allLogs.filter(l=>l.result==='yes').length})</button>
+      <button class="filter-btn f-no ${filter==='no'?'active':''}" onclick="renderLogTable(window._dashLogs_${prefix},'${containerId}','${prefix}','no',1)">❌ Ticket (${allLogs.filter(l=>l.result==='no').length})</button>
+    </div>
+    <div style="overflow-x:auto;">
+    <table class="log-table">
+      <thead><tr><th>วันที่/เวลา</th><th>หัวข้อ</th><th>ผลลัพธ์</th><th>คะแนน</th><th>ผู้แจ้ง</th><th>หน่วยงาน</th><th>ฝ่าย</th></tr></thead>
+      <tbody>
+        ${slice.length ? slice.map(l=>`
+        <tr>
+          <td style="white-space:nowrap;font-size:0.75rem">${l.dateStr}</td>
+          <td>${l.cardTitle}</td>
+          <td>${l.result==='yes'?'<span class="badge-ok">✔ แก้ได้</span>':'<span class="badge-fail">✖ Ticket</span>'}</td>
+          <td>${'⭐'.repeat(l.rating)}</td>
+          <td>${l.name||'-'}</td><td>${l.unit||'-'}</td><td>${l.dept||'-'}</td>
+        </tr>`).join('')
+        : `<tr><td colspan="7" style="text-align:center;color:#94a3b8;padding:20px;">ไม่มีข้อมูล</td></tr>`}
+      </tbody>
+    </table>
+    </div>
+    <div class="pagination-bar">
+      <div class="pagination-info">แสดง ${filtered.length?(page-1)*PAGE_SIZE+1:0}–${Math.min(page*PAGE_SIZE,filtered.length)} จาก ${filtered.length} รายการ</div>
+      <div class="pagination-btns">
+        <button class="pg-btn" onclick="renderLogTable(window._dashLogs_${prefix},'${containerId}','${prefix}','${filter}',${page-1})" ${page<=1?'disabled':''}>‹ ก่อนหน้า</button>
+        ${Array.from({length:totalPages},(_,i)=>`<button class="pg-btn ${i+1===page?'active':''}" onclick="renderLogTable(window._dashLogs_${prefix},'${containerId}','${prefix}','${filter}',${i+1})">${i+1}</button>`).join('')}
+        <button class="pg-btn" onclick="renderLogTable(window._dashLogs_${prefix},'${containerId}','${prefix}','${filter}',${page+1})" ${page>=totalPages?'disabled':''}>ถัดไป ›</button>
+      </div>
+    </div>`;
+  window[`_dashLogs_${prefix}`] = allLogs;
+}
+
+// ─── History Modal ────────────────────────────────────────────
+function openHistory() {
+  renderHistory();
+  document.getElementById('historyModal').classList.add('open');
+}
+function closeHistory() {
+  document.getElementById('historyModal').classList.remove('open');
+}
+document.getElementById('historyModal').addEventListener('click', function(e){
+  if(e.target === this) closeHistory();
+});
+function renderHistory() {
+  const logs = getLogs();
+  const body = document.getElementById('historyBody');
+  if (!logs.length) {
+    body.innerHTML = `<div class="empty-state"><div style="font-size:48px;margin-bottom:12px">📋</div><div>ยังไม่มีประวัติการใช้งาน</div></div>`;
+    return;
+  }
+  const allLogs = [...logs].reverse();
+  const total = allLogs.length;
+  const solved = allLogs.filter(l=>l.result==='yes').length;
+  const failed = total - solved;
+  body.innerHTML = `
+    <div style="margin-bottom:6px;font-size:0.82rem;color:var(--muted);font-family:'Sarabun',sans-serif;">
+      แสดงประวัติทุกคนที่เคยให้คะแนน ทั้งแก้ได้และส่ง Ticket — เรียงล่าสุดก่อน
+    </div>
+    <div class="result-strip" style="margin-bottom:20px;">
+      <div class="rs-box" style="background:#f0fdf4;border-color:#86efac;"><div class="rs-n" style="color:#16a34a">${solved}</div><div class="rs-l" style="color:#15803d">✅ แก้ได้เอง</div></div>
+      <div class="rs-box" style="background:#fef2f2;border-color:#fca5a5;"><div class="rs-n" style="color:#dc2626">${failed}</div><div class="rs-l" style="color:#dc2626">❌ ส่ง Ticket</div></div>
+      <div class="rs-box" style="background:#eff6ff;border-color:#93c5fd;"><div class="rs-n" style="color:var(--primary)">${total}</div><div class="rs-l" style="color:var(--primary)">📋 รวมทุกคน</div></div>
+    </div>
+    <div id="histLogTable"></div>`;
+  renderLogTable(allLogs, 'histLogTable', 'hist', 'all', 1);
+}
+
+function openSheets() {
+  const pwd = prompt('🔐 กรุณาใส่รหัสผ่าน IT เพื่อเข้าถึง Google Sheets:');
+  if (pwd === null) return;
+  if (pwd !== '@it12345@IT888') {
+    alert('❌ รหัสผ่านไม่ถูกต้อง ไม่สามารถเข้าถึง Google Sheets ได้');
+    return;
+  }
+  if (!SPREADSHEET_URL || SPREADSHEET_URL === "YOUR_GOOGLE_SPREADSHEET_URL_HERE") {
+    alert('⚠️ ยังไม่ได้ตั้งค่า SPREADSHEET_URL\nกรุณาใส่ URL ของ Google Sheets ในไฟล์ HTML บรรทัด SPREADSHEET_URL ก่อนครับ');
+    return;
+  }
+  window.open(SPREADSHEET_URL, '_blank');
+}
+
+function clearLogs() {
+  const pwd = prompt('🔐 กรุณาใส่รหัสผ่าน IT เพื่อยืนยันการลบข้อมูล:');
+  if (pwd === null) return;
+  if (pwd !== '@it12345@IT888') { alert('❌ รหัสผ่านไม่ถูกต้อง ไม่สามารถลบข้อมูลได้'); return; }
+  if (confirm('✅ รหัสผ่านถูกต้อง — ยืนยันการลบประวัติใน Dashboard นี้?\n(ข้อมูลใน Google Sheets จะยังคงอยู่)')) {
+    localStorage.removeItem('it_kpi_logs');
+    renderDashboard();
+  }
+}
+
+// ── Mobile Category Menu ──────────────────────────────────
+function toggleMobCat() {
+  const dd    = document.getElementById('mob-cat-dropdown');
+  const arrow = document.getElementById('mob-cat-arrow');
+  const open  = dd.classList.toggle('open');
+  arrow.style.transform = open ? 'rotate(180deg)' : 'rotate(0deg)';
+}
+
+function mobSetCat(cat, label, el) {
+  document.getElementById('mob-cat-label').textContent = label;
+  document.querySelectorAll('.mob-cat-item').forEach(i => i.classList.remove('mob-cat-active'));
+  el.classList.add('mob-cat-active');
+  document.getElementById('mob-cat-dropdown').classList.remove('open');
+  document.getElementById('mob-cat-arrow').style.transform = 'rotate(0deg)';
+  activeCat = cat;
+  activeId  = -1;
+  document.getElementById('welcomeEl').style.display = '';
+  document.getElementById('detailEl').style.display  = 'none';
+  document.querySelectorAll('.hpill').forEach(p => {
+    p.classList.remove('active','hpill-all');
+  });
+  const pill = document.querySelector(`.hpill[onclick*="'${cat}'"]`);
+  if (pill) { pill.classList.add('active'); if (cat==='all') pill.classList.add('hpill-all'); }
+  renderList();
+}
+
+// ปิด dropdown เมื่อ tap นอก
+document.addEventListener('click', function(e) {
+  const bar = document.getElementById('mob-cat-bar');
+  if (bar && !bar.contains(e.target)) {
+    document.getElementById('mob-cat-dropdown')?.classList.remove('open');
+    const arrow = document.getElementById('mob-cat-arrow');
+    if (arrow) arrow.style.transform = 'rotate(0deg)';
+  }
+});
+</script>
+
+</body>
+</html>
