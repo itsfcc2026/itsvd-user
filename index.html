@@ -4790,7 +4790,9 @@ async function doUserLogin() {
     if (!res.ok && res.status !== 'ok') throw new Error(res.error || res.message || 'Login ไม่สำเร็จ');
 
     UserSession.set(res.token, res.user);
-    (window.showUserPortal || showUserPortal)();
+    var _portalFn = window.showUserPortal || (typeof showUserPortal !== 'undefined' ? showUserPortal : null);
+    if (typeof _portalFn === 'function') { _portalFn(); }
+    else { console.error('showUserPortal is not defined'); alert('เกิดข้อผิดพลาด: ไม่สามารถเปิดหน้า Portal ได้ กรุณา refresh หน้าแล้วลองใหม่'); }
     if (window._updateUserPortalName) window._updateUserPortalName(res.user);
 
   } catch (err) {
@@ -4911,7 +4913,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (user) {
       const ol = document.getElementById('login-overlay');
       if (ol) { ol.classList.remove('visible'); ol.classList.add('hidden'); ol.style.display = 'none'; }
-      showUserPortal();
+      // รอให้ showUserPortal พร้อมก่อนเรียก (อาจ define อยู่ใน script block อื่น)
+      var _callShowPortal = function() {
+        var fn = window.showUserPortal || (typeof showUserPortal !== 'undefined' ? showUserPortal : null);
+        if (typeof fn === 'function') { fn(); }
+        else { setTimeout(_callShowPortal, 50); }
+      };
+      _callShowPortal();
       _updateUserPortalName(user);
     }
   } else {
