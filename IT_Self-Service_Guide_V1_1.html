@@ -656,6 +656,9 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);hei
 
 <header class="app-header">
   <div class="header-left">
+    <div class="logo">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+    </div>
     <div class="header-text">
       <div class="app-title">IT Self-Service Guide</div>
       <div class="app-sub">IT Support · คู่มือแก้ปัญหาด้วยตนเอง</div>
@@ -708,6 +711,18 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);hei
         <svg class="search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input class="search-box" type="text" id="searchBox" placeholder="ค้นหาหัวข้อ..." oninput="filterList()" autocomplete="off">
       </div>
+    </div>
+    <div class="pills-wrap" id="pillsWrap">
+      <button class="pill-arrow" id="pillLeft" onclick="scrollPills(-1)" disabled>&#8249;</button>
+      <div class="pills" id="pillsScroll">
+        <span class="pill pill-all active" onclick="setCatPill('all',this)">ทั้งหมด</span>
+        <span class="pill" onclick="setCatPill('network',this)">🌐 เน็ต</span>
+        <span class="pill" onclick="setCatPill('computer',this)">💻 คอม</span>
+        <span class="pill" onclick="setCatPill('pos',this)">🏪 POS</span>
+        <span class="pill" onclick="setCatPill('printer',this)">🖨️ ปริ้น</span>
+        <span class="pill" onclick="setCatPill('device',this)">📱 อุปกรณ์</span>
+      </div>
+      <button class="pill-arrow" id="pillRight" onclick="scrollPills(1)">&#8250;</button>
     </div>
     <div class="list-count" id="listCount"></div>
     <div class="items-list" id="itemsList"></div>
@@ -1944,7 +1959,28 @@ function setCat(cat, el) {
   document.querySelectorAll('.hpill').forEach(p => p.classList.remove('active','hpill-all'));
   el.classList.add('active');
   if (cat === 'all') el.classList.add('hpill-all');
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  const sp = document.querySelector(".pill[onclick*=\"'"+cat+"'\"]");
+  if (sp) sp.classList.add('active');
   renderList();
+}
+
+function setCatPill(cat, el) {
+  activeCat = cat;
+  activeId = -1;
+  document.getElementById('welcomeEl').style.display = '';
+  document.getElementById('detailEl').style.display = 'none';
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.hpill').forEach(p => p.classList.remove('active','hpill-all'));
+  const hp = document.querySelector(".hpill[onclick*=\"'"+cat+"'\"]");
+  if (hp) { hp.classList.add('active'); if(cat==='all') hp.classList.add('hpill-all'); }
+  renderList();
+}
+
+function scrollPills(dir) {
+  const el = document.getElementById('pillsScroll');
+  if (el) el.scrollLeft += dir * 100;
 }
 
 function select(id) {
