@@ -4065,10 +4065,10 @@ function renderUserTickets() {
     }
 
     const priColors = {
-        Low:      { color:'#1d4ed8', bg:'#eff6ff', border:'#93c5fd', label: currentLang==='th'?'ปกติ':'Normal' },
-        Medium:   { color:'#0f766e', bg:'#f0fdfa', border:'#5eead4', label: currentLang==='th'?'เร่งด่วน':'Urgent' },
-        High:     { color:'#ffffff', bg:'linear-gradient(135deg,#ef4444,#dc2626)', border:'#ef4444', label: currentLang==='th'?'ด่วนมาก':'High' },
-        Critical: { color:'#ffffff', bg:'linear-gradient(135deg,#7f1d1d,#b91c1c)', border:'#7f1d1d', label: currentLang==='th'?'ระบบใช้งานไม่ได้':'Critical' },
+        Low:      { color:'#93c5fd', bg:'rgba(147,197,253,0.15)', border:'#3b82f6', label: currentLang==='th'?'ปกติ':'Normal' },
+        Medium:   { color:'#5eead4', bg:'rgba(94,234,212,0.15)', border:'#2dd4bf', label: currentLang==='th'?'เร่งด่วน':'Urgent' },
+        High:     { color:'#fbbf24', bg:'rgba(251,191,36,0.15)', border:'#f59e0b', label: currentLang==='th'?'ด่วนมาก':'High' },
+        Critical: { color:'#f87171', bg:'rgba(248,113,113,0.15)', border:'#ef4444', label: currentLang==='th'?'ระบบใช้งานไม่ได้':'Critical' },
     };
 
     // Card grid
@@ -4120,12 +4120,12 @@ function renderUserTickets() {
         const assigneeHtmlCard = !isUnassigned && staffColor
             ? `<div class="ticket-card-assignee">
                 <div style="width:22px;height:22px;border-radius:50%;background:${staffColor};display:flex;align-items:center;justify-content:center;flex-shrink:0;">${isAdmRole ? avatarIcon : staffIconSvg}</div>
-                <span>${currentLang==='th'?'ผู้รับผิดชอบ:':'Assignee:'} <strong style="color:#1e40af;">${t.assignee}</strong></span>
+                <span style="font-size:0.78rem;color:#94a3b8;">${currentLang==='th'?'ผู้รับผิดชอบ:':'Assignee:'} <strong style="color:#2dd4bf;">${t.assignee}</strong></span>
                </div>`
             : !isUnassigned
                 ? `<div class="ticket-card-assignee">
                     <div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#1e40af,#3b82f6);display:flex;align-items:center;justify-content:center;flex-shrink:0;">${staffIconSvg}</div>
-                    <span>${currentLang==='th'?'ผู้รับผิดชอบ:':'Assignee:'} <strong style="color:#1e40af;">${t.assignee}</strong></span>
+                    <span style="font-size:0.78rem;color:#94a3b8;">${currentLang==='th'?'ผู้รับผิดชอบ:':'Assignee:'} <strong style="color:#2dd4bf;">${t.assignee}</strong></span>
                    </div>`
                 : `<div style="display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:10px;background:linear-gradient(135deg,#fff7ed,#ffedd5);border:1.5px solid #fb923c;animation:newJobPulseGlow 2s ease-in-out infinite;">
                     <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#ea580c,#f97316);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
@@ -4142,8 +4142,8 @@ function renderUserTickets() {
 
         // ── status badge html ─────────────────────────────────────────────────
         const statusBadge = `<span style="font-size:0.72rem;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap;color:${
-            t.status==='Resolved'?'#15803d':t.status==='Fixed'?'#5b21b6':t.status==='In Progress'?'#1d4ed8':'#c2410c'};background:${
-            t.status==='Resolved'?'#f0fdf4':t.status==='Fixed'?'#ede9fe':t.status==='In Progress'?'#dbeafe':'#fff7ed'};">${sl}</span>`;
+            t.status==='Resolved'?'#86efac':t.status==='Fixed'?'#c4b5fd':t.status==='In Progress'?'#93c5fd':'#fdba74'};background:${
+            t.status==='Resolved'?'rgba(134,239,172,0.15)':t.status==='Fixed'?'rgba(196,181,253,0.15)':t.status==='In Progress'?'rgba(147,197,253,0.15)':'rgba(253,186,116,0.15)'};">${sl}</span>`;
 
         // show top-right type badge for duplicate/existing only
         const showTypeBadge = t.ticketType === 'duplicate' || t.ticketType === 'existing';
@@ -4169,20 +4169,20 @@ function renderUserTickets() {
                 </div>
             </div>
 
-            <div class="ticket-card-cat">${catLabel(t.category)}</div>
-            <div class="ticket-card-desc">${t.desc}</div>
+            <div class="ticket-card-cat" style="color:#e2e8f0;">${catLabel(t.category)}</div>
+            <div class="ticket-card-desc" style="color:#94a3b8;">${t.desc}</div>
 
             <!-- Reporter -->
             <div style="display:flex;align-items:center;gap:6px;margin-top:6px;">
-                <div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#e0e7ff,#c7d2fe);border:1.5px solid #a5b4fc;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <div style="width:20px;height:20px;border-radius:50%;background:rgba(99,102,241,0.2);border:1.5px solid rgba(165,180,252,0.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#4338ca" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                 </div>
-                <span style="font-size:0.78rem;color:#64748b;">${currentLang==='th'?'ผู้แจ้ง:':'Reporter:'} <strong style="color:#334155;">${t.user}</strong></span>
+                <span style="font-size:0.78rem;color:#94a3b8;">${currentLang==='th'?'ผู้แจ้ง:':'Reporter:'} <strong style="color:#e2e8f0;">${t.user}</strong></span>
             </div>
 
             <!-- Priority -->
             <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-                <span style="display:inline-flex;align-items:center;gap:5px;font-size:0.75rem;font-weight:800;color:${pc.color};background:${pc.bg};border:1.5px solid ${pc.border};padding:4px 10px;border-radius:8px;${(t.priority==='High'||t.priority==='Critical')?'letter-spacing:0.3px;text-shadow:0 1px 2px rgba(0,0,0,0.2);':''}">
+                <span style="display:inline-flex;align-items:center;gap:5px;font-size:0.75rem;font-weight:800;color:${pc.color};background:${pc.bg};border:1.5px solid ${pc.border};padding:4px 10px;border-radius:8px;letter-spacing:0.3px;">
                     <span style="width:6px;height:6px;border-radius:50%;background:${pc.color};flex-shrink:0;${(t.priority==='High'||t.priority==='Critical')?'':''}"></span>
                     ${pc.label}
                 </span>
@@ -4192,8 +4192,8 @@ function renderUserTickets() {
             ${assigneeHtmlCard}
 
             <!-- Footer -->
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid #f1f5f9;">
-                <span class="ticket-card-date">📅 ${dateStr}</span>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid #2e4057;">
+                <span class="ticket-card-date" style="color:#94a3b8;">📅 ${dateStr}</span>
                 ${statusBadge}
             </div>
         </div>`;
