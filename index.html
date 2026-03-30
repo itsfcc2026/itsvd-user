@@ -1381,7 +1381,7 @@
         }
         #ticket-detail-overlay.open { display: flex; }
         #ticket-detail-box {
-            background:#374C57;
+            background:#ffffff;
             border-radius: 20px;
             width: 100%;
             max-width: 520px;
@@ -1436,18 +1436,18 @@
             gap: 8px;
             align-items: flex-start;
             padding: 9px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid #e2e8f0;
             font-size: 0.87rem;
         }
         .td-row:last-child { border-bottom: none; }
         .td-label {
             font-weight: 700;
-            color: #94a3b8;
+            color: #64748b;
             min-width: 110px;
             flex-shrink: 0;
             font-size: 0.8rem;
         }
-        .td-val { color: #e2e8f0; flex: 1; line-height: 1.5; }
+        .td-val { color: #1e293b; flex: 1; line-height: 1.5; }
 
         /* ===================== OLD TICKET ITEM (kept for compat) ===================== */
         .ticket-item {
@@ -4334,26 +4334,26 @@ function openTicketDetail(ticketId) {
             rows += `<div class="td-row" style="flex-direction:column;align-items:flex-start;gap:8px;">
                 <span class="td-label">${lbl.note}</span>
                 <div style="width:100%;display:flex;flex-direction:column;gap:8px;">
-                    <div style="background:#1a3040;border:1px solid #bfdbfe;border-radius:8px;padding:8px 12px;">
+                    <div style="background:#ffffff;border:1px solid #bfdbfe;border-radius:8px;padding:8px 12px;">
                         <div style="font-size:.68rem;font-weight:800;color:#1e40af;margin-bottom:4px;display:flex;align-items:center;gap:5px;">
                             <span style="background:#1e40af;color:white;padding:1px 6px;border-radius:20px;font-size:.6rem;">ขั้นที่ 1</span>
                             ขั้นตรวจสอบ
                         </div>
-                        <div style="font-size:.85rem;color:#1e3a8a;white-space:pre-wrap;">${checkNote}</div>
+                        <div style="font-size:.85rem;color:#1e293b;white-space:pre-wrap;">${checkNote}</div>
                     </div>
-                    ${solutionNote ? `<div style="background:#f0fdfa;border:1px solid #a5f3fc;border-radius:8px;padding:8px 12px;">
+                    ${solutionNote ? `<div style="background:#ffffff;border:1px solid #a5f3fc;border-radius:8px;padding:8px 12px;">
                         <div style="font-size:.68rem;font-weight:800;color:#0e7490;margin-bottom:4px;display:flex;align-items:center;gap:5px;">
                             <span style="background:#0891b2;color:white;padding:1px 6px;border-radius:20px;font-size:.6rem;">ขั้นที่ 2</span>
                             แก้ปัญหาอย่างไร
                         </div>
-                        <div style="font-size:.85rem;color:#164e63;white-space:pre-wrap;">${solutionNote}</div>
+                        <div style="font-size:.85rem;color:#0f4c5c;white-space:pre-wrap;">${solutionNote}</div>
                     </div>` : ''}
                 </div>
             </div>`;
         } else {
             rows += `<div class="td-row">
                 <span class="td-label">${lbl.note}</span>
-                <span class="td-val" style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:6px 10px;display:block;color:#78350f;">💬 ${t.adminNote}</span>
+                <span class="td-val" style="background:#f0f9ff;border:1px solid #bfdbfe;border-radius:8px;padding:6px 10px;display:block;color:#1e3a8a;">💬 ${t.adminNote}</span>
             </div>`;
         }
     }
