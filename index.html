@@ -1585,8 +1585,8 @@
             position: fixed;
             bottom: 96px;
             right: 28px;
-            width: 400px;
-            height: 580px;
+            width: min(400px, calc(100vw - 40px));
+            height: min(580px, calc(100vh - 120px));
             background: #1e2d3d;
             border-radius: 20px;
             border: 1px solid rgba(45,212,191,0.3);
@@ -1646,8 +1646,8 @@
         }
         #chatbot-btn.has-badge .chatbot-unread-badge { display: flex; }
         @media (max-width: 768px) {
-            #chatbot-panel { width: calc(100vw - 20px); right: 10px; bottom: 90px; height: 68vh; border-radius: 16px; }
-            #chatbot-btn { bottom: 80px; right: 14px; width: 50px; height: 50px; }
+            #chatbot-panel { width: calc(100vw - 20px); right: 10px; bottom: 76px; height: min(70vh, calc(100vh - 100px)); border-radius: 16px; }
+            #chatbot-btn { bottom: 16px; right: 14px; width: 50px; height: 50px; }
         }
 
     </style>
