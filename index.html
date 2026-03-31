@@ -1606,6 +1606,41 @@
             opacity: 1;
             pointer-events: all;
         }
+        /* ── Maximized state ── */
+        #chatbot-panel.maximized {
+            bottom: 16px;
+            right: 16px;
+            width: calc(100vw - 32px);
+            height: calc(100vh - 32px);
+            border-radius: 16px;
+            max-width: 960px;
+            margin-left: auto;
+        }
+        /* ── Floating toolbar (close + maximize) ── */
+        #chatbot-toolbar {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 6px;
+            z-index: 10;
+        }
+        .chatbot-tool-btn {
+            width: 28px; height: 28px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.18);
+            background: rgba(0,0,0,0.35);
+            color: rgba(255,255,255,0.75);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.15s;
+            backdrop-filter: blur(4px);
+        }
+        .chatbot-tool-btn:hover {
+            background: rgba(45,212,191,0.3);
+            color: #fff;
+            border-color: rgba(45,212,191,0.5);
+        }
         .chatbot-panel-header {
             background: #152232;
             padding: 13px 16px;
@@ -5731,6 +5766,15 @@ window.usersDoResetPassword = usersDoResetPassword;
 </button>
 
 <div id="chatbot-panel" role="dialog" aria-label="IT Support Chatbot">
+    <!-- toolbar: maximize + close -->
+    <div id="chatbot-toolbar">
+        <button class="chatbot-tool-btn" onclick="expandChatbot()" id="btn-expand" title="ขยายเต็มจอ">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+        </button>
+        <button class="chatbot-tool-btn" onclick="toggleChatbot()" title="ปิด">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+    </div>
     <iframe id="chatbot-iframe" src="" allow="microphone" title="IT Support Chatbot" loading="lazy"></iframe>
 </div>
 
@@ -5739,6 +5783,25 @@ window.usersDoResetPassword = usersDoResetPassword;
     var CHATBOT_URL = 'https://it-support-bot-7s6s.onrender.com/';
     var isOpen = false;
     var loaded = false;
+    var isMaximized = false;
+
+    window.expandChatbot = function() {
+        isMaximized = !isMaximized;
+        var panel  = document.getElementById('chatbot-panel');
+        var btnExp = document.getElementById('btn-expand');
+        if (!panel) return;
+        if (isMaximized) {
+            panel.classList.add('maximized');
+            // เปลี่ยน icon เป็น shrink
+            btnExp.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="3" y2="21"/><line x1="21" y1="3" x2="14" y2="10"/></svg>';
+            btnExp.title = 'ย่อกลับ';
+        } else {
+            panel.classList.remove('maximized');
+            btnExp.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>';
+            btnExp.title = 'ขยายเต็มจอ';
+        }
+    };
+
     window.toggleChatbot = function() {
         isOpen = !isOpen;
         var panel     = document.getElementById('chatbot-panel');
@@ -5756,10 +5819,16 @@ window.usersDoResetPassword = usersDoResetPassword;
             iconClose.style.display = 'block';
             if (!loaded) { iframe.src = CHATBOT_URL; loaded = true; }
         } else {
-            panel.classList.remove('open');
+            panel.classList.remove('open', 'maximized');
             btn.classList.remove('open');
             iconOpen.style.display  = 'block';
             iconClose.style.display = 'none';
+            isMaximized = false;
+            var btnExp = document.getElementById('btn-expand');
+            if (btnExp) {
+                btnExp.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>';
+                btnExp.title = 'ขยายเต็มจอ';
+            }
         }
     };
 })();
