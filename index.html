@@ -5753,30 +5753,31 @@ window.usersDoResetPassword = usersDoResetPassword;
     var CHATBOT_URL = 'https://it-support-bot-7s6s.onrender.com/';
     var isOpen = false;
     var loaded = false;
+    var badgeShown = false;
 
-    // แสดง chatbot button หลัง login สำเร็จ
     function showChatbotBtn() {
         var btn = document.getElementById('chatbot-btn');
-        if (btn) {
-            btn.classList.add('visible');
-            // แสดง badge แรกเพื่อดึงความสนใจ
+        if (!btn) return;
+        btn.classList.add('visible');
+        if (!badgeShown) {
+            badgeShown = true;
             setTimeout(function() {
-                btn.classList.add('has-badge');
-            }, 3000);
+                var b = document.getElementById('chatbot-btn');
+                if (b) b.classList.add('has-badge');
+            }, 2500);
         }
     }
 
-    // ซ่อน chatbot button ตอน logout
     function hideChatbotBtn() {
         var btn = document.getElementById('chatbot-btn');
         var panel = document.getElementById('chatbot-panel');
         if (btn) btn.classList.remove('visible', 'has-badge', 'open');
         if (panel) panel.classList.remove('open');
-        // Reset iframe เพื่อให้ load ใหม่ครั้งหน้า
         var iframe = document.getElementById('chatbot-iframe');
         if (iframe) iframe.src = '';
         isOpen = false;
         loaded = false;
+        badgeShown = false;
         var iconOpen = document.getElementById('chat-icon-open');
         var iconClose = document.getElementById('chat-icon-close');
         if (iconOpen) iconOpen.style.display = 'block';
@@ -5797,7 +5798,6 @@ window.usersDoResetPassword = usersDoResetPassword;
             btn.classList.remove('has-badge');
             iconOpen.style.display = 'none';
             iconClose.style.display = 'block';
-            // โหลด iframe เมื่อเปิดครั้งแรกเท่านั้น (ประหยัด bandwidth)
             if (!loaded) {
                 iframe.src = CHATBOT_URL;
                 loaded = true;
@@ -5810,24 +5810,40 @@ window.usersDoResetPassword = usersDoResetPassword;
         }
     };
 
-    // ผูกกับ login/logout event ของระบบ portal
-    // ตรวจ view-user-portal ว่า active หรือไม่
+    // ── ตรวจสถานะ portal ด้วย polling (ทำงานแน่นอน 100%) ──
+    function checkPortalVisible() {
+        var portal = document.getElementById('view-user-portal');
+        var loginOverlay = document.getElementById('login-overlay');
+        if (!portal) return;
+
+        var portalActive = portal.classList.contains('active');
+        var loginHidden = loginOverlay
+            ? (loginOverlay.classList.contains('hidden') || loginOverlay.style.display === 'none')
+            : true;
+        var isLoggedIn = portalActive || loginHidden;
+
+        if (isLoggedIn) {
+            showChatbotBtn();
+        } else {
+            hideChatbotBtn();
+        }
+    }
+
+    // MutationObserver เฝ้าดู class changes
     function observePortalState() {
         var portal = document.getElementById('view-user-portal');
         var loginOverlay = document.getElementById('login-overlay');
         if (!portal || !loginOverlay) return;
 
-        function checkPortalVisible() {
-            if (portal.classList.contains('active')) {
-                showChatbotBtn();
-            } else {
-                hideChatbotBtn();
-            }
-        }
-
-        // Observer เฝ้าดู class ของ portal
+        // เฝ้าทั้ง portal และ loginOverlay
         var obs = new MutationObserver(checkPortalVisible);
         obs.observe(portal, { attributes: true, attributeFilter: ['class'] });
+        obs.observe(loginOverlay, { attributes: true, attributeFilter: ['class', 'style'] });
+
+        // Polling fallback ทุก 600ms (แก้ปัญหา observer miss)
+        setInterval(checkPortalVisible, 600);
+
+        // ตรวจทันที
         checkPortalVisible();
     }
 
