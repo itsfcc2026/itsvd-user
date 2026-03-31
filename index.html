@@ -1556,6 +1556,101 @@
         .status-Resolved { background: #dcfce7; color: #166534; }
         .status-Fixed { background: #ede9fe; color: #5b21b6; }
 
+        /* ══════════════ CHATBOT FLOATING WIDGET ══════════════ */
+        #chatbot-btn {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #2dd4bf, #22d3ee);
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(45,212,191,0.45);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9990;
+            transition: all 0.25s cubic-bezier(.4,0,.2,1);
+            animation: chatPulse 2.5s ease-in-out infinite;
+        }
+        #chatbot-btn.visible { display: flex; }
+        #chatbot-btn:hover { transform: scale(1.1); box-shadow: 0 6px 26px rgba(45,212,191,0.65); }
+        #chatbot-btn.open { animation: none; }
+        @keyframes chatPulse {
+            0%,100% { box-shadow: 0 4px 20px rgba(45,212,191,0.45); }
+            50% { box-shadow: 0 4px 28px rgba(45,212,191,0.75), 0 0 0 10px rgba(45,212,191,0.10); }
+        }
+        #chatbot-panel {
+            position: fixed;
+            bottom: 96px;
+            right: 28px;
+            width: 400px;
+            height: 580px;
+            background: #1e2d3d;
+            border-radius: 20px;
+            border: 1px solid rgba(45,212,191,0.3);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+            z-index: 9989;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: scale(0.92) translateY(20px);
+            transform-origin: bottom right;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.25s cubic-bezier(.4,0,.2,1);
+        }
+        #chatbot-panel.open {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+            pointer-events: all;
+        }
+        .chatbot-panel-header {
+            background: #152232;
+            padding: 13px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(45,212,191,0.15);
+            flex-shrink: 0;
+        }
+        .chatbot-bot-avatar {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, #2dd4bf, #22d3ee);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; flex-shrink: 0;
+        }
+        .chatbot-bot-info { flex: 1; min-width: 0; }
+        .chatbot-bot-name { font-size: 0.92rem; font-weight: 700; color: #e2e8f0; font-family: 'Sarabun', sans-serif; line-height: 1.2; }
+        .chatbot-bot-status { font-size: 0.7rem; color: #2dd4bf; font-weight: 600; font-family: 'Sarabun', sans-serif; display: flex; align-items: center; gap: 5px; margin-top: 2px; }
+        .chatbot-online-dot { width: 7px; height: 7px; background: #2dd4bf; border-radius: 50%; animation: blinkPulse 1.6s ease-in-out infinite; flex-shrink: 0; }
+        .chatbot-close-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            width: 30px; height: 30px;
+            cursor: pointer; color: #94a3b8;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.15s; flex-shrink: 0;
+        }
+        .chatbot-close-btn:hover { background: rgba(248,113,113,0.15); color: #f87171; border-color: rgba(248,113,113,0.3); }
+        #chatbot-iframe { flex: 1; border: none; width: 100%; background: #fff; }
+        .chatbot-unread-badge {
+            position: absolute; top: -3px; right: -3px;
+            width: 18px; height: 18px; background: #f87171; border-radius: 50%;
+            font-size: 0.6rem; font-weight: 800; color: white;
+            display: none; align-items: center; justify-content: center;
+            border: 2px solid #1e2d3d; font-family: 'Sarabun', sans-serif; pointer-events: none;
+        }
+        #chatbot-btn.has-badge .chatbot-unread-badge { display: flex; }
+        @media (max-width: 768px) {
+            #chatbot-panel { width: calc(100vw - 20px); right: 10px; bottom: 90px; height: 68vh; border-radius: 16px; }
+            #chatbot-btn { bottom: 80px; right: 14px; width: 50px; height: 50px; }
+        }
+
     </style>
 </head>
 <body>
@@ -5622,6 +5717,126 @@ window.usersDoResetPassword = usersDoResetPassword;
       }
     });
   });
+})();
+</script>
+
+<!-- ══════════════ CHATBOT FLOATING WIDGET ══════════════ -->
+<button id="chatbot-btn" onclick="toggleChatbot()" title="IT Support Assistant" style="position:relative;" aria-label="เปิด IT Support Chatbot">
+    <span class="chatbot-unread-badge">1</span>
+    <svg id="chat-icon-open" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    <svg id="chat-icon-close" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" style="display:none;">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+</button>
+
+<div id="chatbot-panel" role="dialog" aria-label="IT Support Chatbot">
+    <div class="chatbot-panel-header">
+        <div class="chatbot-bot-avatar">🤖</div>
+        <div class="chatbot-bot-info">
+            <div class="chatbot-bot-name">IT Support Assistant</div>
+            <div class="chatbot-bot-status">
+                <span class="chatbot-online-dot"></span>
+                พร้อมให้บริการ
+            </div>
+        </div>
+        <button class="chatbot-close-btn" onclick="toggleChatbot()" aria-label="ปิด">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+    </div>
+    <iframe id="chatbot-iframe" src="" allow="microphone" title="IT Support Chatbot" loading="lazy"></iframe>
+</div>
+
+<script>
+(function() {
+    var CHATBOT_URL = 'https://it-support-bot-7s6s.onrender.com/';
+    var isOpen = false;
+    var loaded = false;
+
+    // แสดง chatbot button หลัง login สำเร็จ
+    function showChatbotBtn() {
+        var btn = document.getElementById('chatbot-btn');
+        if (btn) {
+            btn.classList.add('visible');
+            // แสดง badge แรกเพื่อดึงความสนใจ
+            setTimeout(function() {
+                btn.classList.add('has-badge');
+            }, 3000);
+        }
+    }
+
+    // ซ่อน chatbot button ตอน logout
+    function hideChatbotBtn() {
+        var btn = document.getElementById('chatbot-btn');
+        var panel = document.getElementById('chatbot-panel');
+        if (btn) btn.classList.remove('visible', 'has-badge', 'open');
+        if (panel) panel.classList.remove('open');
+        // Reset iframe เพื่อให้ load ใหม่ครั้งหน้า
+        var iframe = document.getElementById('chatbot-iframe');
+        if (iframe) iframe.src = '';
+        isOpen = false;
+        loaded = false;
+        var iconOpen = document.getElementById('chat-icon-open');
+        var iconClose = document.getElementById('chat-icon-close');
+        if (iconOpen) iconOpen.style.display = 'block';
+        if (iconClose) iconClose.style.display = 'none';
+    }
+
+    window.toggleChatbot = function() {
+        isOpen = !isOpen;
+        var panel = document.getElementById('chatbot-panel');
+        var btn = document.getElementById('chatbot-btn');
+        var iconOpen = document.getElementById('chat-icon-open');
+        var iconClose = document.getElementById('chat-icon-close');
+        var iframe = document.getElementById('chatbot-iframe');
+
+        if (isOpen) {
+            panel.classList.add('open');
+            btn.classList.add('open');
+            btn.classList.remove('has-badge');
+            iconOpen.style.display = 'none';
+            iconClose.style.display = 'block';
+            // โหลด iframe เมื่อเปิดครั้งแรกเท่านั้น (ประหยัด bandwidth)
+            if (!loaded) {
+                iframe.src = CHATBOT_URL;
+                loaded = true;
+            }
+        } else {
+            panel.classList.remove('open');
+            btn.classList.remove('open');
+            iconOpen.style.display = 'block';
+            iconClose.style.display = 'none';
+        }
+    };
+
+    // ผูกกับ login/logout event ของระบบ portal
+    // ตรวจ view-user-portal ว่า active หรือไม่
+    function observePortalState() {
+        var portal = document.getElementById('view-user-portal');
+        var loginOverlay = document.getElementById('login-overlay');
+        if (!portal || !loginOverlay) return;
+
+        function checkPortalVisible() {
+            if (portal.classList.contains('active')) {
+                showChatbotBtn();
+            } else {
+                hideChatbotBtn();
+            }
+        }
+
+        // Observer เฝ้าดู class ของ portal
+        var obs = new MutationObserver(checkPortalVisible);
+        obs.observe(portal, { attributes: true, attributeFilter: ['class'] });
+        checkPortalVisible();
+    }
+
+    // รอให้ DOM พร้อม
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', observePortalState);
+    } else {
+        observePortalState();
+    }
 })();
 </script>
 
