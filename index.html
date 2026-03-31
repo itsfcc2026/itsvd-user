@@ -1568,14 +1568,13 @@
             border: none;
             cursor: pointer;
             box-shadow: 0 4px 20px rgba(45,212,191,0.45);
-            display: none;
+            display: flex;
             align-items: center;
             justify-content: center;
             z-index: 9990;
             transition: all 0.25s cubic-bezier(.4,0,.2,1);
             animation: chatPulse 2.5s ease-in-out infinite;
         }
-        #chatbot-btn.visible { display: flex; }
         #chatbot-btn:hover { transform: scale(1.1); box-shadow: 0 6px 26px rgba(45,212,191,0.65); }
         #chatbot-btn.open { animation: none; }
         @keyframes chatPulse {
@@ -5753,106 +5752,29 @@ window.usersDoResetPassword = usersDoResetPassword;
     var CHATBOT_URL = 'https://it-support-bot-7s6s.onrender.com/';
     var isOpen = false;
     var loaded = false;
-    var badgeShown = false;
-
-    function showChatbotBtn() {
-        var btn = document.getElementById('chatbot-btn');
-        if (!btn) return;
-        btn.classList.add('visible');
-        if (!badgeShown) {
-            badgeShown = true;
-            setTimeout(function() {
-                var b = document.getElementById('chatbot-btn');
-                if (b) b.classList.add('has-badge');
-            }, 2500);
-        }
-    }
-
-    function hideChatbotBtn() {
-        var btn = document.getElementById('chatbot-btn');
-        var panel = document.getElementById('chatbot-panel');
-        if (btn) btn.classList.remove('visible', 'has-badge', 'open');
-        if (panel) panel.classList.remove('open');
-        var iframe = document.getElementById('chatbot-iframe');
-        if (iframe) iframe.src = '';
-        isOpen = false;
-        loaded = false;
-        badgeShown = false;
-        var iconOpen = document.getElementById('chat-icon-open');
-        var iconClose = document.getElementById('chat-icon-close');
-        if (iconOpen) iconOpen.style.display = 'block';
-        if (iconClose) iconClose.style.display = 'none';
-    }
-
     window.toggleChatbot = function() {
         isOpen = !isOpen;
-        var panel = document.getElementById('chatbot-panel');
-        var btn = document.getElementById('chatbot-btn');
-        var iconOpen = document.getElementById('chat-icon-open');
+        var panel     = document.getElementById('chatbot-panel');
+        var btn       = document.getElementById('chatbot-btn');
+        var iconOpen  = document.getElementById('chat-icon-open');
         var iconClose = document.getElementById('chat-icon-close');
-        var iframe = document.getElementById('chatbot-iframe');
+        var iframe    = document.getElementById('chatbot-iframe');
+        if (!panel || !btn) return;
 
         if (isOpen) {
             panel.classList.add('open');
             btn.classList.add('open');
             btn.classList.remove('has-badge');
-            iconOpen.style.display = 'none';
+            iconOpen.style.display  = 'none';
             iconClose.style.display = 'block';
-            if (!loaded) {
-                iframe.src = CHATBOT_URL;
-                loaded = true;
-            }
+            if (!loaded) { iframe.src = CHATBOT_URL; loaded = true; }
         } else {
             panel.classList.remove('open');
             btn.classList.remove('open');
-            iconOpen.style.display = 'block';
+            iconOpen.style.display  = 'block';
             iconClose.style.display = 'none';
         }
     };
-
-    // ── ตรวจสถานะ portal ด้วย polling (ทำงานแน่นอน 100%) ──
-    function checkPortalVisible() {
-        var portal = document.getElementById('view-user-portal');
-        var loginOverlay = document.getElementById('login-overlay');
-        if (!portal) return;
-
-        var portalActive = portal.classList.contains('active');
-        var loginHidden = loginOverlay
-            ? (loginOverlay.classList.contains('hidden') || loginOverlay.style.display === 'none')
-            : true;
-        var isLoggedIn = portalActive || loginHidden;
-
-        if (isLoggedIn) {
-            showChatbotBtn();
-        } else {
-            hideChatbotBtn();
-        }
-    }
-
-    // MutationObserver เฝ้าดู class changes
-    function observePortalState() {
-        var portal = document.getElementById('view-user-portal');
-        var loginOverlay = document.getElementById('login-overlay');
-        if (!portal || !loginOverlay) return;
-
-        // เฝ้าทั้ง portal และ loginOverlay
-        var obs = new MutationObserver(checkPortalVisible);
-        obs.observe(portal, { attributes: true, attributeFilter: ['class'] });
-        obs.observe(loginOverlay, { attributes: true, attributeFilter: ['class', 'style'] });
-
-        // Polling fallback ทุก 600ms (แก้ปัญหา observer miss)
-        setInterval(checkPortalVisible, 600);
-
-        // ตรวจทันที
-        checkPortalVisible();
-    }
-
-    // รอให้ DOM พร้อม
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', observePortalState);
-    } else {
-        observePortalState();
-    }
 })();
 </script>
 
