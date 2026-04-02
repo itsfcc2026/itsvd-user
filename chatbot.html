@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IT Support Bot</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal-dark:  #0d4f4f;
+      --teal-mid:   #0e7a7a;
+      --teal-light: #2dd4bf;
+      --accent:     #14b8a6;
+      --blue-btn:   #1a56db;
+      --bg-msg:     #f0f4f8;
+      --white:      #ffffff;
+      --text-dark:  #1e293b;
+      --text-muted: #64748b;
+      --border:     #e2e8f0;
+    }
+
+    html, body {
+      height: 100%; width: 100%;
+      font-family: 'Sarabun', 'Segoe UI', system-ui, sans-serif;
+      background: #e8edf2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    /* ══════════ WRAPPER ══════════ */
+    .chat-wrapper {
+      width: 100%;
+      max-width: 520px;
+      height: 100vh;
+      max-height: 760px;
+      display: flex;
+      flex-direction: column;
+      background: var(--white);
+      border-radius: 20px;
+      box-shadow: 0 8px 48px rgba(0,0,0,0.18);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ══════════ HERO HEADER ══════════ */
+    .chat-hero {
+      background: linear-gradient(160deg, #0a3d3d 0%, #0d5c5c 40%, #0e8080 80%, #14b8a6 100%);
+      padding: 8px 14px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    /* Settings button */
+    .btn-hero-settings {
+      position: absolute;
+      top: 14px; right: 14px;
+      width: 32px; height: 32px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50%;
+      color: rgba(255,255,255,0.85);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+      font-size: 16px;
+    }
+    .btn-hero-settings:hover { background: rgba(255,255,255,0.25); color: #fff; }
+
+    /* Avatar */
+    .hero-avatar {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, #2dd4bf, #0e9488);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+      position: relative;
+      flex-shrink: 0;
+    }
+    .hero-avatar svg { width: 20px; height: 20px; }
+    .hero-avatar-ring {
+      position: absolute; inset: -3px;
+      border-radius: 13px;
+      border: 2px solid rgba(45,212,191,0.35);
+    }
+
+    .hero-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .hero-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.2px;
+    }
+    .hero-status {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.8);
+    }
+    .status-dot {
+      width: 8px; height: 8px;
+      background: #4ade80;
+      border-radius: 50%;
+      box-shadow: 0 0 6px #4ade80;
+      animation: pulse-green 2s ease-in-out infinite;
+    }
+    .status-dot.offline {
+      background: #f87171;
+      box-shadow: 0 0 6px #f87171;
+      animation: none;
+    }
+    @keyframes pulse-green {
+      0%,100% { box-shadow: 0 0 4px #4ade80; }
+      50%      { box-shadow: 0 0 10px #4ade80, 0 0 20px rgba(74,222,128,0.3); }
+    }
+
+    /* ══════════ API KEY MODAL ══════════ */
+    .modal-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      backdrop-filter: blur(3px);
+    }
+    .modal-overlay.hidden { display: none; }
+
+    .modal-box {
+      background: var(--white);
+      border-radius: 18px;
+      padding: 28px 24px 24px;
+      width: 88%;
+      max-width: 380px;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.22);
+      animation: modalIn 0.22s ease-out;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.95) translateY(10px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    .modal-logo {
+      width: 48px; height: 48px;
+      margin: 0 auto 14px;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #4285F4, #34A853, #FBBC05, #EA4335);
+      border-radius: 14px;
+      box-shadow: 0 4px 14px rgba(66,133,244,0.3);
+    }
+    .modal-logo svg { width: 28px; height: 28px; }
+
+    .modal-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .modal-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+    .modal-desc a {
+      color: var(--blue-btn);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .modal-desc a:hover { text-decoration: underline; }
+
+    .modal-input-wrap {
+      position: relative;
+      margin-bottom: 14px;
+    }
+    .modal-input-wrap input {
+      width: 100%;
+      padding: 11px 40px 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 11px;
+      font-size: 13px;
+      font-family: 'Sarabun', sans-serif;
+      outline: none;
+      color: var(--text-dark);
+      background: #f8fafc;
+      transition: border-color 0.2s;
+    }
+    .modal-input-wrap input:focus { border-color: var(--accent); background: #fff; }
+    .modal-input-wrap input::placeholder { color: #94a3b8; }
+
+    .toggle-key-btn {
+      position: absolute;
+      right: 10px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none;
+      cursor: pointer; color: var(--text-muted);
+      padding: 4px;
+      display: flex; align-items: center;
+    }
+    .toggle-key-btn:hover { color: var(--text-dark); }
+
+    .modal-save-btn {
+      width: 100%;
+      padding: 11px;
+      background: linear-gradient(135deg, #1a56db, #1d4ed8);
+      color: #fff;
+      border: none;
+      border-radius: 11px;
+      font-size: 14px;
+      font-family: 'Sarabun', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(26,86,219,0.35);
+    }
+    .modal-save-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,86,219,0.45); }
+    .modal-save-btn:active { transform: scale(0.98); }
+
+    .modal-error {
+      font-size: 0.78rem;
+      color: #ef4444;
+      text-align: center;
+      margin-top: 10px;
+      min-height: 18px;
+    }
+
+    .modal-skip {
+      display: block;
+      text-align: center;
+      margin-top: 12px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      text-decoration: underline;
+    }
+    .modal-skip:hover { color: var(--text-dark); }
+
+    /* ══════════ MESSAGES ══════════ */
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: var(--bg-msg);
+      scroll-behavior: smooth;
+    }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+    .message {
+      display: flex;
+      gap: 8px;
+      max-width: 88%;
+      animation: msgIn 0.22s ease-out;
+    }
+    @keyframes msgIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: none; }
+    }
+    .message.user { align-self: flex-end; flex-direction: row-reverse; }
+    .message.bot  { align-self: flex-start; }
+
+    .msg-icon {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+      align-self: flex-end;
+    }
+    .message.bot  .msg-icon { background: linear-gradient(135deg,#2dd4bf,#0e9488); }
+    .message.user .msg-icon { background: linear-gradient(135deg,#818cf8,#6366f1); }
+
+    .msg-body { display: flex; flex-direction: column; gap: 3px; }
+
+    .bubble {
+      padding: 10px 14px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.6;
+      word-break: break-word;
+    }
+    .message.bot .bubble {
+      background: var(--white);
+      color: var(--text-dark);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 5px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .message.user .bubble {
+      background: linear-gradient(135deg, #1a56db, #1d4ed8);
+      color: #fff;
+      border-bottom-right-radius: 5px;
+    }
+
+    .timestamp {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .message.user .timestamp { text-align: right; }
+
+    /* Typing indicator */
+    .typing .bubble {
+      display: flex; align-items: center; gap: 4px;
+      padding: 14px 16px;
+    }
+    .dot {
+      width: 7px; height: 7px;
+      background: #94a3b8;
+      border-radius: 50%;
+      animation: bounce 1.2s infinite;
+    }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30%           { transform: translateY(-6px); }
+    }
+
+    /* No-key banner */
+    .no-key-banner {
+      background: #fef3c7;
+      border: 1px solid #fcd34d;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #92400e;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .no-key-banner:hover { background: #fde68a; }
+    .no-key-banner.hidden { display: none; }
+
+    /* ══════════ INPUT ══════════ */
+    .chat-input-area {
+      padding: 12px 14px 14px;
+      border-top: 1px solid var(--border);
+      background: var(--white);
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+      flex-shrink: 0;
+    }
+    .chat-input-area textarea {
+      flex: 1;
+      resize: none;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-family: 'Sarabun', sans-serif;
+      outline: none;
+      max-height: 100px;
+      line-height: 1.5;
+      transition: border-color 0.2s;
+      color: var(--text-dark);
+      background: #f8fafc;
+    }
+    .chat-input-area textarea:focus {
+      border-color: var(--accent);
+      background: #fff;
+    }
+    .chat-input-area textarea::placeholder { color: #94a3b8; }
+
+    .send-btn {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, #1a56db, #1d4ed8);
+      border: none;
+      border-radius: 11px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(26,86,219,0.35);
+    }
+    .send-btn:hover  { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,86,219,0.45); }
+    .send-btn:active { transform: scale(0.95); }
+    .send-btn:disabled { background: #93c5fd; cursor: not-allowed; box-shadow: none; }
+    .send-btn svg { width: 17px; height: 17px; fill: #fff; }
+
+    /* ══════════ FOOTER ══════════ */
+    .chat-footer {
+      text-align: center;
+      padding: 6px 0 10px;
+      font-size: 10px;
+      color: #b0bec5;
+      background: var(--white);
+      letter-spacing: 0.3px;
+      flex-shrink: 0;
+    }
+    .chat-footer span { font-weight: 700; color: #94a3b8; }
+
+    /* ══════════ SCROLL TO BOTTOM BTN ══════════ */
+    #scrollBtn {
+      position: absolute;
+      bottom: 80px;
+      right: 14px;
+      width: 34px; height: 34px;
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      align-items: center; justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      color: var(--text-muted);
+      transition: all 0.15s;
+      z-index: 10;
+    }
+    #scrollBtn.visible { display: flex; }
+    #scrollBtn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    /* ══════════ RESPONSIVE ══════════ */
+    @media (max-width: 540px) {
+      .chat-wrapper { border-radius: 0; max-height: 100vh; height: 100vh; }
+      html, body { align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="chat-wrapper">
+
+  <!-- ── API Key Modal ── -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-box">
+      <div class="modal-logo">
+        <!-- Gemini / Google G icon -->
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M24 4C12.95 4 4 12.95 4 24C4 35.05 12.95 44 24 44C35.05 44 44 35.05 44 24C44 12.95 35.05 4 24 4Z" fill="white"/>
+          <path d="M24 20.5V27.5H33.5C33.05 29.95 31.6 32.05 29.45 33.45L35.05 37.85C38.4 34.75 40.35 30.2 40.35 24.75C40.35 23.5 40.25 22.3 40.05 21.1L24 20.5Z" fill="#4285F4"/>
+          <path d="M13.35 28.6L11.75 29.85L7.65 33.05C10.45 38.35 16.0 42 22.5 42C27.45 42 31.6 40.35 34.8 37.5L29.2 33.1C27.55 34.15 25.45 34.8 22.5 34.8C17.8 34.8 13.85 31.75 12.5 27.5L13.35 28.6Z" fill="#34A853"/>
+          <path d="M7.65 15C6.6 17.1 6 19.5 6 22C6 24.5 6.6 26.9 7.65 29L12.5 25C12.15 23.75 11.95 22.4 11.95 21C11.95 19.6 12.15 18.25 12.5 17L7.65 15Z" fill="#FBBC05"/>
+          <path d="M22.5 9.2C25.7 9.2 28.55 10.35 30.8 12.5L35.5 7.8C32.3 4.85 28.2 3 22.5 3C16.0 3 10.45 6.65 7.65 12L12.5 16C13.85 11.75 17.8 9.2 22.5 9.2Z" fill="#EA4335"/>
+        </svg>
+      </div>
+      <div class="modal-title">เชื่อมต่อ Gemini AI</div>
+      <div class="modal-desc">
+        ใส่ Gemini API Key เพื่อเริ่มแชท<br>
+        รับ Key ฟรีได้ที่
+        <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a>
+      </div>
+      <div class="modal-input-wrap">
+        <input
+          type="password"
+          id="apiKeyInput"
+          placeholder="AIza..."
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button class="toggle-key-btn" onclick="toggleKeyVisibility()" title="แสดง/ซ่อน Key">
+          <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+      </div>
+      <button class="modal-save-btn" onclick="saveApiKey()">บันทึกและเริ่มแชท</button>
+      <div class="modal-error" id="modalError"></div>
+      <span class="modal-skip" id="modalSkip" onclick="closeModal()">ข้ามก่อน (ยังไม่มี Key)</span>
+    </div>
+  </div>
+
+  <!-- Hero Header -->
+  <div class="chat-hero">
+    <div class="hero-avatar">
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M24 6 C24 6 25.5 15 30 18 C34.5 21 42 22 42 24 C42 26 34.5 27 30 30 C25.5 33 24 42 24 42 C24 42 22.5 33 18 30 C13.5 27 6 26 6 24 C6 22 13.5 21 18 18 C22.5 15 24 6 24 6Z"
+              fill="white" fill-opacity="0.95"/>
+        <path d="M37 9 C37 9 37.7 12.3 39.5 13.5 C41.3 14.7 44 15 44 15 C44 15 41.3 15.3 39.5 16.5 C37.7 17.7 37 21 37 21 C37 21 36.3 17.7 34.5 16.5 C32.7 15.3 30 15 30 15 C30 15 32.7 14.7 34.5 13.5 C36.3 12.3 37 9 37 9Z"
+              fill="white" fill-opacity="0.7"/>
+        <path d="M12 30 C12 30 12.4 31.8 13.5 32.5 C14.6 33.2 16 33 16 33 C16 33 14.6 33.2 13.5 34 C12.4 34.8 12 36 12 36 C12 36 11.6 34.8 10.5 34 C9.4 33.2 8 33 8 33 C8 33 9.4 33.2 10.5 32.5 C11.6 31.8 12 30 12 30Z"
+              fill="white" fill-opacity="0.55"/>
+      </svg>
+      <div class="hero-avatar-ring"></div>
+    </div>
+    <div class="hero-info">
+      <div class="hero-title">IT Support Bot · Gemini AI</div>
+      <div class="hero-status">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">กำลังรอ API Key...</span>
+      </div>
+    </div>
+    <!-- Settings / Key button -->
+    <button class="btn-hero-settings" onclick="openModal()" title="ตั้งค่า API Key">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Messages -->
+  <div class="chat-messages" id="messages">
+    <!-- No-key banner -->
+    <div class="no-key-banner hidden" id="noKeyBanner" onclick="openModal()">
+      🔑 ยังไม่ได้ใส่ Gemini API Key — คลิกที่นี่เพื่อใส่ Key
+    </div>
+
+    <div class="message bot">
+      <div class="msg-icon">✨</div>
+      <div class="msg-body">
+        <div class="bubble">
+          สวัสดีครับ! ผมคือ IT Support Bot พลังงานจาก <strong>Gemini AI</strong> 🤖<br><br>
+          พิมพ์คำถามด้าน IT ได้เลยครับ
+        </div>
+        <div class="timestamp" id="welcomeTime"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll to bottom -->
+  <button id="scrollBtn" onclick="scrollToBottom()" title="เลื่อนลง">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+  </button>
+
+  <!-- Input -->
+  <div class="chat-input-area">
+    <textarea
+      id="userInput"
+      placeholder="พิมพ์ข้อความ..."
+      rows="1"
+      onkeydown="handleKey(event)"
+      oninput="autoResize(this)"
+    ></textarea>
+    <button class="send-btn" id="sendBtn" onclick="sendMessage()" title="ส่ง">
+      <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+    </button>
+  </div>
+
+  <!-- Footer -->
+  <div class="chat-footer">Powered by <span>Gemini AI</span> · IT Support · FARMCHOKCHAI</div>
+
+</div>
+
+<script>
+  // ── State ──────────────────────────────────────────────────────
+  let GEMINI_API_KEY = "AIzaSyCJddraOF2cqN0td8QaIan5qvQkKezY8eM";
+  let chatHistory   = [];   // [{role:"user"|"model", parts:[{text:"..."}]}]
+
+  const GEMINI_MODEL  = "gemini-2.0-flash";
+  const GEMINI_URL    = () =>
+    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+
+  const SYSTEM_PROMPT = `คุณคือ IT Support Bot ที่ช่วยตอบคำถามด้าน IT Support ให้กับพนักงาน
+ตอบเป็นภาษาไทยเสมอ (ยกเว้นคำศัพท์เทคนิค) ด้วยโทนเป็นกันเอง สุภาพ และกระชับ
+ถ้าไม่ทราบให้บอกตรงๆ และแนะนำให้ติดต่อ IT Team โดยตรง`;
+
+  // ── Modal ──────────────────────────────────────────────────────
+  function openModal() {
+    document.getElementById("modalOverlay").classList.remove("hidden");
+    document.getElementById("apiKeyInput").value = GEMINI_API_KEY;
+    document.getElementById("modalError").textContent = "";
+    // hide skip button if key already set
+    document.getElementById("modalSkip").style.display = GEMINI_API_KEY ? "none" : "block";
+    setTimeout(() => document.getElementById("apiKeyInput").focus(), 100);
+  }
+
+  function closeModal() {
+    document.getElementById("modalOverlay").classList.add("hidden");
+  }
+
+  function toggleKeyVisibility() {
+    const input = document.getElementById("apiKeyInput");
+    input.type  = input.type === "password" ? "text" : "password";
+  }
+
+  function saveApiKey() {
+    const key = document.getElementById("apiKeyInput").value.trim();
+    if (!key) {
+      document.getElementById("modalError").textContent = "⚠️ กรุณากรอก API Key ก่อนครับ";
+      return;
+    }
+    if (!key.startsWith("AIza")) {
+      document.getElementById("modalError").textContent = "⚠️ API Key ไม่ถูกต้อง (ควรขึ้นต้นด้วย AIza...)";
+      return;
+    }
+    GEMINI_API_KEY = key;
+    closeModal();
+    setOnline(true);
+    document.getElementById("noKeyBanner").classList.add("hidden");
+    appendMessage("bot", "✅ เชื่อมต่อ Gemini AI สำเร็จแล้วครับ! พิมพ์คำถามด้าน IT ได้เลยครับ 😊");
+  }
+
+  function setOnline(online) {
+    const dot  = document.getElementById("statusDot");
+    const text = document.getElementById("statusText");
+    if (online) {
+      dot.className  = "status-dot";
+      text.textContent = "Online — Gemini AI พร้อมใช้งาน";
+    } else {
+      dot.className  = "status-dot offline";
+      text.textContent = "กำลังรอ API Key...";
+    }
+  }
+
+  // ── Markdown renderer ──────────────────────────────────────────
+  function renderMarkdown(text) {
+    return text
+      .replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g,
+        '<a href="$2" target="_blank" rel="noopener noreferrer" style="color:#1a56db;text-decoration:underline;word-break:break-all;">$1</a>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/^[\*\-] (.+)$/gm, '<li style="margin-left:16px;margin-bottom:2px;">$1</li>')
+      .replace(/^\d+\. (.+)$/gm, '<li style="margin-left:16px;margin-bottom:2px;">$1</li>')
+      .replace(/\n/g, '<br>');
+  }
+
+  // ── Helpers ────────────────────────────────────────────────────
+  document.getElementById('welcomeTime').textContent = getTime();
+
+  const msgContainer = document.getElementById('messages');
+  msgContainer.addEventListener('scroll', function() {
+    const btn = document.getElementById('scrollBtn');
+    const nearBottom = msgContainer.scrollHeight - msgContainer.scrollTop - msgContainer.clientHeight < 80;
+    btn.classList.toggle('visible', !nearBottom);
+  });
+
+  function scrollToBottom() { msgContainer.scrollTop = msgContainer.scrollHeight; }
+
+  function getTime() {
+    return new Date().toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" });
+  }
+
+  function autoResize(el) {
+    el.style.height = "auto";
+    el.style.height = Math.min(el.scrollHeight, 100) + "px";
+  }
+
+  function handleKey(e) {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  }
+
+  function appendMessage(role, text) {
+    const isUser = role === "user";
+    const div = document.createElement("div");
+    div.className = `message ${role}`;
+    div.innerHTML = `
+      <div class="msg-icon">${isUser ? "👤" : "✨"}</div>
+      <div class="msg-body">
+        <div class="bubble">${renderMarkdown(text)}</div>
+        <div class="timestamp">${getTime()}</div>
+      </div>
+    `;
+    msgContainer.appendChild(div);
+    msgContainer.scrollTop = msgContainer.scrollHeight;
+    return div;
+  }
+
+  function showTyping() {
+    const div = document.createElement("div");
+    div.className = "message bot typing";
+    div.id = "typingIndicator";
+    div.innerHTML = `
+      <div class="msg-icon">🤖</div>
+      <div class="bubble">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+    `;
+    msgContainer.appendChild(div);
+    msgContainer.scrollTop = msgContainer.scrollHeight;
+  }
+
+  function removeTyping() {
+    const el = document.getElementById("typingIndicator");
+    if (el) el.remove();
+  }
+
+  // ── Gemini API call ────────────────────────────────────────────
+  async function callGemini(userMessage) {
+    // Push user turn to history
+    chatHistory.push({ role: "user", parts: [{ text: userMessage }] });
+
+    const body = {
+      system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+      contents: chatHistory
+    };
+
+    const res = await fetch(GEMINI_URL(), {
+      method:  "POST",
+      headers: { "Content-Type": "application/json" },
+      body:    JSON.stringify(body)
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      const msg = err?.error?.message || `HTTP ${res.status}`;
+      // Pop last user message on error so history stays clean
+      chatHistory.pop();
+      throw new Error(msg);
+    }
+
+    const data  = await res.json();
+    const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || "(ไม่มีคำตอบ)";
+
+    // Push model reply to history
+    chatHistory.push({ role: "model", parts: [{ text: reply }] });
+    return reply;
+  }
+
+  // ── Send ───────────────────────────────────────────────────────
+  async function sendMessage() {
+    const input   = document.getElementById("userInput");
+    const sendBtn = document.getElementById("sendBtn");
+    const message = input.value.trim();
+    if (!message) return;
+
+    // Guard: no key
+    if (!GEMINI_API_KEY) {
+      document.getElementById("noKeyBanner").classList.remove("hidden");
+      openModal();
+      return;
+    }
+
+    appendMessage("user", message);
+    input.value = "";
+    input.style.height = "auto";
+    sendBtn.disabled = true;
+    showTyping();
+
+    try {
+      const reply = await callGemini(message);
+      removeTyping();
+      appendMessage("bot", reply);
+    } catch (err) {
+      removeTyping();
+      const errMsg = err.message || "เกิดข้อผิดพลาด";
+      if (errMsg.includes("API_KEY_INVALID") || errMsg.includes("API key not valid")) {
+        appendMessage("bot", "❌ API Key ไม่ถูกต้องหรือหมดอายุ กรุณาตรวจสอบ Key ใหม่อีกครั้งครับ");
+        GEMINI_API_KEY = "";
+        setOnline(false);
+        setTimeout(openModal, 800);
+      } else {
+        appendMessage("bot", `⚠️ เกิดข้อผิดพลาด: ${errMsg}`);
+      }
+      console.error("Gemini error:", err);
+    }
+
+    sendBtn.disabled = false;
+    input.focus();
+  }
+
+  // ── Init ───────────────────────────────────────────────────────
+  window.addEventListener("load", () => {
+    setOnline(true);
+    document.getElementById("noKeyBanner").classList.add("hidden");
+  });
+</script>
+
+</body>
+</html>
