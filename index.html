@@ -5780,7 +5780,7 @@ window.usersDoResetPassword = usersDoResetPassword;
 
 <script>
 (function() {
-    var CHATBOT_URL = 'chatbot.html';
+    var CHATBOT_URL = 'https://gemini.google.com/app';
     var isOpen = false;
     var loaded = false;
     var isMaximized = false;
@@ -5817,7 +5817,8 @@ window.usersDoResetPassword = usersDoResetPassword;
             btn.classList.remove('has-badge');
             iconOpen.style.display  = 'none';
             iconClose.style.display = 'block';
-            if (!loaded) { iframe.src = CHATBOT_URL; loaded = true; }
+            window.open(CHATBOT_URL, '_blank');
+            toggleChatbot(); // close panel immediately
         } else {
             panel.classList.remove('open', 'maximized');
             btn.classList.remove('open');
