@@ -1561,25 +1561,62 @@
             position: fixed;
             bottom: 28px;
             right: 28px;
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, #2dd4bf, #22d3ee);
-            border-radius: 50%;
-            border: none;
+            width: auto;
+            height: 52px;
+            padding: 0 16px 0 10px;
+            background: linear-gradient(135deg, #0f766e, #0e7490);
+            border-radius: 999px;
+            border: 1.5px solid rgba(45,212,191,0.45);
             cursor: pointer;
-            box-shadow: 0 4px 20px rgba(45,212,191,0.45);
+            box-shadow: 0 4px 24px rgba(45,212,191,0.35);
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 10px;
             z-index: 9990;
             transition: all 0.25s cubic-bezier(.4,0,.2,1);
-            animation: chatPulse 2.5s ease-in-out infinite;
+            animation: chatPulse 3s ease-in-out infinite;
         }
-        #chatbot-btn:hover { transform: scale(1.1); box-shadow: 0 6px 26px rgba(45,212,191,0.65); }
-        #chatbot-btn.open { animation: none; }
+        #chatbot-btn .ai-btn-avatar {
+            width: 34px; height: 34px;
+            background: linear-gradient(135deg, #2dd4bf, #22d3ee);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            position: relative;
+            font-size: 17px;
+        }
+        #chatbot-btn .ai-btn-avatar::after {
+            content: '';
+            position: absolute;
+            bottom: 1px; right: 1px;
+            width: 9px; height: 9px;
+            background: #22c55e;
+            border-radius: 50%;
+            border: 2px solid #0f766e;
+            animation: blinkPulse 1.6s ease-in-out infinite;
+        }
+        #chatbot-btn .ai-btn-text {
+            display: flex; flex-direction: column; align-items: flex-start; line-height: 1.25;
+        }
+        #chatbot-btn .ai-btn-label {
+            font-family: 'Sarabun', sans-serif;
+            font-size: 0.82rem; font-weight: 800;
+            color: #ffffff; letter-spacing: 0.02em;
+        }
+        #chatbot-btn .ai-btn-status {
+            font-family: 'Sarabun', sans-serif;
+            font-size: 0.68rem; font-weight: 500;
+            color: #5eead4;
+        }
+        #chatbot-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(45,212,191,0.55), 0 0 0 6px rgba(45,212,191,0.10);
+            border-color: rgba(45,212,191,0.7);
+        }
+        #chatbot-btn.open { animation: none; transform: none; }
         @keyframes chatPulse {
-            0%,100% { box-shadow: 0 4px 20px rgba(45,212,191,0.45); }
-            50% { box-shadow: 0 4px 28px rgba(45,212,191,0.75), 0 0 0 10px rgba(45,212,191,0.10); }
+            0%,100% { box-shadow: 0 4px 24px rgba(45,212,191,0.35); }
+            50% { box-shadow: 0 4px 28px rgba(45,212,191,0.55), 0 0 0 8px rgba(45,212,191,0.08); }
         }
         #chatbot-panel {
             position: fixed;
@@ -1682,7 +1719,8 @@
         #chatbot-btn.has-badge .chatbot-unread-badge { display: flex; }
         @media (max-width: 768px) {
             #chatbot-panel { width: calc(100vw - 20px); right: 10px; bottom: 76px; height: min(70vh, calc(100vh - 100px)); border-radius: 16px; }
-            #chatbot-btn { bottom: 16px; right: 14px; width: 50px; height: 50px; }
+            #chatbot-btn { bottom: 16px; right: 14px; height: 46px; padding: 0 14px 0 8px; }
+            #chatbot-btn .ai-btn-avatar { width: 30px; height: 30px; font-size: 15px; }
         }
 
     </style>
@@ -5755,14 +5793,13 @@ window.usersDoResetPassword = usersDoResetPassword;
 </script>
 
 <!-- ══════════════ CHATBOT FLOATING WIDGET ══════════════ -->
-<button id="chatbot-btn" onclick="toggleChatbot()" title="IT Support Assistant" aria-label="เปิด IT Support Chatbot">
+<button id="chatbot-btn" onclick="toggleChatbot()" title="AI Support Assistant — พร้อมใช้งาน" aria-label="เปิด AI Support Chatbot">
     <span class="chatbot-unread-badge">1</span>
-    <svg id="chat-icon-open" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-    </svg>
-    <svg id="chat-icon-close" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" style="display:none;">
-        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-    </svg>
+    <span class="ai-btn-avatar">🤖</span>
+    <span class="ai-btn-text">
+        <span class="ai-btn-label">AI Support</span>
+        <span class="ai-btn-status">● พร้อมใช้งาน</span>
+    </span>
 </button>
 
 <div id="chatbot-panel" role="dialog" aria-label="IT Support Chatbot">
@@ -5804,27 +5841,21 @@ window.usersDoResetPassword = usersDoResetPassword;
 
     window.toggleChatbot = function() {
         isOpen = !isOpen;
-        var panel     = document.getElementById('chatbot-panel');
-        var btn       = document.getElementById('chatbot-btn');
-        var iconOpen  = document.getElementById('chat-icon-open');
-        var iconClose = document.getElementById('chat-icon-close');
-        var iframe    = document.getElementById('chatbot-iframe');
+        var panel  = document.getElementById('chatbot-panel');
+        var btn    = document.getElementById('chatbot-btn');
+        var iframe = document.getElementById('chatbot-iframe');
         if (!panel || !btn) return;
 
         if (isOpen) {
             panel.classList.add('open');
             btn.classList.add('open');
             btn.classList.remove('has-badge');
-            iconOpen.style.display  = 'none';
-            iconClose.style.display = 'block';
             var w=380,h=560,left=(screen.width-w)/2,top=(screen.height-h)/2;
             window.open(CHATBOT_URL,'GeminiChat','width='+w+',height='+h+',left='+left+',top='+top+',resizable=yes,scrollbars=yes');
             toggleChatbot();
         } else {
             panel.classList.remove('open', 'maximized');
             btn.classList.remove('open');
-            iconOpen.style.display  = 'block';
-            iconClose.style.display = 'none';
             isMaximized = false;
             var btnExp = document.getElementById('btn-expand');
             if (btnExp) {
