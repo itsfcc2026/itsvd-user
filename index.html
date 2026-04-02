@@ -5817,8 +5817,9 @@ window.usersDoResetPassword = usersDoResetPassword;
             btn.classList.remove('has-badge');
             iconOpen.style.display  = 'none';
             iconClose.style.display = 'block';
-            window.open(CHATBOT_URL, '_blank');
-            toggleChatbot(); // close panel immediately
+            var w=480,h=700,left=(screen.width-w)/2,top=(screen.height-h)/2;
+            window.open(CHATBOT_URL,'GeminiChat','width='+w+',height='+h+',left='+left+',top='+top+',resizable=yes,scrollbars=yes');
+            toggleChatbot();
         } else {
             panel.classList.remove('open', 'maximized');
             btn.classList.remove('open');
