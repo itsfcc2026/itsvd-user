@@ -1723,6 +1723,108 @@
             #chatbot-btn .ai-btn-avatar { width: 30px; height: 30px; font-size: 15px; }
         }
 
+
+        /* ══════════ AI POPUP OVERLAY ══════════ */
+        #ai-popup-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(10, 25, 35, 0.65);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            z-index: 99999;
+            align-items: center;
+            justify-content: center;
+        }
+        #ai-popup-overlay.show { display: flex; animation: aiOverlayIn 0.22s ease-out; }
+        @keyframes aiOverlayIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+        #ai-popup-modal {
+            width: min(420px, calc(100vw - 32px));
+            height: min(620px, calc(100vh - 80px));
+            background: linear-gradient(160deg, #0d2333 0%, #112b3a 60%, #0d2535 100%);
+            border: 1px solid rgba(45,212,191,0.28);
+            border-radius: 22px;
+            box-shadow: 0 32px 80px rgba(0,0,0,0.65), 0 0 0 1px rgba(45,212,191,0.08), inset 0 1px 0 rgba(255,255,255,0.06);
+            display: flex; flex-direction: column;
+            overflow: hidden;
+            animation: aiModalIn 0.28s cubic-bezier(.34,1.36,.64,1);
+        }
+        @keyframes aiModalIn {
+            from { opacity: 0; transform: scale(0.88) translateY(24px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        #ai-popup-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 16px 14px 16px;
+            background: linear-gradient(90deg, rgba(13,57,55,0.85) 0%, rgba(14,60,75,0.85) 100%);
+            border-bottom: 1px solid rgba(45,212,191,0.18);
+            flex-shrink: 0;
+            backdrop-filter: blur(10px);
+        }
+        #ai-popup-header-left { display: flex; align-items: center; gap: 11px; }
+        #ai-popup-avatar {
+            width: 38px; height: 38px;
+            background: linear-gradient(135deg, #2dd4bf, #22d3ee);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 19px;
+            box-shadow: 0 4px 14px rgba(45,212,191,0.4);
+            flex-shrink: 0;
+        }
+        #ai-popup-title {
+            font-family: 'Sarabun', sans-serif;
+            font-size: 0.95rem; font-weight: 800;
+            color: #e2e8f0; letter-spacing: 0.01em;
+        }
+        #ai-popup-subtitle {
+            font-family: 'Sarabun', sans-serif;
+            font-size: 0.72rem; font-weight: 500;
+            color: #5eead4;
+            display: flex; align-items: center; gap: 5px;
+            margin-top: 1px;
+        }
+        #ai-popup-dot {
+            width: 7px; height: 7px;
+            background: #22c55e;
+            border-radius: 50%;
+            display: inline-block;
+            animation: blinkPulse 1.6s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+        #ai-popup-actions { display: flex; gap: 6px; }
+        #ai-popup-newwin, #ai-popup-close {
+            width: 30px; height: 30px;
+            border-radius: 9px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.6);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.15s;
+        }
+        #ai-popup-newwin:hover {
+            background: rgba(45,212,191,0.2);
+            color: #2dd4bf;
+            border-color: rgba(45,212,191,0.45);
+        }
+        #ai-popup-close:hover {
+            background: rgba(248,113,113,0.18);
+            color: #f87171;
+            border-color: rgba(248,113,113,0.4);
+        }
+        #ai-popup-iframe {
+            flex: 1;
+            width: 100%;
+            border: none;
+            background: #fff;
+            display: block;
+        }
+        @media (max-width: 480px) {
+            #ai-popup-modal { border-radius: 18px 18px 0 0; align-self: flex-end; width: 100%; height: 88vh; }
+            #ai-popup-overlay.show { align-items: flex-end; }
+        }
     </style>
 </head>
 <body>
@@ -5839,31 +5941,57 @@ window.usersDoResetPassword = usersDoResetPassword;
         }
     };
 
-    window.toggleChatbot = function() {
-        isOpen = !isOpen;
-        var panel  = document.getElementById('chatbot-panel');
-        var btn    = document.getElementById('chatbot-btn');
-        var iframe = document.getElementById('chatbot-iframe');
-        if (!panel || !btn) return;
+    // create custom popup overlay
+    (function createPopup() {
+        var overlay = document.createElement('div');
+        overlay.id = 'ai-popup-overlay';
+        overlay.innerHTML =
+            '<div id="ai-popup-modal">' +
+              '<div id="ai-popup-header">' +
+                '<div id="ai-popup-header-left">' +
+                  '<div id="ai-popup-avatar">&#x1F916;</div>' +
+                  '<div>' +
+                    '<div id="ai-popup-title">AI Support</div>' +
+                    '<div id="ai-popup-subtitle"><span id="ai-popup-dot"></span>&#x0E1E;&#x0E23;&#x0E49;&#x0E2D;&#x0E21;&#x0E43;&#x0E2B;&#x0E49;&#x0E1A;&#x0E23;&#x0E34;&#x0E01;&#x0E32;&#x0E23;</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div id="ai-popup-actions">' +
+                  '<button id="ai-popup-newwin" title="&#x0E40;&#x0E1B;&#x0E34;&#x0E14;&#x0E2B;&#x0E19;&#x0E49;&#x0E32;&#x0E15;&#x0E48;&#x0E32;&#x0E07;&#x0E43;&#x0E2B;&#x0E21;&#x0E48;" onclick="window.open(\'' + CHATBOT_URL + '\',\'_blank\')">' +
+                    '<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\"><path d=\"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6\"/><polyline points=\"15 3 21 3 21 9\"/><line x1=\"10\" y1=\"14\" x2=\"21\" y2=\"3\"/></svg>' +
+                  '</button>' +
+                  '<button id="ai-popup-close" title="&#x0E1B;&#x0E34;&#x0E14;" onclick="window.closeChatPopup()">' +
+                    '<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\"><line x1=\"18\" y1=\"6\" x2=\"6\" y2=\"18\"/><line x1=\"6\" y1=\"6\" x2=\"18\" y2=\"18\"/></svg>' +
+                  '</button>' +
+                '</div>' +
+              '</div>' +
+              '<iframe id="ai-popup-iframe" src="' + CHATBOT_URL + '" allow="microphone" loading="lazy" title="AI Support Chat"></iframe>' +
+            '</div>';
+        document.body.appendChild(overlay);
 
-        if (isOpen) {
-            panel.classList.add('open');
-            btn.classList.add('open');
-            btn.classList.remove('has-badge');
-            var w=380,h=560,left=(screen.width-w)/2,top=(screen.height-h)/2;
-            window.open(CHATBOT_URL,'GeminiChat','width='+w+',height='+h+',left='+left+',top='+top+',resizable=yes,scrollbars=yes');
-            toggleChatbot();
-        } else {
-            panel.classList.remove('open', 'maximized');
-            btn.classList.remove('open');
-            isMaximized = false;
-            var btnExp = document.getElementById('btn-expand');
-            if (btnExp) {
-                btnExp.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>';
-                btnExp.title = 'ขยายเต็มจอ';
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) window.closeChatPopup();
+        });
+
+        window.closeChatPopup = function() {
+            overlay.classList.remove('show');
+            var b = document.getElementById('chatbot-btn');
+            if (b) b.classList.remove('open');
+            isOpen = false;
+        };
+
+        window.toggleChatbot = function() {
+            isOpen = !isOpen;
+            var btn = document.getElementById('chatbot-btn');
+            if (!btn) return;
+            if (isOpen) {
+                overlay.classList.add('show');
+                btn.classList.add('open');
+                btn.classList.remove('has-badge');
+            } else {
+                window.closeChatPopup();
             }
-        }
-    };
+        };
+    })();
 })();
 </script>
 
