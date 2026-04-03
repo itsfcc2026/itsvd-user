@@ -2225,7 +2225,7 @@
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" style="flex-shrink:0;opacity:0.6"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                                 </div>
                                 <!-- hidden input เก็บค่าจริงสำหรับ form submit -->
-                                <input type="hidden" id="userName" required>
+                                <input type="hidden" id="userName">
                             </div>
                             <div class="form-group">
                                 <label>ส่วนงาน</label>
@@ -2252,7 +2252,7 @@
                             <div class="form-group">
                                 <label data-i18n="lbl_priority">ระดับความเร่งด่วน <span style="font-size:.78rem;font-weight:400;color:#94a3b8;">(เลือกระดับตามผลกระทบของปัญหาที่เกิดขึ้น)</span></label>
                                 <!-- Hidden select kept for form submit compatibility -->
-                                <select id="priority" required style="display:none;">
+                                <select id="priority" style="display:none;">
                                     <option value="Low">Low</option>
                                     <option value="Medium">Medium</option>
                                     <option value="High">High</option>
@@ -3786,9 +3786,52 @@ function dupModalClose() {
 function handleTicketSubmit(e) {
     e.preventDefault();
 
-    const candidateUser     = document.getElementById('userName').value.trim();
-    const candidateCategory = document.getElementById('category').value;
-    const candidateDesc     = document.getElementById('description').value.trim();
+    // ── Manual validation (ป้องกัน hidden fields ที่ browser validate ไม่ได้) ──
+    const _session = (typeof UserSession !== 'undefined') ? UserSession.getUser() : null;
+    const _nameHidden = document.getElementById('userName');
+    // Auto-fill userName จาก session ถ้ายังว่างอยู่
+    if (_session && _nameHidden && !_nameHidden.value) {
+        _nameHidden.value = _session.fullname || _session.email || '';
+        const disp = document.getElementById('userName-display');
+        if (disp && !disp.textContent) disp.textContent = _nameHidden.value;
+    }
+
+    const nameVal     = document.getElementById('userName').value.trim();
+    const sectionVal  = document.getElementById('userSection').value;
+    const deptVal     = document.getElementById('userDept').value;
+    const categoryVal = document.getElementById('category').value;
+    const descVal     = document.getElementById('description').value.trim();
+    const priorityVal = document.getElementById('priority').value || 'Low';
+
+    if (!nameVal) {
+        alert('ไม่พบข้อมูลผู้ใช้งาน กรุณา Login ก่อนส่ง Ticket');
+        return;
+    }
+    if (!sectionVal) {
+        alert('กรุณาเลือกส่วนงาน');
+        document.getElementById('userSection').focus();
+        return;
+    }
+    if (!deptVal) {
+        alert('กรุณาเลือกฝ่าย');
+        document.getElementById('userDept').focus();
+        return;
+    }
+    if (!categoryVal) {
+        alert('กรุณาเลือกหมวดหมู่ปัญหา');
+        document.getElementById('category').focus();
+        return;
+    }
+    if (!descVal) {
+        alert('กรุณากรอกรายละเอียดอาการเสีย');
+        document.getElementById('description').focus();
+        return;
+    }
+
+    // ── Ensure priority has a value ──
+    if (!priorityVal) {
+        document.getElementById('priority').value = 'Low';
+    }
 
     const allTickets = adminTickets.length > 0 ? adminTickets : (JSON.parse(localStorage.getItem(TICKETS_KEY)) || []);
     const lastNum = allTickets.reduce((max, t) => {
@@ -3796,17 +3839,16 @@ function handleTicketSubmit(e) {
         return match ? Math.max(max, parseInt(match[1])) : max;
     }, TICKET_START_NUMBER - 1);
     const id = `${TICKET_PREFIX}-${lastNum + 1}`;
-    const _sessionUser = (typeof UserSession !== 'undefined') ? UserSession.getUser() : null;
     const newTicket = {
         id,
         date: new Date().toISOString(),
-        user: document.getElementById('userName').value,
-        email: _sessionUser ? _sessionUser.email : '',
-        section: document.getElementById('userSection').value || '-',
-        dept: document.getElementById('userDept').value || '-',
-        category: document.getElementById('category').value,
-        desc: document.getElementById('description').value,
-        priority: document.getElementById('priority').value,
+        user: nameVal,
+        email: _session ? _session.email : '',
+        section: sectionVal,
+        dept: deptVal,
+        category: categoryVal,
+        desc: descVal,
+        priority: document.getElementById('priority').value || 'Low',
         status: "Open",
         adminNote: "",
         assignee: "",
