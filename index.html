@@ -3973,7 +3973,7 @@ function _afterSubmitReset(form) {
     const deptSel = document.getElementById('userDept');
     if (deptSel) deptSel.innerHTML = '<option value="" disabled selected>-- กรุณาเลือกส่วนงานก่อน --</option>';
     userCurrentPage = 1;
-    userShowPage('track');
+    userShowPage('home');
     if (typeof renderUserTickets === 'function') renderUserTickets();
     updateUserBadge();
 }
