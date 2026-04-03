@@ -3968,7 +3968,8 @@ async function _commitTicket(ticket) {
 }
 
 function _afterSubmitReset(form) {
-    if (form) form.reset();
+    const actualForm = form && form.tagName === 'FORM' ? form : form && form.closest ? form.closest('form') : null;
+    if (actualForm) actualForm.reset();
     setTimeout(() => initPriorityPicker(), 0);
     const deptSel = document.getElementById('userDept');
     if (deptSel) deptSel.innerHTML = '<option value="" disabled selected>-- กรุณาเลือกส่วนงานก่อน --</option>';
