@@ -3741,13 +3741,46 @@ function detectDuplicate(newTicket, allTickets) {
 // ── Duplicate modal ───────────────────────────────────────────────────────────
 function showDupModal(dupResult) {
     const t = dupResult.ticket;
-    const typeLabel = dupResult.type === 'exact' ? 'Ticket ซ้ำ' : 'Ticket คล้ายกัน';
-    const msg = '⚠️ พบ' + typeLabel + 'ในระบบ\n\nTicket: ' + t.id + '\nหมวด: ' + t.category + '\nสถานะ: ' + t.status + '\n\nต้องการส่ง Ticket ใหม่อีกครั้งหรือไม่?';
-    if (confirm(msg)) {
-        _commitTicket(_pendingTicketData);
+    const isDup = dupResult.type === 'exact';
+    const modal = document.getElementById('dup-modal');
+    const icon  = document.getElementById('dup-modal-icon');
+    const title = document.getElementById('dup-modal-title');
+    const sub   = document.getElementById('dup-modal-sub');
+
+    if (icon)  icon.textContent  = isDup ? '⚠️' : '🔍';
+    if (title) title.textContent = isDup ? 'พบ Ticket ซ้ำในระบบ' : 'พบ Ticket คล้ายกัน';
+    if (sub)   sub.textContent   = 'Ticket: ' + t.id + ' · หมวด: ' + t.category + ' · สถานะ: ' + t.status;
+
+    if (modal) {
+        modal.style.display = 'flex';
+    } else {
+        // Fallback: ถ้าไม่มี modal ให้ใช้ confirm
+        if (confirm('⚠️ พบ' + (isDup ? 'Ticket ซ้ำ' : 'Ticket คล้ายกัน') + ' (' + t.id + ')\nต้องการส่ง Ticket ใหม่อีกครั้งหรือไม่?')) {
+            var pending = _pendingTicketData;
+            _pendingTicketData = null;
+            _commitTicket(pending);
+            _afterSubmitReset(document.getElementById('ticket-form'));
+        } else {
+            _pendingTicketData = null;
+        }
+    }
+}
+
+function dupModalSubmitAnyway() {
+    var pending = _pendingTicketData;
+    _pendingTicketData = null;
+    var modal = document.getElementById('dup-modal');
+    if (modal) modal.style.display = 'none';
+    if (pending) {
+        _commitTicket(pending);
         _afterSubmitReset(document.getElementById('ticket-form'));
     }
+}
+
+function dupModalClose() {
     _pendingTicketData = null;
+    var modal = document.getElementById('dup-modal');
+    if (modal) modal.style.display = 'none';
 }
 
 function handleTicketSubmit(e) {
