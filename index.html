@@ -3720,21 +3720,23 @@ let _pendingTicketData = null;
 function detectDuplicate(newTicket, allTickets) {
     const now = Date.now();
     const WINDOW_MS = 30 * 60 * 1000; // 30 นาที
-    const newDesc = (newTicket.desc || '').toLowerCase().trim();
-    const newCat  = (newTicket.category || '').toLowerCase();
+    // ใช้ String() เสมอเพื่อป้องกัน TypeError เมื่อ desc/category มี type ไม่ใช่ string
+    const newDesc = String(newTicket.desc || '').toLowerCase().trim();
+    const newCat  = String(newTicket.category || '').toLowerCase();
 
     for (const t of allTickets) {
+        if (!t || typeof t !== 'object') continue; // skip malformed entries
         if (t.status === 'Fixed' || t.status === 'Closed') continue;
         const tDate = new Date(t.date).getTime();
         if (
             t.user === newTicket.user &&
-            (t.category || '').toLowerCase() === newCat &&
+            String(t.category || '').toLowerCase() === newCat &&
             now - tDate < WINDOW_MS
         ) {
             return { type: 'exact', ticket: t };
         }
-        const tDesc = (t.desc || '').toLowerCase().trim();
-        if (newDesc && tDesc && newCat === (t.category || '').toLowerCase()) {
+        const tDesc = String(t.desc || '').toLowerCase().trim();
+        if (newDesc && tDesc && newCat === String(t.category || '').toLowerCase()) {
             const wordsNew = newDesc.split(/\s+/).filter(w => w.length > 3);
             const wordsOld = new Set(tDesc.split(/\s+/).filter(w => w.length > 3));
             const overlap  = wordsNew.filter(w => wordsOld.has(w)).length;
