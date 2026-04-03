@@ -3082,8 +3082,9 @@ window.onload = async function() {
     const _ls = document.getElementById('lang-selector');
     if (_ls) _ls.value = 'th';
     currentLang = 'th';
-    updateUserUI();
-    document.getElementById('ticket-form').onsubmit = handleTicketSubmit;
+    try { updateUserUI(); } catch(e) { console.warn('[onload] updateUserUI error:', e); }
+    const _tf = document.getElementById('ticket-form');
+    if (_tf) _tf.onsubmit = handleTicketSubmit;
 
     // ── Step 2: sync ข้อมูลจาก GAS ใน background (ไม่บล็อก UI)
     syncPasswords();
@@ -3786,81 +3787,65 @@ function dupModalClose() {
 function handleTicketSubmit(e) {
     e.preventDefault();
 
-    // ── Manual validation (ป้องกัน hidden fields ที่ browser validate ไม่ได้) ──
+    // ── Auto-fill userName จาก session เสมอ (ไม่ block ถ้าว่าง) ──────────────
     const _session = (typeof UserSession !== 'undefined') ? UserSession.getUser() : null;
     const _nameHidden = document.getElementById('userName');
-    // Auto-fill userName จาก session ถ้ายังว่างอยู่
-    if (_session && _nameHidden && !_nameHidden.value) {
-        _nameHidden.value = _session.fullname || _session.email || '';
-        const disp = document.getElementById('userName-display');
-        if (disp && !disp.textContent) disp.textContent = _nameHidden.value;
+    if (_session && _nameHidden) {
+        const _display = _session.fullname || (_session.email ? _session.email.split('@')[0] : '');
+        if (!_nameHidden.value && _display) {
+            _nameHidden.value = _display;
+            const disp = document.getElementById('userName-display');
+            if (disp && !disp.textContent) disp.textContent = _display;
+        }
     }
 
-    const nameVal     = document.getElementById('userName').value.trim();
-    const sectionVal  = document.getElementById('userSection').value;
-    const deptVal     = document.getElementById('userDept').value;
-    const categoryVal = document.getElementById('category').value;
-    const descVal     = document.getElementById('description').value.trim();
-    const priorityVal = document.getElementById('priority').value || 'Low';
-
-    if (!nameVal) {
-        alert('ไม่พบข้อมูลผู้ใช้งาน กรุณา Login ก่อนส่ง Ticket');
-        return;
-    }
-    if (!sectionVal) {
-        alert('กรุณาเลือกส่วนงาน');
-        document.getElementById('userSection').focus();
-        return;
-    }
-    if (!deptVal) {
-        alert('กรุณาเลือกฝ่าย');
-        document.getElementById('userDept').focus();
-        return;
-    }
-    if (!categoryVal) {
-        alert('กรุณาเลือกหมวดหมู่ปัญหา');
-        document.getElementById('category').focus();
-        return;
-    }
+    // ── ตรวจสอบเฉพาะ field ที่ user ต้องกรอกจริง (ไม่ block บน hidden fields) ──
+    const descVal = document.getElementById('description').value.trim();
     if (!descVal) {
-        alert('กรุณากรอกรายละเอียดอาการเสีย');
-        document.getElementById('description').focus();
+        const descEl = document.getElementById('description');
+        if (descEl) { descEl.focus(); descEl.style.borderColor = '#ef4444'; }
+        showToast('⚠️ กรุณากรอกรายละเอียดอาการเสีย', 'error');
         return;
     }
-
-    // ── Ensure priority has a value ──
-    if (!priorityVal) {
-        document.getElementById('priority').value = 'Low';
-    }
+    // คืน border ปกติเมื่อกรอกแล้ว
+    const descElOk = document.getElementById('description');
+    if (descElOk) descElOk.style.borderColor = '';
 
     const allTickets = adminTickets.length > 0 ? adminTickets : (JSON.parse(localStorage.getItem(TICKETS_KEY)) || []);
     const lastNum = allTickets.reduce((max, t) => {
-        const match = t.id.match(/(\d+)$/);
+        const match = t.id ? t.id.match(/(\d+)$/) : null;
         return match ? Math.max(max, parseInt(match[1])) : max;
     }, TICKET_START_NUMBER - 1);
     const id = `${TICKET_PREFIX}-${lastNum + 1}`;
+
+    const nameVal     = (_nameHidden && _nameHidden.value.trim()) || (_session ? (_session.fullname || _session.email || 'ไม่ระบุ') : 'ไม่ระบุ');
+    const sectionVal  = (document.getElementById('userSection')  ? document.getElementById('userSection').value  : '') || '-';
+    const deptVal     = (document.getElementById('userDept')     ? document.getElementById('userDept').value     : '') || '-';
+    const categoryVal = (document.getElementById('category')     ? document.getElementById('category').value     : '') || 'Other';
+    const priorityVal = (document.getElementById('priority')     ? document.getElementById('priority').value     : '') || 'Low';
+
     const newTicket = {
         id,
         date: new Date().toISOString(),
         user: nameVal,
-        email: _session ? _session.email : '',
+        email: _session ? (_session.email || '') : '',
         section: sectionVal,
         dept: deptVal,
         category: categoryVal,
         desc: descVal,
-        priority: document.getElementById('priority').value || 'Low',
+        priority: priorityVal,
         status: "Open",
         adminNote: "",
         assignee: "",
         ticketType: "new"
     };
+
     // ── Duplicate / similar detection ──────────────────────────────────────
     const dupResult = detectDuplicate(newTicket, allTickets);
     if (dupResult.type !== 'new') {
-        // Show modal — hold ticket in pending state
         _pendingTicketData = newTicket;
         showDupModal(dupResult);
-        return; // don't submit yet
+        return;
     }
 
     _commitTicket(newTicket);
@@ -3945,7 +3930,7 @@ async function sendTelegramStatusUpdate(ticket, updatedStatus, assigneeName) {
 }
 // ===================== END TELEGRAM STATUS UPDATE =====================
 
-function _commitTicket(ticket) {
+async function _commitTicket(ticket) {
     // ── Optimistic update: อัปเดต in-memory ทันที (ไม่รอ GAS) ──
     if (!adminTickets.find(t => t.id === ticket.id)) adminTickets.unshift(ticket);
     userTickets = _filterForCurrentUser(adminTickets);
@@ -3953,18 +3938,26 @@ function _commitTicket(ticket) {
     // render UI ทันทีโดยไม่รอ network
     if (typeof renderUserTickets === 'function') renderUserTickets();
     if (typeof updateUserBadge === 'function') updateUserBadge();
-    // ส่งขึ้น GAS + Telegram ใน background
-    dbAddTicket(ticket);
-    sendTelegramNotification(ticket); // ส่งแจ้งเตือนไปยัง Telegram
-    showToast('✅ ส่ง Ticket เรียบร้อย! เลขอ้างอิง: ' + ticket.id, 'success');
+    // ส่งขึ้น GAS — รอผล แจ้งถ้าล้มเหลว
+    try {
+        await dbAddTicket(ticket);
+        showToast('✅ ส่ง Ticket เรียบร้อย! เลขอ้างอิง: ' + ticket.id, 'success');
+    } catch(e) {
+        // GAS ล้มเหลว — ticket อยู่ใน cache แล้ว แจ้งเตือน user
+        showToast('⚠️ บันทึก Ticket แล้ว แต่ยังไม่ได้ sync ขึ้น Server กรุณาตรวจสอบการเชื่อมต่อ', 'warning');
+        console.error('[_commitTicket] GAS sync failed:', e.message);
+    }
+    sendTelegramNotification(ticket); // ส่งแจ้งเตือน Telegram ใน background
 }
 
 function _afterSubmitReset(form) {
     if (form) form.reset();
     setTimeout(() => initPriorityPicker(), 0);
     const deptSel = document.getElementById('userDept');
-    if (deptSel) deptSel.innerHTML = '<option value= disabled selected>-- กรุณาเลือกส่วนงานก่อน --</option>';
+    if (deptSel) deptSel.innerHTML = '<option value="" disabled selected>-- กรุณาเลือกส่วนงานก่อน --</option>';
+    userCurrentPage = 1;
     userShowPage('track');
+    if (typeof renderUserTickets === 'function') renderUserTickets();
     updateUserBadge();
 }
 
