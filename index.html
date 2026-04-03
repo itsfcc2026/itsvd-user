@@ -1558,7 +1558,7 @@
 
         /* ══════════════ CHATBOT FLOATING WIDGET ══════════════ */
 
-        /* Wrapper — handles float animation & rotating ring OUTSIDE button */
+        /* Wrapper — handles float animation & border light */
         #chatbot-btn-wrap {
             position: fixed;
             bottom: 28px;
@@ -1569,28 +1569,41 @@
             animation: geminiFloat 5s ease-in-out infinite;
             will-change: transform;
         }
-        /* Rotating gradient ring on wrapper (never clipped) */
+        /* Static border — always visible */
         #chatbot-btn-wrap::before {
             content: '';
             position: absolute;
-            inset: -3px;
-            border-radius: 23px;
-            background: conic-gradient(from 0deg, #c084fc 0%, #818cf8 20%, #38bdf8 40%, #34d399 60%, #f472b6 80%, #c084fc 100%);
-            animation: rotateBorder 6s linear infinite;
-            will-change: transform;
-            opacity: 0.95;
+            inset: -2px;
+            border-radius: 22px;
+            border: 1.5px solid rgba(255,255,255,0.10);
+            pointer-events: none;
         }
-        /* Ambient outer glow on wrapper */
+        /* Travelling light spot — uses a conic that rotates, masked to look like 1 dot running the border */
         #chatbot-btn-wrap::after {
             content: '';
             position: absolute;
-            inset: -12px;
-            border-radius: 32px;
-            background: radial-gradient(ellipse at center, rgba(192,132,252,0.35) 0%, rgba(56,189,248,0.15) 50%, transparent 70%);
-            animation: glowPulse 5s ease-in-out infinite;
-            pointer-events: none;
+            inset: -2.5px;
+            border-radius: 22.5px;
+            background: conic-gradient(
+                from 0deg,
+                transparent 0deg,
+                transparent 310deg,
+                rgba(192,132,252,0.5) 330deg,
+                rgba(255,255,255,0.95) 345deg,
+                rgba(99,179,237,0.5) 360deg
+            );
+            animation: lightTravel 3s linear infinite;
+            will-change: transform;
+            /* Mask: show only the 2px ring, hide the fill */
+            -webkit-mask: 
+                radial-gradient(ellipse at center, transparent calc(50% - 3px), black calc(50% - 2.5px), black calc(50% + 2px), transparent calc(50% + 2.5px));
+            mask: 
+                radial-gradient(ellipse at center, transparent calc(50% - 3px), black calc(50% - 2.5px), black calc(50% + 2px), transparent calc(50% + 2.5px));
         }
-        @keyframes rotateBorder { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes lightTravel {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(360deg); }
+        }
         @keyframes geminiFloat {
             0%,100% { transform: translateY(0px); }
             50%      { transform: translateY(-5px); }
@@ -1598,6 +1611,16 @@
         @keyframes glowPulse {
             0%,100% { opacity: 0.55; transform: scale(1); }
             50%      { opacity: 1;    transform: scale(1.1); }
+        }
+        /* Ambient outer glow */
+        #chatbot-btn-wrap .btn-glow {
+            position: absolute;
+            inset: -10px;
+            border-radius: 30px;
+            background: radial-gradient(ellipse at center, rgba(138,99,255,0.18) 0%, transparent 68%);
+            animation: glowPulse 5s ease-in-out infinite;
+            pointer-events: none;
+            z-index: -1;
         }
 
         #chatbot-btn {
@@ -5869,6 +5892,7 @@ window.usersDoResetPassword = usersDoResetPassword;
 
 <!-- ══════════════ CHATBOT FLOATING WIDGET ══════════════ -->
 <div id="chatbot-btn-wrap">
+<div class="btn-glow"></div>
 <button id="chatbot-btn" onclick="toggleChatbot()" title="AI Support Assistant — พร้อมใช้งาน" aria-label="เปิด AI Support Chatbot">
     <span class="chatbot-unread-badge">1</span>
     <!-- Sparkle particles -->
@@ -5962,8 +5986,12 @@ window.usersDoResetPassword = usersDoResetPassword;
             btn.classList.remove('has-badge');
             var wrap = document.getElementById('chatbot-btn-wrap');
             if (wrap) wrap.classList.add('open');
-            var w=380,h=560,left=(screen.width-w)/2,top=(screen.height-h)/2;
-            window.open(CHATBOT_URL,'GeminiChat','width='+w+',height='+h+',left='+left+',top='+top+',resizable=yes,scrollbars=yes');
+            // เปิด popup ชิดขวาล่าง เหนือ widget
+            var w = 360, h = 620;
+            var margin = 28;
+            var left = screen.width - w - margin;
+            var top  = screen.height - h - 80;
+            window.open(CHATBOT_URL,'GeminiChat','width='+w+',height='+h+',left='+left+',top='+top+',resizable=yes,scrollbars=yes,toolbar=no,menubar=no,location=no,status=no,directories=no');
             toggleChatbot();
         } else {
             panel.classList.remove('open', 'maximized');
