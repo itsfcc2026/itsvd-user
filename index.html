@@ -1949,14 +1949,14 @@
             </div>
 
             <div>
-                <label class="login-label" for="user-forgot-email">Email บริษัท</label>
+                <label class="login-label" for="user-forgot-email">ต้องการรีเซต Password Email ที่แสดง หรือไม่ ?</label>
                 <div class="login-input-wrap">
                     <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
                     <input type="email" id="user-forgot-email" class="login-input" placeholder="yourname@farmchokchai.net" autocomplete="email" onkeydown="if(event.key==='Enter') doUserForgot()">
                 </div>
                 <button class="login-btn" id="user-forgot-btn" onclick="doUserForgot()" style="background:linear-gradient(135deg,#f59e0b,#ef4444);">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                    ส่ง Link รีเซ็ตรหัสผ่าน
+                    ส่งแจ้ง IT Support เพื่อรีเซ็ตรหัสผ่าน
                 </button>
             </div>
             <div class="login-footer">
@@ -5175,12 +5175,23 @@ async function doUserForgot() {
   btn.textContent = 'กำลังส่ง...';
 
   try {
-    const res = await userApiCall({ action: 'requestResetPassword', email });
-    if (!res.ok && res.status !== 'ok') throw new Error(res.error || res.message || 'เกิดข้อผิดพลาด — กรุณาลองใหม่');
-    okText.textContent = '📧 ส่ง Link ไปที่ Email แล้ว กรุณาตรวจสอบ inbox';
+    const dateStr = new Date().toLocaleString('th-TH', {
+      year: 'numeric', month: 'short', day: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+    const message =
+`🔐 *แจ้งขอรีเซ็ตรหัสผ่าน*
+
+📧 Email: \`${email}\`
+📅 เวลา: ${dateStr}
+
+⚠️ กรุณา IT Support ดำเนินการรีเซ็ตรหัสผ่านให้ผู้ใช้งาน`;
+
+    await _sendTelegramViaGAS(message);
+    okText.textContent = '✅ แจ้ง IT Support เรียบร้อยแล้ว กรุณารอการติดต่อกลับ';
     okEl.classList.add('show');
   } catch (err) {
-    errText.textContent = err.message;
+    errText.textContent = 'ไม่สามารถส่งได้ — กรุณาติดต่อ IT โดยตรง';
     errEl.classList.add('show');
   } finally {
     btn.disabled = false;
