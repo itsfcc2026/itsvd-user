@@ -3884,8 +3884,6 @@ function _afterSubmitReset(form) {
     setTimeout(() => initPriorityPicker(), 0);
     const deptSel = document.getElementById('userDept');
     if (deptSel) deptSel.innerHTML = '<option value= disabled selected>-- กรุณาเลือกส่วนงานก่อน --</option>';
-    // ปิด ticket-detail-overlay ถ้าเปิดอยู่ก่อนเปลี่ยนหน้า
-    if (typeof closeTicketDetail === 'function') closeTicketDetail();
     userShowPage('track');
     updateUserBadge();
 }
