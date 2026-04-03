@@ -2368,7 +2368,7 @@
                                 </div>
                             </div>
                             <div style="padding-top:0.5rem;display:flex;flex-direction:column;gap:10px;">
-                                <button type="submit" class="btn btn-primary">
+                                <button type="button" class="btn btn-primary" onclick="handleTicketSubmit(event)">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                                     <span data-i18n="btn_submit">ส่ง Ticket</span>
                                 </button>
@@ -3057,7 +3057,7 @@ function _filterForCurrentUser(all) {
 }
 
 // ===================== INIT =====================
-window.onload = async function() {
+async function _initUserApp() {
     // ── Step 1: เช็ค session ทันทีจาก localStorage/sessionStorage (ไม่รอ GAS)
     const session = sessionStorage.getItem(ADMIN_SESSION_KEY);
     const _isUserLoggedIn = typeof UserSession !== 'undefined' && UserSession.isLoggedIn();
@@ -3145,7 +3145,14 @@ window.onload = async function() {
     }
 
     setInterval(_silentRefresh, 5000);
-};
+}
+
+// ── เรียก init แบบ safe: รันทันทีถ้า load เสร็จแล้ว, ไม่งั้นรอ load event ──
+if (document.readyState === 'complete') {
+    _initUserApp();
+} else {
+    window.addEventListener('load', _initUserApp);
+}
 
 // ===================== VIEW MANAGER =====================
 function showUserPortal() {
