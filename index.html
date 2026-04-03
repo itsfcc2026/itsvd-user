@@ -1949,14 +1949,14 @@
             </div>
 
             <div>
-                <label class="login-label" for="user-forgot-email">ต้องการรีเซต Password Email ที่แสดง หรือไม่ ?</label>
+                <label class="login-label" for="user-forgot-email">Email บริษัท</label>
                 <div class="login-input-wrap">
                     <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
                     <input type="email" id="user-forgot-email" class="login-input" placeholder="yourname@farmchokchai.net" autocomplete="email" onkeydown="if(event.key==='Enter') doUserForgot()">
                 </div>
                 <button class="login-btn" id="user-forgot-btn" onclick="doUserForgot()" style="background:linear-gradient(135deg,#f59e0b,#ef4444);">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                    ส่งแจ้ง IT Support เพื่อรีเซ็ตรหัสผ่าน
+                    ส่ง Link รีเซ็ตรหัสผ่าน
                 </button>
             </div>
             <div class="login-footer">
@@ -2211,7 +2211,7 @@
                                 <p style="font-size:0.8rem;color:var(--text-muted);margin-top:1px;" data-i18n="submit_sub">กรอกข้อมูลเพื่อส่งเรื่องให้ทีม IT</p>
                             </div>
                         </div>
-                        <form id="ticket-form" novalidate>
+                        <form id="ticket-form">
                             <div class="form-group">
                                 <label data-i18n="lbl_name">ชื่อผู้แจ้ง</label>
                                 <div style="display:flex;align-items:center;gap:10px;background:#f0f7ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:10px 14px;">
@@ -2225,7 +2225,7 @@
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" style="flex-shrink:0;opacity:0.6"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                                 </div>
                                 <!-- hidden input เก็บค่าจริงสำหรับ form submit -->
-                                <input type="hidden" id="userName">
+                                <input type="hidden" id="userName" required>
                             </div>
                             <div class="form-group">
                                 <label>ส่วนงาน</label>
@@ -2252,12 +2252,7 @@
                             <div class="form-group">
                                 <label data-i18n="lbl_priority">ระดับความเร่งด่วน <span style="font-size:.78rem;font-weight:400;color:#94a3b8;">(เลือกระดับตามผลกระทบของปัญหาที่เกิดขึ้น)</span></label>
                                 <!-- Hidden select kept for form submit compatibility -->
-                                <select id="priority" style="display:none;">
-                                    <option value="Low">Low</option>
-                                    <option value="Medium">Medium</option>
-                                    <option value="High">High</option>
-                                    <option value="Critical">Critical</option>
-                                </select>
+                                <select id="priority" required style="display:none;"></select>
                                 <!-- Bulb card picker — 1 column, horizontal layout -->
                                 <div id="priority-picker" style="display:flex;flex-direction:column;gap:7px;margin-top:6px;">
 
@@ -2368,7 +2363,7 @@
                                 </div>
                             </div>
                             <div style="padding-top:0.5rem;display:flex;flex-direction:column;gap:10px;">
-                                <button type="button" class="btn btn-primary" onclick="handleTicketSubmit(event)">
+                                <button type="submit" class="btn btn-primary">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                                     <span data-i18n="btn_submit">ส่ง Ticket</span>
                                 </button>
@@ -3057,7 +3052,7 @@ function _filterForCurrentUser(all) {
 }
 
 // ===================== INIT =====================
-async function _initUserApp() {
+window.onload = async function() {
     // ── Step 1: เช็ค session ทันทีจาก localStorage/sessionStorage (ไม่รอ GAS)
     const session = sessionStorage.getItem(ADMIN_SESSION_KEY);
     const _isUserLoggedIn = typeof UserSession !== 'undefined' && UserSession.isLoggedIn();
@@ -3082,9 +3077,8 @@ async function _initUserApp() {
     const _ls = document.getElementById('lang-selector');
     if (_ls) _ls.value = 'th';
     currentLang = 'th';
-    try { updateUserUI(); } catch(e) { console.warn('[onload] updateUserUI error:', e); }
-    const _tf = document.getElementById('ticket-form');
-    if (_tf) _tf.onsubmit = handleTicketSubmit;
+    updateUserUI();
+    document.getElementById('ticket-form').onsubmit = handleTicketSubmit;
 
     // ── Step 2: sync ข้อมูลจาก GAS ใน background (ไม่บล็อก UI)
     syncPasswords();
@@ -3145,14 +3139,7 @@ async function _initUserApp() {
     }
 
     setInterval(_silentRefresh, 5000);
-}
-
-// ── เรียก init แบบ safe: รันทันทีถ้า load เสร็จแล้ว, ไม่งั้นรอ load event ──
-if (document.readyState === 'complete') {
-    _initUserApp();
-} else {
-    window.addEventListener('load', _initUserApp);
-}
+};
 
 // ===================== VIEW MANAGER =====================
 function showUserPortal() {
@@ -3720,23 +3707,21 @@ let _pendingTicketData = null;
 function detectDuplicate(newTicket, allTickets) {
     const now = Date.now();
     const WINDOW_MS = 30 * 60 * 1000; // 30 นาที
-    // ใช้ String() เสมอเพื่อป้องกัน TypeError เมื่อ desc/category มี type ไม่ใช่ string
-    const newDesc = String(newTicket.desc || '').toLowerCase().trim();
-    const newCat  = String(newTicket.category || '').toLowerCase();
+    const newDesc = (newTicket.desc || '').toLowerCase().trim();
+    const newCat  = (newTicket.category || '').toLowerCase();
 
     for (const t of allTickets) {
-        if (!t || typeof t !== 'object') continue; // skip malformed entries
         if (t.status === 'Fixed' || t.status === 'Closed') continue;
         const tDate = new Date(t.date).getTime();
         if (
             t.user === newTicket.user &&
-            String(t.category || '').toLowerCase() === newCat &&
+            (t.category || '').toLowerCase() === newCat &&
             now - tDate < WINDOW_MS
         ) {
             return { type: 'exact', ticket: t };
         }
-        const tDesc = String(t.desc || '').toLowerCase().trim();
-        if (newDesc && tDesc && newCat === String(t.category || '').toLowerCase()) {
+        const tDesc = (t.desc || '').toLowerCase().trim();
+        if (newDesc && tDesc && newCat === (t.category || '').toLowerCase()) {
             const wordsNew = newDesc.split(/\s+/).filter(w => w.length > 3);
             const wordsOld = new Set(tDesc.split(/\s+/).filter(w => w.length > 3));
             const overlap  = wordsNew.filter(w => wordsOld.has(w)).length;
@@ -3751,118 +3736,51 @@ function detectDuplicate(newTicket, allTickets) {
 // ── Duplicate modal ───────────────────────────────────────────────────────────
 function showDupModal(dupResult) {
     const t = dupResult.ticket;
-    const isDup = dupResult.type === 'exact';
-    const modal = document.getElementById('dup-modal');
-    const icon  = document.getElementById('dup-modal-icon');
-    const title = document.getElementById('dup-modal-title');
-    const sub   = document.getElementById('dup-modal-sub');
-
-    if (icon)  icon.textContent  = isDup ? '⚠️' : '🔍';
-    if (title) title.textContent = isDup ? 'พบ Ticket ซ้ำในระบบ' : 'พบ Ticket คล้ายกัน';
-    if (sub)   sub.textContent   = 'Ticket: ' + t.id + ' · หมวด: ' + t.category + ' · สถานะ: ' + t.status;
-
-    if (modal) {
-        modal.style.display = 'flex';
-    } else {
-        // Fallback: ถ้าไม่มี modal ให้ใช้ confirm
-        if (confirm('⚠️ พบ' + (isDup ? 'Ticket ซ้ำ' : 'Ticket คล้ายกัน') + ' (' + t.id + ')\nต้องการส่ง Ticket ใหม่อีกครั้งหรือไม่?')) {
-            var pending = _pendingTicketData;
-            _pendingTicketData = null;
-            _commitTicket(pending);
-            _afterSubmitReset(document.getElementById('ticket-form'));
-        } else {
-            _pendingTicketData = null;
-        }
-    }
-}
-
-function dupModalSubmitAnyway() {
-    var pending = _pendingTicketData;
-    _pendingTicketData = null;
-    var modal = document.getElementById('dup-modal');
-    if (modal) modal.style.display = 'none';
-    if (pending) {
-        _commitTicket(pending);
+    const typeLabel = dupResult.type === 'exact' ? 'Ticket ซ้ำ' : 'Ticket คล้ายกัน';
+    const msg = '⚠️ พบ' + typeLabel + 'ในระบบ\n\nTicket: ' + t.id + '\nหมวด: ' + t.category + '\nสถานะ: ' + t.status + '\n\nต้องการส่ง Ticket ใหม่อีกครั้งหรือไม่?';
+    if (confirm(msg)) {
+        _commitTicket(_pendingTicketData);
         _afterSubmitReset(document.getElementById('ticket-form'));
     }
-}
-
-function dupModalClose() {
     _pendingTicketData = null;
-    var modal = document.getElementById('dup-modal');
-    if (modal) modal.style.display = 'none';
 }
 
 function handleTicketSubmit(e) {
     e.preventDefault();
 
-    // ── Auto-fill userName จาก session เสมอ (ไม่ block ถ้าว่าง) ──────────────
-    const _session = (typeof UserSession !== 'undefined') ? UserSession.getUser() : null;
-    const _nameHidden = document.getElementById('userName');
-    if (_session && _nameHidden) {
-        const _display = _session.fullname || (_session.email ? _session.email.split('@')[0] : '');
-        if (!_nameHidden.value && _display) {
-            _nameHidden.value = _display;
-            const disp = document.getElementById('userName-display');
-            if (disp && !disp.textContent) disp.textContent = _display;
-        }
-    }
-
-    // ── Validation: ตรวจสอบ field ที่ user ต้องกรอก (ไม่ใช้ native browser validation) ──
-    const _highlight = (id, msg) => {
-        const el = document.getElementById(id);
-        if (el) {
-            el.style.borderColor = '#ef4444';
-            el.style.boxShadow = '0 0 0 2px rgba(239,68,68,.25)';
-            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            setTimeout(() => el.focus(), 100);
-        }
-        showToast('⚠️ ' + msg, 'error');
-    };
-    const _clearHighlight = (id) => {
-        const el = document.getElementById(id);
-        if (el) { el.style.borderColor = ''; el.style.boxShadow = ''; }
-    };
-
-    const descVal = document.getElementById('description')?.value?.trim() || '';
-    if (!descVal) { _highlight('description', 'กรุณากรอกรายละเอียดอาการเสีย'); return; }
-    _clearHighlight('description');
+    const candidateUser     = document.getElementById('userName').value.trim();
+    const candidateCategory = document.getElementById('category').value;
+    const candidateDesc     = document.getElementById('description').value.trim();
 
     const allTickets = adminTickets.length > 0 ? adminTickets : (JSON.parse(localStorage.getItem(TICKETS_KEY)) || []);
     const lastNum = allTickets.reduce((max, t) => {
-        const match = t.id ? t.id.match(/(\d+)$/) : null;
+        const match = t.id.match(/(\d+)$/);
         return match ? Math.max(max, parseInt(match[1])) : max;
     }, TICKET_START_NUMBER - 1);
     const id = `${TICKET_PREFIX}-${lastNum + 1}`;
-
-    const nameVal     = (_nameHidden && _nameHidden.value.trim()) || (_session ? (_session.fullname || _session.email || 'ไม่ระบุ') : 'ไม่ระบุ');
-    const sectionVal  = (document.getElementById('userSection')  ? document.getElementById('userSection').value  : '') || '-';
-    const deptVal     = (document.getElementById('userDept')     ? document.getElementById('userDept').value     : '') || '-';
-    const categoryVal = (document.getElementById('category')     ? document.getElementById('category').value     : '') || 'Other';
-    const priorityVal = (document.getElementById('priority')     ? document.getElementById('priority').value     : '') || 'Low';
-
+    const _sessionUser = (typeof UserSession !== 'undefined') ? UserSession.getUser() : null;
     const newTicket = {
         id,
         date: new Date().toISOString(),
-        user: nameVal,
-        email: _session ? (_session.email || '') : '',
-        section: sectionVal,
-        dept: deptVal,
-        category: categoryVal,
-        desc: descVal,
-        priority: priorityVal,
+        user: document.getElementById('userName').value,
+        email: _sessionUser ? _sessionUser.email : '',
+        section: document.getElementById('userSection').value || '-',
+        dept: document.getElementById('userDept').value || '-',
+        category: document.getElementById('category').value,
+        desc: document.getElementById('description').value,
+        priority: document.getElementById('priority').value,
         status: "Open",
         adminNote: "",
         assignee: "",
         ticketType: "new"
     };
-
     // ── Duplicate / similar detection ──────────────────────────────────────
     const dupResult = detectDuplicate(newTicket, allTickets);
     if (dupResult.type !== 'new') {
+        // Show modal — hold ticket in pending state
         _pendingTicketData = newTicket;
         showDupModal(dupResult);
-        return;
+        return; // don't submit yet
     }
 
     _commitTicket(newTicket);
@@ -3947,7 +3865,7 @@ async function sendTelegramStatusUpdate(ticket, updatedStatus, assigneeName) {
 }
 // ===================== END TELEGRAM STATUS UPDATE =====================
 
-async function _commitTicket(ticket) {
+function _commitTicket(ticket) {
     // ── Optimistic update: อัปเดต in-memory ทันที (ไม่รอ GAS) ──
     if (!adminTickets.find(t => t.id === ticket.id)) adminTickets.unshift(ticket);
     userTickets = _filterForCurrentUser(adminTickets);
@@ -3955,26 +3873,18 @@ async function _commitTicket(ticket) {
     // render UI ทันทีโดยไม่รอ network
     if (typeof renderUserTickets === 'function') renderUserTickets();
     if (typeof updateUserBadge === 'function') updateUserBadge();
-    // ส่งขึ้น GAS — รอผล แจ้งถ้าล้มเหลว
-    try {
-        await dbAddTicket(ticket);
-        showToast('✅ ส่ง Ticket เรียบร้อย! เลขอ้างอิง: ' + ticket.id, 'success');
-    } catch(e) {
-        // GAS ล้มเหลว — ticket อยู่ใน cache แล้ว แจ้งเตือน user
-        showToast('⚠️ บันทึก Ticket แล้ว แต่ยังไม่ได้ sync ขึ้น Server กรุณาตรวจสอบการเชื่อมต่อ', 'warning');
-        console.error('[_commitTicket] GAS sync failed:', e.message);
-    }
-    sendTelegramNotification(ticket); // ส่งแจ้งเตือน Telegram ใน background
+    // ส่งขึ้น GAS + Telegram ใน background
+    dbAddTicket(ticket);
+    sendTelegramNotification(ticket); // ส่งแจ้งเตือนไปยัง Telegram
+    showToast('✅ ส่ง Ticket เรียบร้อย! เลขอ้างอิง: ' + ticket.id, 'success');
 }
 
 function _afterSubmitReset(form) {
     if (form) form.reset();
     setTimeout(() => initPriorityPicker(), 0);
     const deptSel = document.getElementById('userDept');
-    if (deptSel) deptSel.innerHTML = '<option value="" disabled selected>-- กรุณาเลือกส่วนงานก่อน --</option>';
-    userCurrentPage = 1;
+    if (deptSel) deptSel.innerHTML = '<option value= disabled selected>-- กรุณาเลือกส่วนงานก่อน --</option>';
     userShowPage('track');
-    if (typeof renderUserTickets === 'function') renderUserTickets();
     updateUserBadge();
 }
 
@@ -5265,23 +5175,12 @@ async function doUserForgot() {
   btn.textContent = 'กำลังส่ง...';
 
   try {
-    const dateStr = new Date().toLocaleString('th-TH', {
-      year: 'numeric', month: 'short', day: 'numeric',
-      hour: '2-digit', minute: '2-digit'
-    });
-    const message =
-`🔐 *แจ้งขอรีเซ็ตรหัสผ่าน*
-
-📧 Email: \`${email}\`
-📅 เวลา: ${dateStr}
-
-⚠️ กรุณา IT Support ดำเนินการรีเซ็ตรหัสผ่านให้ผู้ใช้งาน`;
-
-    await _sendTelegramViaGAS(message);
-    okText.textContent = '✅ แจ้ง IT Support เรียบร้อยแล้ว กรุณารอการติดต่อกลับ';
+    const res = await userApiCall({ action: 'requestResetPassword', email });
+    if (!res.ok && res.status !== 'ok') throw new Error(res.error || res.message || 'เกิดข้อผิดพลาด — กรุณาลองใหม่');
+    okText.textContent = '📧 ส่ง Link ไปที่ Email แล้ว กรุณาตรวจสอบ inbox';
     okEl.classList.add('show');
   } catch (err) {
-    errText.textContent = 'ไม่สามารถส่งได้ — กรุณาติดต่อ IT โดยตรง';
+    errText.textContent = err.message;
     errEl.classList.add('show');
   } finally {
     btn.disabled = false;
