@@ -5956,10 +5956,10 @@ window.usersDoResetPassword = usersDoResetPassword;
             var wrap = document.getElementById('chatbot-btn-wrap');
             if (wrap) wrap.classList.add('open');
             // เปิด popup ชิดขวาล่าง เหนือ widget
-            var w = 360, h = 620;
-            var margin = 28;
+            var w = 540, h = 810;
+            var margin = 20;
             var left = screen.width - w - margin;
-            var top  = screen.height - h - 80;
+            var top  = screen.height - h - 60;
             window.open(CHATBOT_URL,'GeminiChat','width='+w+',height='+h+',left='+left+',top='+top+',resizable=yes,scrollbars=yes,toolbar=no,menubar=no,location=no,status=no,directories=no');
             toggleChatbot();
         } else {
