@@ -2252,7 +2252,12 @@
                             <div class="form-group">
                                 <label data-i18n="lbl_priority">ระดับความเร่งด่วน <span style="font-size:.78rem;font-weight:400;color:#94a3b8;">(เลือกระดับตามผลกระทบของปัญหาที่เกิดขึ้น)</span></label>
                                 <!-- Hidden select kept for form submit compatibility -->
-                                <select id="priority" required style="display:none;"></select>
+                                <select id="priority" required style="display:none;">
+                                    <option value="Low">Low</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="High">High</option>
+                                    <option value="Critical">Critical</option>
+                                </select>
                                 <!-- Bulb card picker — 1 column, horizontal layout -->
                                 <div id="priority-picker" style="display:flex;flex-direction:column;gap:7px;margin-top:6px;">
 
