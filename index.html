@@ -1826,13 +1826,13 @@
                 <label class="login-label" for="user-login-email">Email บริษัท</label>
                 <div class="login-input-wrap">
                     <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
-                    <input type="email" id="user-login-email" class="login-input" placeholder="yourname@farmchokchai.net" autocomplete="email" onkeydown="if(event.key==='Enter') doUserLogin()">
+                    <input type="email" id="user-login-email" class="login-input" placeholder="yourname@farmchokchai.net" autocomplete="off" onkeydown="if(event.key==='Enter') doUserLogin()">
                 </div>
 
                 <label class="login-label" for="user-login-password">รหัสผ่าน</label>
                 <div class="login-input-wrap">
                     <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
-                    <input type="password" id="user-login-password" class="login-input" placeholder="กรอกรหัสผ่าน" autocomplete="current-password" onkeydown="if(event.key==='Enter') doUserLogin()">
+                    <input type="password" id="user-login-password" class="login-input" placeholder="กรอกรหัสผ่าน" autocomplete="off" onkeydown="if(event.key==='Enter') doUserLogin()">
                 </div>
 
                 <button class="login-btn" id="user-login-btn" onclick="doUserLogin()" style="background:linear-gradient(135deg,#0891b2,#4f46e5);">
@@ -1884,7 +1884,7 @@
                     <label class="login-label" for="user-reg-fullname" style="margin-bottom:4px;">ชื่อ-นามสกุล</label>
                     <div class="login-input-wrap" style="margin-bottom:0;">
                         <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
-                        <input type="text" id="user-reg-fullname" class="login-input" placeholder="ชื่อ-นามสกุล" autocomplete="name" style="padding-top:10px;padding-bottom:10px;font-size:0.93rem;">
+                        <input type="text" id="user-reg-fullname" class="login-input" placeholder="ชื่อ-นามสกุล" autocomplete="off" style="padding-top:10px;padding-bottom:10px;font-size:0.93rem;">
                     </div>
                 </div>
 
@@ -1893,7 +1893,7 @@
                     <label class="login-label" for="user-reg-email" style="margin-bottom:4px;">Email บริษัท</label>
                     <div class="login-input-wrap" style="margin-bottom:0;">
                         <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
-                        <input type="email" id="user-reg-email" class="login-input" placeholder="yourname@farmchokchai.net / .com" autocomplete="email" style="padding-top:10px;padding-bottom:10px;font-size:0.93rem;">
+                        <input type="email" id="user-reg-email" class="login-input" placeholder="yourname@farmchokchai.net / .com" autocomplete="off" style="padding-top:10px;padding-bottom:10px;font-size:0.93rem;">
                     </div>
                 </div>
 
@@ -1903,14 +1903,14 @@
                         <label class="login-label" for="user-reg-password" style="margin-bottom:4px;">รหัสผ่าน <span style="color:rgba(255,255,255,0.35);font-weight:400;">(≥8 ตัว)</span></label>
                         <div class="login-input-wrap" style="margin-bottom:0;">
                             <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
-                            <input type="password" id="user-reg-password" class="login-input" placeholder="รหัสผ่าน" autocomplete="new-password" style="padding-top:10px;padding-bottom:10px;font-size:0.93rem;">
+                            <input type="password" id="user-reg-password" class="login-input" placeholder="รหัสผ่าน" autocomplete="off" style="padding-top:10px;padding-bottom:10px;font-size:0.93rem;">
                         </div>
                     </div>
                     <div>
                         <label class="login-label" for="user-reg-confirm" style="margin-bottom:4px;">ยืนยันรหัสผ่าน</label>
                         <div class="login-input-wrap" style="margin-bottom:0;">
                             <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
-                            <input type="password" id="user-reg-confirm" class="login-input" placeholder="ยืนยัน" autocomplete="new-password" style="padding-top:10px;padding-bottom:10px;font-size:0.93rem;" onkeydown="if(event.key==='Enter') doUserRegister()">
+                            <input type="password" id="user-reg-confirm" class="login-input" placeholder="ยืนยัน" autocomplete="off" style="padding-top:10px;padding-bottom:10px;font-size:0.93rem;" onkeydown="if(event.key==='Enter') doUserRegister()">
                         </div>
                     </div>
                 </div>
@@ -1952,7 +1952,7 @@
                 <label class="login-label" for="user-forgot-email">ต้องการรีเซต Password Email ที่แสดง หรือไม่ ?</label>
                 <div class="login-input-wrap">
                     <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
-                    <input type="email" id="user-forgot-email" class="login-input" placeholder="yourname@farmchokchai.net" autocomplete="email" onkeydown="if(event.key==='Enter') doUserForgot()">
+                    <input type="email" id="user-forgot-email" class="login-input" placeholder="yourname@farmchokchai.net" autocomplete="off" onkeydown="if(event.key==='Enter') doUserForgot()">
                 </div>
                 <button class="login-btn" id="user-forgot-btn" onclick="doUserForgot()" style="background:linear-gradient(135deg,#f59e0b,#ef4444);">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
