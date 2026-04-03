@@ -1557,97 +1557,117 @@
         .status-Fixed { background: #ede9fe; color: #5b21b6; }
 
         /* ══════════════ CHATBOT FLOATING WIDGET ══════════════ */
-        #chatbot-btn {
+
+        /* Wrapper — handles float animation & rotating ring OUTSIDE button */
+        #chatbot-btn-wrap {
             position: fixed;
             bottom: 28px;
             right: 28px;
             width: 64px;
             height: 64px;
+            z-index: 9990;
+            animation: geminiFloat 5s ease-in-out infinite;
+            will-change: transform;
+        }
+        /* Rotating gradient ring on wrapper (never clipped) */
+        #chatbot-btn-wrap::before {
+            content: '';
+            position: absolute;
+            inset: -2.5px;
+            border-radius: 22.5px;
+            background: conic-gradient(from 0deg, #a78bfa 0%, #4f8ef7 25%, #34d3c8 50%, #f472b6 75%, #a78bfa 100%);
+            animation: rotateBorder 6s linear infinite;
+            will-change: transform;
+        }
+        /* Ambient outer glow on wrapper */
+        #chatbot-btn-wrap::after {
+            content: '';
+            position: absolute;
+            inset: -10px;
+            border-radius: 30px;
+            background: radial-gradient(ellipse at center, rgba(138,99,255,0.2) 0%, transparent 70%);
+            animation: glowPulse 5s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes rotateBorder { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes geminiFloat {
+            0%,100% { transform: translateY(0px); }
+            50%      { transform: translateY(-5px); }
+        }
+        @keyframes glowPulse {
+            0%,100% { opacity: 0.55; transform: scale(1); }
+            50%      { opacity: 1;    transform: scale(1.1); }
+        }
+
+        #chatbot-btn {
+            position: absolute;
+            inset: 2px;
+            width: auto; height: auto;
             padding: 0;
-            background: #0d1117;
-            border-radius: 20px;
-            border: 1.5px solid rgba(255,255,255,0.08);
+            background: linear-gradient(145deg, #13111c 0%, #1a1530 60%, #0e1620 100%);
+            border-radius: 18px;
+            border: none;
             cursor: pointer;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 0 rgba(138,99,255,0);
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 9990;
-            transition: all 0.3s cubic-bezier(.4,0,.2,1);
-            animation: geminiFloat 4s ease-in-out infinite;
             overflow: hidden;
+            transition: filter 0.3s ease, transform 0.3s cubic-bezier(.34,1.56,.64,1);
+            will-change: transform, filter;
         }
-        /* Shimmer overlay */
+        /* Subtle inner shimmer sweep */
         #chatbot-btn::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,0.07) 50%, transparent 80%);
-            background-size: 200% 100%;
-            animation: shimmerSlide 3s linear infinite;
+            background: linear-gradient(125deg, transparent 30%, rgba(255,255,255,0.055) 50%, transparent 70%);
+            background-size: 250% 100%;
+            animation: shimmerSlide 4s ease-in-out infinite;
             border-radius: inherit;
             pointer-events: none;
         }
-        /* Glow ring */
-        #chatbot-btn::after {
-            content: '';
-            position: absolute;
-            inset: -3px;
-            border-radius: 23px;
-            background: conic-gradient(from 0deg, #8b5cf6, #4f8ef7, #1fd8d0, #a78bfa, #8b5cf6);
-            z-index: -1;
-            animation: rotateBorder 4s linear infinite;
-            opacity: 0.7;
-        }
         @keyframes shimmerSlide {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-        @keyframes rotateBorder {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        @keyframes geminiFloat {
-            0%,100% { transform: translateY(0px); box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(138,99,255,0.2); }
-            50% { transform: translateY(-4px); box-shadow: 0 14px 40px rgba(0,0,0,0.55), 0 0 30px rgba(138,99,255,0.35); }
+            0%   { background-position: 150% 0; }
+            100% { background-position: -150% 0; }
         }
         /* Sparkle particles */
         #chatbot-btn .sparkle {
             position: absolute;
-            width: 4px; height: 4px;
             border-radius: 50%;
             pointer-events: none;
-            animation: sparklePop 2.5s ease-in-out infinite;
+            animation: sparklePop 3s ease-in-out infinite;
+            will-change: opacity, transform;
         }
-        #chatbot-btn .sparkle:nth-child(1) { top: 8px; right: 10px; background: #a78bfa; animation-delay: 0s; }
-        #chatbot-btn .sparkle:nth-child(2) { bottom: 10px; left: 8px; background: #38bdf8; animation-delay: 0.8s; width: 3px; height: 3px; }
-        #chatbot-btn .sparkle:nth-child(3) { top: 14px; left: 12px; background: #34d399; animation-delay: 1.6s; width: 3px; height: 3px; }
+        #chatbot-btn .sparkle:nth-child(1) { width: 4px; height: 4px; top: 9px;  right: 10px; background: #c4b5fd; animation-delay: 0s; }
+        #chatbot-btn .sparkle:nth-child(2) { width: 3px; height: 3px; bottom: 9px; left: 9px;  background: #38bdf8; animation-delay: 1s; }
+        #chatbot-btn .sparkle:nth-child(3) { width: 3px; height: 3px; top: 13px; left: 11px;  background: #6ee7b7; animation-delay: 2s; }
         @keyframes sparklePop {
-            0%,100% { opacity: 0; transform: scale(0); }
-            40%,60% { opacity: 1; transform: scale(1); }
+            0%,100% { opacity: 0; transform: scale(0) rotate(0deg); }
+            45%,55% { opacity: 1; transform: scale(1) rotate(45deg); }
         }
+        /* Gemini logo */
         #chatbot-btn .ai-btn-avatar {
-            width: 42px; height: 42px;
+            width: 40px; height: 40px;
             display: flex; align-items: center; justify-content: center;
             flex-shrink: 0;
             position: relative;
             z-index: 2;
-            filter: drop-shadow(0 0 8px rgba(138,99,255,0.6));
-            animation: geminiLogoPulse 3s ease-in-out infinite;
+            animation: geminiLogoPulse 4s ease-in-out infinite;
+            will-change: filter;
         }
         @keyframes geminiLogoPulse {
-            0%,100% { filter: drop-shadow(0 0 6px rgba(138,99,255,0.5)); }
-            50% { filter: drop-shadow(0 0 14px rgba(79,142,247,0.8)) drop-shadow(0 0 6px rgba(138,99,255,0.4)); }
+            0%,100% { filter: drop-shadow(0 0 5px rgba(138,99,255,0.45)); }
+            50%      { filter: drop-shadow(0 0 12px rgba(79,142,247,0.75)) drop-shadow(0 0 4px rgba(138,99,255,0.3)); }
         }
         #chatbot-btn .ai-btn-text { display: none; }
-        /* Tooltip on hover */
+        /* Tooltip */
         #chatbot-btn .ai-btn-tooltip {
             position: absolute;
-            bottom: calc(100% + 10px);
+            bottom: calc(100% + 14px);
             right: 0;
-            background: rgba(13,17,23,0.95);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(13,17,23,0.92);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(167,139,250,0.25);
             border-radius: 12px;
             padding: 8px 14px;
             white-space: nowrap;
@@ -1657,27 +1677,16 @@
             color: #e2e8f0;
             pointer-events: none;
             opacity: 0;
-            transform: translateY(6px);
-            transition: all 0.2s cubic-bezier(.4,0,.2,1);
+            transform: translateY(5px) scale(0.97);
+            transition: opacity 0.22s ease, transform 0.22s cubic-bezier(.34,1.56,.64,1);
         }
         #chatbot-btn .ai-btn-tooltip span {
-            display: block;
-            font-size: 0.7rem;
-            font-weight: 500;
-            color: #a78bfa;
-            margin-top: 1px;
+            display: block; font-size: 0.7rem; font-weight: 500; color: #a78bfa; margin-top: 2px;
         }
-        #chatbot-btn:hover .ai-btn-tooltip {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        #chatbot-btn:hover {
-            transform: translateY(-3px) scale(1.05);
-            border-color: rgba(138,99,255,0.4);
-        }
-        #chatbot-btn:hover::after { opacity: 1; }
-        #chatbot-btn.open { animation: none; transform: none; }
-        #chatbot-btn.open::after { opacity: 0.5; }
+        #chatbot-btn:hover .ai-btn-tooltip { opacity: 1; transform: translateY(0) scale(1); }
+        #chatbot-btn:hover { filter: brightness(1.18); transform: scale(1.05); }
+        #chatbot-btn.open { transform: none; filter: none; }
+        #chatbot-btn-wrap.open { animation: none; }
         @keyframes chatPulse {
             0%,100% { box-shadow: 0 4px 24px rgba(45,212,191,0.35); }
             50% { box-shadow: 0 4px 28px rgba(45,212,191,0.55), 0 0 0 8px rgba(45,212,191,0.08); }
@@ -1783,8 +1792,9 @@
         #chatbot-btn.has-badge .chatbot-unread-badge { display: flex; }
         @media (max-width: 768px) {
             #chatbot-panel { width: calc(100vw - 20px); right: 10px; bottom: 88px; height: min(70vh, calc(100vh - 100px)); border-radius: 16px; }
-            #chatbot-btn { bottom: 16px; right: 14px; width: 56px; height: 56px; border-radius: 18px; }
-            #chatbot-btn .ai-btn-avatar { width: 36px; height: 36px; }
+            #chatbot-btn-wrap { bottom: 16px; right: 14px; width: 56px; height: 56px; }
+            #chatbot-btn-wrap::before { inset: -2px; border-radius: 20px; }
+            #chatbot-btn .ai-btn-avatar { width: 34px; height: 34px; }
         }
 
     </style>
@@ -5857,6 +5867,7 @@ window.usersDoResetPassword = usersDoResetPassword;
 </script>
 
 <!-- ══════════════ CHATBOT FLOATING WIDGET ══════════════ -->
+<div id="chatbot-btn-wrap">
 <button id="chatbot-btn" onclick="toggleChatbot()" title="AI Support Assistant — พร้อมใช้งาน" aria-label="เปิด AI Support Chatbot">
     <span class="chatbot-unread-badge">1</span>
     <!-- Sparkle particles -->
@@ -5898,6 +5909,7 @@ window.usersDoResetPassword = usersDoResetPassword;
         <span class="ai-btn-status">● พร้อมใช้งาน</span>
     </span>
 </button>
+</div>
 
 <div id="chatbot-panel" role="dialog" aria-label="IT Support Chatbot">
     <!-- toolbar: maximize + close -->
@@ -5947,12 +5959,16 @@ window.usersDoResetPassword = usersDoResetPassword;
             panel.classList.add('open');
             btn.classList.add('open');
             btn.classList.remove('has-badge');
+            var wrap = document.getElementById('chatbot-btn-wrap');
+            if (wrap) wrap.classList.add('open');
             var w=380,h=560,left=(screen.width-w)/2,top=(screen.height-h)/2;
             window.open(CHATBOT_URL,'GeminiChat','width='+w+',height='+h+',left='+left+',top='+top+',resizable=yes,scrollbars=yes');
             toggleChatbot();
         } else {
             panel.classList.remove('open', 'maximized');
             btn.classList.remove('open');
+            var wrap = document.getElementById('chatbot-btn-wrap');
+            if (wrap) wrap.classList.remove('open');
             isMaximized = false;
             var btnExp = document.getElementById('btn-expand');
             if (btnExp) {
