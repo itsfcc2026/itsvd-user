@@ -2482,7 +2482,7 @@
     </div><!-- /.user-body -->
 
     <!-- SINGLE FOOTER: position:fixed ออกนอก HTML flow ทั้งหมด ควบคุมด้วย JS ล้วน -->
-    <footer id="main-footer" style="display:none;position:fixed;bottom:0;left:240px;right:0;z-index:300;border-top:1px solid #2e4057;background:#152232;padding:8px 2rem;align-items:center;justify-content:center;">
+    <footer id="main-footer" style="display:flex;position:fixed;bottom:0;left:240px;right:0;z-index:300;border-top:1px solid #2e4057;background:#152232;padding:8px 2rem;align-items:center;justify-content:center;">
         <span style="font-size:0.72rem;color:#b0bec5;font-weight:500;letter-spacing:.2px;">
             IT Service Desk &nbsp;&middot;&nbsp; &copy; 2026 FARMCHOKCHAI &nbsp;&middot;&nbsp; IT Support &nbsp;&middot;&nbsp; AI-Assisted &nbsp;&middot;&nbsp; v1.0
         </span>
@@ -3683,9 +3683,9 @@ function userShowPage(pageId) {
         });
     }
 
-    // ── Step 3: ควบคุม footer — fixed footer ซ่อนบนหน้าแรก แสดงทุกหน้าอื่น ──
+    // ── Step 3: footer fixed แสดงตลอด ──
     const mainFooter = document.getElementById('main-footer');
-    if (mainFooter) mainFooter.style.display = (pageId === 'home') ? 'none' : 'flex';
+    if (mainFooter) mainFooter.style.display = 'flex';
 
     if (pageId === 'track') { userTickets = _filterForCurrentUser(adminTickets.length > 0 ? adminTickets : (JSON.parse(localStorage.getItem(TICKETS_KEY)) || [])); renderUserTickets(); }
     if (pageId === 'submit') { setTimeout(initPriorityPicker, 0); }
