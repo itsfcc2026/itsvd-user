@@ -546,11 +546,7 @@
         }
         /* #page-home overflow managed by user-main-inner */
 
-        /* overflow per page */
-        .user-main-inner:has(#page-submit.active) { overflow-y: auto; padding-bottom: 40px; }
-        .user-main-inner:has(#page-track.active)  { overflow-y: auto; padding-bottom: 40px; }
-        /* home page: no scroll, content fits viewport */
-        .user-main-inner:has(#page-home.active) { overflow-y: hidden; padding-bottom: 0; }
+        /* overflow/padding ควบคุมด้วย JS ใน userShowPage() ทั้งหมด */
 
         .home-master-grid {
             display: grid;
@@ -3215,6 +3211,8 @@ function showUserPortal() {
     const _vap = document.getElementById('view-admin-panel');
     if (_vap) _vap.classList.remove('active');
     if (_vup) { _vup.style.display = ''; _vup.classList.add('active'); }
+    // ── ตั้งค่า overflow/padding สำหรับหน้าแรกเมื่อเปิด portal ──
+    setTimeout(() => { if (typeof userShowPage === 'function') userShowPage('home'); }, 0);
     const _t = document.getElementById('admin-mobile-topbar');
     if (_t) _t.style.display = 'none';
     document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
@@ -5224,6 +5222,8 @@ async function doUserLogin() {
       if (_ol) { _ol.classList.remove('visible'); _ol.classList.add('hidden'); _ol.style.display = 'none'; }
       var _vup = document.getElementById('view-user-portal');
       if (_vup) { _vup.style.display = ''; _vup.classList.add('active'); }
+    // ── ตั้งค่า overflow/padding สำหรับหน้าแรกเมื่อเปิด portal ──
+    setTimeout(() => { if (typeof userShowPage === 'function') userShowPage('home'); }, 0);
     }
     if (window._updateUserPortalName) window._updateUserPortalName(res.user);
 
