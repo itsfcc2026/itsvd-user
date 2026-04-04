@@ -3662,13 +3662,14 @@ function userShowPage(pageId) {
     const navItem = document.getElementById(`user-nav-${pageId}`);
     if (navItem) navItem.classList.add('active');
 
-    // ── Step 2: reset scroll ก่อน แล้วค่อยแสดงหน้า ──
+    // ── Step 2: reset scroll แล้วค่อยเปลี่ยน overflow ──
     const mainInner = document.querySelector('.user-main-inner');
     if (mainInner) {
         mainInner.scrollTop = 0;
         mainInner.style.overflowY = 'auto';
         mainInner.style.paddingBottom = (pageId === 'home') ? '0' : '40px';
     }
+    window.scrollTo(0, 0);
 
     // ── Step 3: footer fixed แสดงตลอด ──
     const mainFooter = document.getElementById('main-footer');
@@ -4371,9 +4372,9 @@ function resetRating(ticketId) {
 function userGoPage(p) {
     userCurrentPage = p;
     renderUserTickets();
-    // scroll to top of ticket list
-    const el = document.getElementById('user-ticket-list');
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // reset scroll to top of container instead of scrollIntoView (which causes offset bug)
+    const mainInner = document.querySelector('.user-main-inner');
+    if (mainInner) mainInner.scrollTop = 0;
 }
 
 function renderUserTickets() {
