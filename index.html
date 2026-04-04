@@ -551,30 +551,10 @@
         .user-main-inner:has(#page-submit.active) { overflow-y: auto; }
         .user-main-inner:has(#page-track.active)  { overflow-y: auto; }
 
-        /* ── MAIN FOOTER: fixed ล็อคด้านล่าง ──
-           แสดง/ซ่อนผ่าน JS ใน userShowPage() */
-        #main-footer {
-            position: fixed;
-            bottom: 0;
-            left: 240px;
-            right: 0;
-            z-index: 300;
-            display: none; /* ซ่อนตอนโหลด — JS จะควบคุม */
-        }
-        /* เพิ่ม padding-bottom เฉพาะหน้าที่ scroll ได้ */
+        /* FOOTER: position:fixed, ควบคุมด้วย JS ล้วนๆ — ไม่มี CSS footer rules */
+        /* padding-bottom เพื่อกันเนื้อหาถูก footer บัง */
         .user-main-inner:has(#page-submit.active),
         .user-main-inner:has(#page-track.active) { padding-bottom: 40px; }
-
-        /* home-footer: อยู่ใน flex flow ปกติ แสดงเฉพาะหน้าหลัก */
-        #home-footer {
-            display: flex; /* โหลดครั้งแรกแสดงเพราะ home เป็น default */
-            flex-shrink: 0;
-            border-top: 1px solid #2e4057;
-            background: #152232;
-            padding: 8px 2rem;
-            align-items: center;
-            justify-content: center;
-        }
 
         .home-master-grid {
             display: grid;
@@ -2498,24 +2478,15 @@
 
             </div><!-- /.user-main-inner -->
 
-            <!-- Footer นอก scroll area — แสดงทุกหน้า ยกเว้นหน้าหลักซึ่งใช้ home-footer แทน -->
-            <footer id="main-footer" style="flex-shrink:0;border-top:1px solid #2e4057;background:#152232;padding:8px 2rem;display:flex;align-items:center;justify-content:center;">
-                <span style="font-size:0.72rem;color:#b0bec5;font-weight:500;letter-spacing:.2px;">
-                    IT Service Desk &nbsp;·&nbsp; © 2026 FARMCHOKCHAI &nbsp;·&nbsp; IT Support &nbsp;·&nbsp; AI-Assisted &nbsp;·&nbsp; v1.0
-                </span>
-            </footer>
-
-            <!-- Footer สำหรับหน้าหลักเท่านั้น -->
-            <footer id="home-footer">
-                <span style="font-size:0.72rem;color:#b0bec5;font-weight:500;letter-spacing:.2px;">
-                    IT Service Desk &nbsp;·&nbsp; © 2026 FARMCHOKCHAI &nbsp;·&nbsp; IT Support &nbsp;·&nbsp; AI-Assisted &nbsp;·&nbsp; v1.0
-                </span>
-            </footer>
-
         </main>
     </div><!-- /.user-body -->
 
-    <!-- Footer fixed fallback (hidden, replaced by inner footer above) -->
+    <!-- SINGLE FOOTER: position:fixed ออกนอก HTML flow ทั้งหมด ควบคุมด้วย JS ล้วน -->
+    <footer id="main-footer" style="display:none;position:fixed;bottom:0;left:240px;right:0;z-index:300;border-top:1px solid #2e4057;background:#152232;padding:8px 2rem;align-items:center;justify-content:center;">
+        <span style="font-size:0.72rem;color:#b0bec5;font-weight:500;letter-spacing:.2px;">
+            IT Service Desk &nbsp;&middot;&nbsp; &copy; 2026 FARMCHOKCHAI &nbsp;&middot;&nbsp; IT Support &nbsp;&middot;&nbsp; AI-Assisted &nbsp;&middot;&nbsp; v1.0
+        </span>
+    </footer>
 
     <!-- ===================== TICKET DETAIL POPUP ===================== -->
     <div id="ticket-detail-overlay" onclick="if(event.target===this)closeTicketDetail()">
@@ -3712,16 +3683,9 @@ function userShowPage(pageId) {
         });
     }
 
-    // ── Step 3: ควบคุม footer ตรงๆ ──
+    // ── Step 3: ควบคุม footer — fixed footer ซ่อนบนหน้าแรก แสดงทุกหน้าอื่น ──
     const mainFooter = document.getElementById('main-footer');
-    const homeFooter = document.getElementById('home-footer');
-    if (pageId === 'home') {
-        if (mainFooter) mainFooter.style.display = 'none';
-        if (homeFooter) homeFooter.style.display = 'flex';
-    } else {
-        if (mainFooter) mainFooter.style.display = 'flex';
-        if (homeFooter) homeFooter.style.display = 'none';
-    }
+    if (mainFooter) mainFooter.style.display = (pageId === 'home') ? 'none' : 'flex';
 
     if (pageId === 'track') { userTickets = _filterForCurrentUser(adminTickets.length > 0 ? adminTickets : (JSON.parse(localStorage.getItem(TICKETS_KEY)) || [])); renderUserTickets(); }
     if (pageId === 'submit') { setTimeout(initPriorityPicker, 0); }
