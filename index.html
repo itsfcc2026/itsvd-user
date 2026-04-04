@@ -509,14 +509,10 @@
             min-height: 0;
             -webkit-overflow-scrolling: touch;
         }
-        /* Make pages take only their natural height, not stretch */
-        .user-main-inner > .page,
-        .user-main-inner > footer {
-            flex-shrink: 0;
-        }
-        .user-main-inner > .page.active {
-            flex-shrink: 0;
-        }
+        /* When on home: inner fills all space, footer sticks to bottom of viewport */
+        .user-main.home-mode .user-main-inner { flex: 1; }
+        /* When on other pages: inner shrinks to content, footer follows immediately */
+        .user-main.content-mode .user-main-inner { flex: 0 1 auto; overflow-y: auto; max-height: calc(100vh - var(--nav-height) - 37px); }
 
         .page { display: none; }
         .page.active { display: block; animation: slideUp 0.3s ease-out; }
@@ -2103,7 +2099,7 @@
         </aside>
 
         <!-- MAIN -->
-        <main class="user-main">
+        <main class="user-main home-mode">
             <div class="user-main-inner">
 
             <!-- ══════════════ HOME PAGE ══════════════ -->
@@ -2478,14 +2474,14 @@
                 </div>
             </div>
 
-            <!-- Footer inside scroll area — sits right below content, no gap -->
-            <footer style="flex-shrink:0;border-top:1px solid #2e4057;background:#152232;padding:8px 2rem;display:flex;align-items:center;justify-content:center;margin-top:auto;">
+            </div><!-- /.user-main-inner -->
+
+            <!-- Footer -->
+            <footer id="main-footer" style="flex-shrink:0;border-top:1px solid #2e4057;background:#152232;padding:8px 2rem;display:flex;align-items:center;justify-content:center;">
                 <span style="font-size:0.72rem;color:#b0bec5;font-weight:500;letter-spacing:.2px;">
                     IT Service Desk &nbsp;·&nbsp; © 2026 FARMCHOKCHAI &nbsp;·&nbsp; IT Support &nbsp;·&nbsp; AI-Assisted &nbsp;·&nbsp; v1.0
                 </span>
             </footer>
-
-            </div><!-- /.user-main-inner -->
 
         </main>
     </div><!-- /.user-body -->
@@ -3681,7 +3677,17 @@ function userShowPage(pageId) {
     const navItem = document.getElementById(`user-nav-${pageId}`);
     if (navItem) navItem.classList.add('active');
 
-    // ── Step 3: คืน overflow ให้ CSS :has() จัดการตามปกติ ──
+    // Toggle footer mode
+    const userMain = document.querySelector('.user-main');
+    if (userMain) {
+        if (pageId === 'home') {
+            userMain.classList.add('home-mode');
+            userMain.classList.remove('content-mode');
+        } else {
+            userMain.classList.add('content-mode');
+            userMain.classList.remove('home-mode');
+        }
+    }
     if (mainInner) {
         requestAnimationFrame(() => {
             mainInner.style.overflow = '';
