@@ -1791,10 +1791,54 @@
         }
         #chatbot-btn.has-badge .chatbot-unread-badge { display: flex; }
         @media (max-width: 768px) {
-            #chatbot-panel { width: calc(100vw - 20px); right: 10px; bottom: 88px; height: min(70vh, calc(100vh - 100px)); border-radius: 16px; }
-            #chatbot-btn-wrap { bottom: 16px; right: 14px; width: 56px; height: 56px; }
-            #chatbot-btn-wrap::before { inset: -2px; border-radius: 20px; }
-            #chatbot-btn .ai-btn-avatar { width: 34px; height: 34px; }
+            /* --mobile-nav-h = bottom nav height (64px) + safe area + extra margin */
+            #chatbot-btn-wrap {
+                bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 14px);
+                right: 14px;
+                /* ขยายให้กดง่าย: แสดงทั้งไอคอน + label */
+                width: auto;
+                height: 52px;
+                border-radius: 26px;
+            }
+            #chatbot-btn-wrap::before { inset: -2px; border-radius: 28px; }
+            #chatbot-btn {
+                border-radius: 26px;
+                padding: 0 16px 0 12px;
+                gap: 8px;
+                flex-direction: row;
+                justify-content: center;
+            }
+            #chatbot-btn .ai-btn-avatar { width: 30px; height: 30px; flex-shrink: 0; }
+            /* แสดง label ใน mobile */
+            #chatbot-btn .ai-btn-text {
+                display: flex !important;
+                flex-direction: column;
+                align-items: flex-start;
+                line-height: 1.2;
+            }
+            #chatbot-btn .ai-btn-label {
+                font-size: 0.82rem;
+                font-weight: 700;
+                color: #fff;
+                font-family: 'Sarabun', sans-serif;
+                white-space: nowrap;
+            }
+            #chatbot-btn .ai-btn-status {
+                font-size: 0.65rem;
+                color: #a5f3fc;
+                font-family: 'Sarabun', sans-serif;
+                white-space: nowrap;
+            }
+            /* ซ่อน tooltip บน touch device */
+            #chatbot-btn .ai-btn-tooltip { display: none; }
+            #chatbot-panel {
+                width: calc(100vw - 20px);
+                right: 10px;
+                /* Panel เริ่มเหนือปุ่ม AI ซึ่งอยู่เหนือ nav bar */
+                bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 14px + 52px + 10px);
+                height: min(65vh, calc(100vh - 64px - env(safe-area-inset-bottom, 0px) - 160px));
+                border-radius: 16px;
+            }
         }
 
     </style>
