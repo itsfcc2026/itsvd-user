@@ -544,13 +544,13 @@
             padding: 1.2rem 2rem 1.5rem;
             max-width: 960px;
         }
-        #page-home { overflow: visible; }
+        /* #page-home overflow managed by user-main-inner */
 
-        /* overflow: ทุกหน้า auto — footer fixed ไม่กระทบ layout */
-        .user-main-inner { overflow-y: auto; }
-
-        /* padding-bottom ทุกหน้าเพื่อไม่ให้ content ถูก fixed footer บัง */
-        .user-main-inner { padding-bottom: 40px; }
+        /* overflow per page */
+        .user-main-inner:has(#page-submit.active) { overflow-y: auto; padding-bottom: 40px; }
+        .user-main-inner:has(#page-track.active)  { overflow-y: auto; padding-bottom: 40px; }
+        /* home page: no scroll, content fits viewport */
+        .user-main-inner:has(#page-home.active) { overflow-y: hidden; padding-bottom: 0; }
 
         .home-master-grid {
             display: grid;
@@ -3657,17 +3657,21 @@ function switchLanguage(lang) {
 }
 
 function userShowPage(pageId) {
-    // ── Step 1: Reset scroll ──
-    const mainInner = document.querySelector('.user-main-inner');
-    if (mainInner) mainInner.scrollTop = 0;
-    window.scrollTo(0, 0);
-
-    // ── Step 2: สลับหน้า ──
+    // ── Step 1: สลับหน้า ──
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.user-nav-item').forEach(a => a.classList.remove('active'));
     document.getElementById(`page-${pageId}`).classList.add('active');
     const navItem = document.getElementById(`user-nav-${pageId}`);
     if (navItem) navItem.classList.add('active');
+
+    // ── Step 2: ควบคุม overflow และ scroll ผ่าน JS โดยตรง (ไม่พึ่ง CSS :has) ──
+    const mainInner = document.querySelector('.user-main-inner');
+    if (mainInner) {
+        mainInner.style.overflowY = (pageId === 'home') ? 'hidden' : 'auto';
+        mainInner.style.paddingBottom = (pageId === 'home') ? '0' : '40px';
+        mainInner.scrollTop = 0;
+    }
+    window.scrollTo(0, 0);
 
     // ── Step 3: footer fixed แสดงตลอด ──
     const mainFooter = document.getElementById('main-footer');
