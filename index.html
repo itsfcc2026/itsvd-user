@@ -544,6 +544,15 @@
             padding: 1.2rem 2rem 1.5rem;
             max-width: 960px;
         }
+        /* home page fills full height — ไม่มีช่องว่างล่าง */
+        #page-home {
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        #page-home .home-content {
+            flex: 1;
+        }
         /* #page-home overflow managed by user-main-inner */
 
         /* overflow/padding ควบคุมด้วย JS ใน userShowPage() ทั้งหมด */
@@ -3662,11 +3671,11 @@ function userShowPage(pageId) {
     const navItem = document.getElementById(`user-nav-${pageId}`);
     if (navItem) navItem.classList.add('active');
 
-    // ── Step 2: ควบคุม overflow และ scroll ผ่าน JS โดยตรง (ไม่พึ่ง CSS :has) ──
+    // ── Step 2: scroll กลับขึ้นบนทุกครั้ง ──
     const mainInner = document.querySelector('.user-main-inner');
     if (mainInner) {
-        mainInner.style.overflowY = (pageId === 'home') ? 'hidden' : 'auto';
-        mainInner.style.paddingBottom = (pageId === 'home') ? '0' : '40px';
+        mainInner.style.overflowY = 'auto';
+        mainInner.style.paddingBottom = '40px';
         mainInner.scrollTop = 0;
     }
     window.scrollTo(0, 0);
