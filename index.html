@@ -546,12 +546,15 @@
         }
         #page-home { overflow: visible; }
 
-        /* Lock home overflow — ซ่อน footer บนหน้าหลักเพราะ content เต็มพอดี */
+        /* Lock home, unlock others */
         .user-main-inner:has(#page-home.active)   { overflow-y: hidden; }
         .user-main-inner:has(#page-submit.active) { overflow-y: auto; }
         .user-main-inner:has(#page-track.active)  { overflow-y: auto; }
-        /* ซ่อน footer เฉพาะหน้าหลัก */
-        .user-main-inner:has(#page-home.active) #main-footer { display: none; }
+        /* หน้าหลัก: ซ่อน footer ใน scroll area */
+        .user-main-inner:has(#page-home.active) #main-footer { visibility: hidden; height: 0; padding: 0; border: none; overflow: hidden; }
+        /* home-footer แสดงเฉพาะหน้าหลัก นอก scroll area */
+        #home-footer { display: none; flex-shrink: 0; border-top: 1px solid #2e4057; background: #152232; padding: 8px 2rem; align-items: center; justify-content: center; }
+        .user-main:has(.user-main-inner #page-home.active) #home-footer { display: flex; }
 
         .home-master-grid {
             display: grid;
@@ -2480,6 +2483,13 @@
             </footer>
 
             </div><!-- /.user-main-inner -->
+
+            <!-- Footer นอก scroll area สำหรับหน้าหลักเท่านั้น -->
+            <footer id="home-footer">
+                <span style="font-size:0.72rem;color:#b0bec5;font-weight:500;letter-spacing:.2px;">
+                    IT Service Desk &nbsp;·&nbsp; © 2026 FARMCHOKCHAI &nbsp;·&nbsp; IT Support &nbsp;·&nbsp; AI-Assisted &nbsp;·&nbsp; v1.0
+                </span>
+            </footer>
 
         </main>
     </div><!-- /.user-body -->
