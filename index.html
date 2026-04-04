@@ -547,9 +547,11 @@
         #page-home { overflow: visible; }
 
         /* overflow per page */
+        .user-main-inner:has(#page-home.active)   { overflow-y: hidden; }
         .user-main-inner:has(#page-submit.active) { overflow-y: auto; }
         .user-main-inner:has(#page-track.active)  { overflow-y: auto; }
-        /* ── UNIFIED FOOTER: fixed ที่ด้านล่าง ไม่ขยับไม่ว่าเนื้อหาจะสูงแค่ไหน ── */
+
+        /* ── MAIN FOOTER: fixed ที่ด้านล่าง ล็อคไม่ขยับ ── */
         #main-footer {
             position: fixed;
             bottom: 0;
@@ -558,11 +560,23 @@
             z-index: 300;
             flex-shrink: 0;
         }
-        /* เพิ่ม padding-bottom ใน scroll area เพื่อไม่ให้ content ถูก footer บัง */
-        .user-main-inner { padding-bottom: 40px; }
-        .user-main-inner:has(#page-home.active) { padding-bottom: 0; overflow-y: hidden; }
-        /* home-footer ซ่อนถาวร ใช้ main-footer แทน */
-        #home-footer { display: none !important; }
+        /* ซ่อน main-footer บนหน้าแรก */
+        .user-main:has(#page-home.active) #main-footer { display: none !important; }
+        /* เพิ่ม padding-bottom เฉพาะหน้าที่ scroll ได้ เพื่อไม่ให้ content ถูก footer บัง */
+        .user-main-inner:has(#page-submit.active),
+        .user-main-inner:has(#page-track.active)  { padding-bottom: 40px; }
+
+        /* home-footer: แสดงเฉพาะหน้าหลัก อยู่นอก scroll area */
+        #home-footer {
+            display: none;
+            flex-shrink: 0;
+            border-top: 1px solid #2e4057;
+            background: #152232;
+            padding: 8px 2rem;
+            align-items: center;
+            justify-content: center;
+        }
+        .user-main:has(.user-main-inner #page-home.active) #home-footer { display: flex; }
 
         .home-master-grid {
             display: grid;
