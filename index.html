@@ -1791,52 +1791,36 @@
         }
         #chatbot-btn.has-badge .chatbot-unread-badge { display: flex; }
         @media (max-width: 768px) {
-            /* --mobile-nav-h = bottom nav height (64px) + safe area + extra margin */
+            /* ยกปุ่มให้พ้น bottom nav (64px) + safe-area */
             #chatbot-btn-wrap {
-                bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 14px);
-                right: 14px;
-                /* ขยายให้กดง่าย: แสดงทั้งไอคอน + label */
-                width: auto;
-                height: 52px;
-                border-radius: 26px;
+                bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 10px);
+                right: 12px;
+                width: 44px;
+                height: 44px;
+                border-radius: 14px;
+                animation: none;
             }
-            #chatbot-btn-wrap::before { inset: -2px; border-radius: 28px; }
+            #chatbot-btn-wrap::before { display: none; }
             #chatbot-btn {
-                border-radius: 26px;
-                padding: 0 16px 0 12px;
-                gap: 8px;
-                flex-direction: row;
-                justify-content: center;
-            }
-            #chatbot-btn .ai-btn-avatar { width: 30px; height: 30px; flex-shrink: 0; }
-            /* แสดง label ใน mobile */
-            #chatbot-btn .ai-btn-text {
-                display: flex !important;
+                border-radius: 14px;
+                padding: 0;
                 flex-direction: column;
-                align-items: flex-start;
-                line-height: 1.2;
+                gap: 0;
             }
-            #chatbot-btn .ai-btn-label {
-                font-size: 0.82rem;
-                font-weight: 700;
-                color: #fff;
-                font-family: 'Sarabun', sans-serif;
-                white-space: nowrap;
-            }
-            #chatbot-btn .ai-btn-status {
-                font-size: 0.65rem;
-                color: #a5f3fc;
-                font-family: 'Sarabun', sans-serif;
-                white-space: nowrap;
-            }
-            /* ซ่อน tooltip บน touch device */
+            #chatbot-btn .ai-btn-avatar { width: 26px; height: 26px; }
+            #chatbot-btn .ai-btn-text { display: none !important; }
             #chatbot-btn .ai-btn-tooltip { display: none; }
+            #chatbot-btn .sparkle { display: none; }
+            #chatbot-btn .chatbot-unread-badge {
+                width: 15px; height: 15px;
+                top: -4px; right: -4px;
+                font-size: 0.55rem;
+            }
             #chatbot-panel {
-                width: calc(100vw - 20px);
-                right: 10px;
-                /* Panel เริ่มเหนือปุ่ม AI ซึ่งอยู่เหนือ nav bar */
-                bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 14px + 52px + 10px);
-                height: min(65vh, calc(100vh - 64px - env(safe-area-inset-bottom, 0px) - 160px));
+                width: calc(100vw - 24px);
+                right: 12px;
+                bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 10px + 44px + 8px);
+                height: min(60vh, calc(100vh - 64px - env(safe-area-inset-bottom, 0px) - 150px));
                 border-radius: 16px;
             }
         }
