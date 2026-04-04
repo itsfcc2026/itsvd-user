@@ -549,8 +549,6 @@
         .user-main-inner:has(#page-home.active)   { overflow-y: hidden; }
         .user-main-inner:has(#page-submit.active) { overflow-y: auto; }
         .user-main-inner:has(#page-track.active)  { overflow-y: auto; }
-        /* Force scroll to top when switching to home page */
-        .user-main-inner:has(#page-home.active) { scroll-behavior: auto; }
 
         .home-master-grid {
             display: grid;
@@ -3656,15 +3654,30 @@ function switchLanguage(lang) {
 }
 
 function userShowPage(pageId) {
+    // ── Step 1: Reset scroll ของ user-main-inner ก่อน เพื่อป้องกันการ์ดหน้าแรกหาย ──
+    // ต้อง reset scroll ก่อนที่ CSS :has() จะเปลี่ยน overflow-y เป็น hidden
+    const mainInner = document.querySelector('.user-main-inner');
+    if (mainInner) {
+        mainInner.style.overflow = 'auto'; // ชั่วคราวเพื่อให้ scroll ได้
+        mainInner.scrollTop = 0;
+    }
+    window.scrollTo(0, 0);
+
+    // ── Step 2: สลับหน้า ──
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.user-nav-item').forEach(a => a.classList.remove('active'));
     document.getElementById(`page-${pageId}`).classList.add('active');
     const navItem = document.getElementById(`user-nav-${pageId}`);
     if (navItem) navItem.classList.add('active');
-    window.scrollTo(0, 0);
-    // Reset scroll position ของ user-main-inner ด้วย เพื่อป้องกันการ์ดหน้าแรกหายเมื่อกลับมา
-    const mainInner = document.querySelector('.user-main-inner');
-    if (mainInner) mainInner.scrollTop = 0;
+
+    // ── Step 3: คืน overflow ให้ CSS :has() จัดการตามปกติ ──
+    if (mainInner) {
+        requestAnimationFrame(() => {
+            mainInner.style.overflow = '';
+            mainInner.scrollTop = 0; // reset อีกครั้งหลัง overflow เปลี่ยน
+        });
+    }
+
     if (pageId === 'track') { userTickets = _filterForCurrentUser(adminTickets.length > 0 ? adminTickets : (JSON.parse(localStorage.getItem(TICKETS_KEY)) || [])); renderUserTickets(); }
     if (pageId === 'submit') { setTimeout(initPriorityPicker, 0); }
     if (pageId !== 'track') { showUnratedOnly = false; }
