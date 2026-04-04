@@ -543,6 +543,7 @@
         .home-content {
             padding: 1.2rem 2rem 1.5rem;
             max-width: 960px;
+            scroll-margin-top: 0;
         }
         /* #page-home overflow managed by user-main-inner */
 
@@ -3665,9 +3666,25 @@ function userShowPage(pageId) {
     // ── Step 2: ควบคุม overflow และ scroll ผ่าน JS โดยตรง (ไม่พึ่ง CSS :has) ──
     const mainInner = document.querySelector('.user-main-inner');
     if (mainInner) {
+        // Reset scroll ก่อนเปลี่ยน overflow เสมอ
+        mainInner.scrollTop = 0;
         mainInner.style.overflowY = (pageId === 'home') ? 'hidden' : 'auto';
         mainInner.style.paddingBottom = (pageId === 'home') ? '0' : '40px';
-        mainInner.scrollTop = 0;
+    }
+    // Reset scroll ทุก container ที่เกี่ยวข้องเมื่อกลับมาหน้า home
+    if (pageId === 'home') {
+        const pageEl = document.getElementById('page-home');
+        if (pageEl) pageEl.scrollTop = 0;
+        const userMain = document.querySelector('.user-main');
+        if (userMain) userMain.scrollTop = 0;
+        const userBody = document.querySelector('.user-body');
+        if (userBody) userBody.scrollTop = 0;
+        // Delayed reset เผื่อ DOM ยังไม่ update
+        setTimeout(() => {
+            const mi = document.querySelector('.user-main-inner');
+            if (mi) mi.scrollTop = 0;
+            window.scrollTo(0, 0);
+        }, 10);
     }
     window.scrollTo(0, 0);
 
