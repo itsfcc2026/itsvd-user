@@ -184,7 +184,7 @@
         /* ===================== USER PORTAL LAYOUT ===================== */
         #view-user-portal {
             display: none;
-            height: 100vh;
+            min-height: 100vh;
         }
         #view-user-portal.active {
             display: flex;
@@ -277,9 +277,8 @@
         /* ---- PORTAL BODY (sidebar + main) ---- */
         .user-body {
             display: flex;
-            height: calc(100vh - var(--nav-height));
-            margin-top: var(--nav-height);
-            overflow: hidden;
+            min-height: 100vh;
+            padding-top: var(--nav-height);
         }
 
         /* ---- SIDEBAR ---- */
@@ -497,7 +496,7 @@
         .user-main {
             margin-left: 240px;
             flex: 1;
-            min-height: 0;
+            height: calc(100vh - var(--nav-height));
             background: var(--bg);
             display: flex;
             flex-direction: column;
@@ -508,6 +507,7 @@
             overflow-y: auto;
             min-height: 0;
             -webkit-overflow-scrolling: touch;
+            padding-bottom: 8px;
         }
 
         .page { display: none; }
@@ -550,11 +550,13 @@
         .user-main-inner:has(#page-home.active)   { overflow-y: hidden; }
         .user-main-inner:has(#page-submit.active) { overflow-y: auto; }
         .user-main-inner:has(#page-track.active)  { overflow-y: auto; }
-        /* หน้าหลัก: ซ่อน footer ใน scroll area */
-        .user-main-inner:has(#page-home.active) #main-footer { visibility: hidden; height: 0; padding: 0; border: none; overflow: hidden; }
-        /* home-footer แสดงเฉพาะหน้าหลัก นอก scroll area */
-        #home-footer { display: none; flex-shrink: 0; border-top: 1px solid #2e4057; background: #152232; padding: 8px 2rem; align-items: center; justify-content: center; }
-        .user-main:has(.user-main-inner #page-home.active) #home-footer { display: flex; }
+
+        /* หน้า submit/track: ไม่ยืด user-main เต็ม viewport ให้ footer ชิด content */
+        .user-main:has(.user-main-inner #page-submit.active),
+        .user-main:has(.user-main-inner #page-track.active) {
+            height: auto;
+            min-height: 0;
+        }
 
         .home-master-grid {
             display: grid;
@@ -2475,17 +2477,10 @@
                 </div>
             </div>
 
-            <!-- Footer inside scroll area: ติด content ทันที ไม่มีช่องว่าง -->
-            <footer id="main-footer" style="flex-shrink:0;border-top:1px solid #2e4057;background:#152232;padding:8px 2rem;display:flex;align-items:center;justify-content:center;">
-                <span style="font-size:0.72rem;color:#b0bec5;font-weight:500;letter-spacing:.2px;">
-                    IT Service Desk &nbsp;·&nbsp; © 2026 FARMCHOKCHAI &nbsp;·&nbsp; IT Support &nbsp;·&nbsp; AI-Assisted &nbsp;·&nbsp; v1.0
-                </span>
-            </footer>
-
             </div><!-- /.user-main-inner -->
 
-            <!-- Footer นอก scroll area สำหรับหน้าหลักเท่านั้น -->
-            <footer id="home-footer">
+            <!-- Footer — pushed to bottom of scroll area -->
+            <footer style="flex-shrink:0;border-top:1px solid #2e4057;background:#152232;padding:8px 2rem;display:flex;align-items:center;justify-content:center;">
                 <span style="font-size:0.72rem;color:#b0bec5;font-weight:500;letter-spacing:.2px;">
                     IT Service Desk &nbsp;·&nbsp; © 2026 FARMCHOKCHAI &nbsp;·&nbsp; IT Support &nbsp;·&nbsp; AI-Assisted &nbsp;·&nbsp; v1.0
                 </span>
@@ -3685,6 +3680,7 @@ function userShowPage(pageId) {
     const navItem = document.getElementById(`user-nav-${pageId}`);
     if (navItem) navItem.classList.add('active');
 
+    // ── Step 3: คืน overflow ให้ CSS :has() จัดการตามปกติ ──
     if (mainInner) {
         requestAnimationFrame(() => {
             mainInner.style.overflow = '';
