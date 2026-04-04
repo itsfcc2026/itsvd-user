@@ -508,6 +508,7 @@
             overflow-y: auto;
             min-height: 0;
             -webkit-overflow-scrolling: touch;
+            scroll-behavior: auto;
         }
 
         .page { display: none; }
@@ -543,7 +544,6 @@
         .home-content {
             padding: 1.2rem 2rem 1.5rem;
             max-width: 960px;
-            scroll-margin-top: 0;
         }
         /* #page-home overflow managed by user-main-inner */
 
@@ -3656,6 +3656,12 @@ function switchLanguage(lang) {
 }
 
 function userShowPage(pageId) {
+    // ── Step 0: Reset scroll ก่อนสลับหน้า (สำคัญมาก — ต้องทำก่อน) ──
+    const mainInner = document.querySelector('.user-main-inner');
+    if (mainInner) {
+        mainInner.scrollTop = 0;
+    }
+
     // ── Step 1: สลับหน้า ──
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.user-nav-item').forEach(a => a.classList.remove('active'));
@@ -3664,29 +3670,18 @@ function userShowPage(pageId) {
     if (navItem) navItem.classList.add('active');
 
     // ── Step 2: ควบคุม overflow และ scroll ผ่าน JS โดยตรง (ไม่พึ่ง CSS :has) ──
-    const mainInner = document.querySelector('.user-main-inner');
     if (mainInner) {
-        // Reset scroll ก่อนเปลี่ยน overflow เสมอ
-        mainInner.scrollTop = 0;
         mainInner.style.overflowY = (pageId === 'home') ? 'hidden' : 'auto';
         mainInner.style.paddingBottom = (pageId === 'home') ? '0' : '40px';
-    }
-    // Reset scroll ทุก container ที่เกี่ยวข้องเมื่อกลับมาหน้า home
-    if (pageId === 'home') {
-        const pageEl = document.getElementById('page-home');
-        if (pageEl) pageEl.scrollTop = 0;
-        const userMain = document.querySelector('.user-main');
-        if (userMain) userMain.scrollTop = 0;
-        const userBody = document.querySelector('.user-body');
-        if (userBody) userBody.scrollTop = 0;
-        // Delayed reset เผื่อ DOM ยังไม่ update
-        setTimeout(() => {
-            const mi = document.querySelector('.user-main-inner');
-            if (mi) mi.scrollTop = 0;
-            window.scrollTo(0, 0);
-        }, 10);
+        mainInner.scrollTop = 0;
     }
     window.scrollTo(0, 0);
+
+    // ── Step 2b: Double-reset หลัง browser repaint เพื่อกัน scroll ค้าง ──
+    requestAnimationFrame(() => {
+        if (mainInner) mainInner.scrollTop = 0;
+        window.scrollTo(0, 0);
+    });
 
     // ── Step 3: footer fixed แสดงตลอด ──
     const mainFooter = document.getElementById('main-footer');
