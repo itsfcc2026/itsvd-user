@@ -1425,8 +1425,10 @@
                 border-radius: 20px 20px 0 0 !important;
                 max-width: 100% !important;
                 width: 100% !important;
-                max-height: 96dvh !important;
-                padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+                max-height: calc(96dvh - 76px - env(safe-area-inset-bottom, 0px)) !important;
+                overflow-y: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+                padding-bottom: max(20px, env(safe-area-inset-bottom, 20px)) !important;
             }
             .td-body {
                 padding: 16px 16px 24px !important;
