@@ -3682,7 +3682,9 @@ function userShowPage(pageId) {
         const isMobile = window.innerWidth <= 768;
         if (isMobile) {
             // บน mobile ต้องเว้นช่องให้ bottom nav (76px) + safe area เสมอทุกหน้า
-            mainInner.style.paddingBottom = 'calc(76px + env(safe-area-inset-bottom, 0px))';
+            // หน้า submit เพิ่ม padding พิเศษให้ปุ่ม "ยกเลิก" ล่างสุดกดได้
+            const extraPad = (pageId === 'submit') ? '40px' : '0px';
+            mainInner.style.paddingBottom = `calc(76px + ${extraPad} + env(safe-area-inset-bottom, 0px))`;
         } else {
             mainInner.style.paddingBottom = (pageId === 'home') ? '0' : '40px';
         }
