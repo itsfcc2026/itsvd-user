@@ -3669,13 +3669,22 @@ function userShowPage(pageId) {
     if (mainInner) {
         mainInner.scrollTop = 0;
         mainInner.style.overflowY = 'auto';
-        mainInner.style.paddingBottom = (pageId === 'home') ? '0' : '40px';
+        const isMobile = window.innerWidth <= 768;
+        if (isMobile) {
+            // บน mobile ต้องเว้นช่องให้ bottom nav (76px) + safe area เสมอทุกหน้า
+            mainInner.style.paddingBottom = 'calc(76px + env(safe-area-inset-bottom, 0px))';
+        } else {
+            mainInner.style.paddingBottom = (pageId === 'home') ? '0' : '40px';
+        }
     }
     window.scrollTo(0, 0);
 
-    // ── Step 3: footer fixed แสดงตลอด ──
+    // ── Step 3: footer — ซ่อนบน mobile เพราะใช้ bottom nav แทน ──
     const mainFooter = document.getElementById('main-footer');
-    if (mainFooter) mainFooter.style.display = 'flex';
+    if (mainFooter) {
+        const isMobile = window.innerWidth <= 768;
+        mainFooter.style.display = isMobile ? 'none' : 'flex';
+    }
 
     if (pageId === 'track') { userTickets = _filterForCurrentUser(adminTickets.length > 0 ? adminTickets : (JSON.parse(localStorage.getItem(TICKETS_KEY)) || [])); renderUserTickets(); }
     if (pageId === 'submit') { setTimeout(initPriorityPicker, 0); }
