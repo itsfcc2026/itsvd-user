@@ -991,7 +991,9 @@
 
             /* Bottom nav */
             #mobile-bottom-nav { display: block; }
-            .user-main-inner { padding-bottom: 76px; }
+            /* ซ่อน footer บน mobile เพราะซ้อนทับ bottom nav */
+            #main-footer { display: none !important; }
+            .user-main-inner { padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
 
             /* Topbar */
             .user-topbar { padding: 0 0.75rem; height: 56px; }
