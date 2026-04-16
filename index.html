@@ -6178,11 +6178,11 @@ window.usersDoResetPassword = usersDoResetPassword;
 //  CONFIG — แก้ตรงนี้เพื่อเปิด/ปิด และแก้ข้อความ
 // ══════════════════════════════════════════════════════
 var ANNOUNCEMENT = {
-  show:         false,          // true = แสดง / false = ซ่อน
+  show:         true,          // true = แสดง / false = ซ่อน
   severity:     'maintenance',  // 'maintenance' (เหลือง) หรือ 'critical' (แดง)
-  title:        'ปิดระบบซ่อมบำรุง — คืนนี้ 23:00–02:00',
+  title:        'ทดสอบระบบประกาศ',// ปิดระบบซ่อมบำรุง — คืนนี้ 23:00–02:00
   body:         'กรุณา submit ticket ก่อน 23:00 ข้อมูลและ ticket ยังคงครบถ้วน',
-  ticket_ref:   'CHG0004821',   // ใส่ '' ถ้าไม่มี
+  ticket_ref:   'ITANM001',   // ใส่ '' ถ้าไม่มี
   dismissible:  true,           // true = มีปุ่ม "รับทราบ" ปิดได้
   blocks_login: false,          // true = ซ่อนหน้า login ทั้งหมด (ระบบล่ม)
 };
