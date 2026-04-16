@@ -1874,6 +1874,12 @@
                     <input type="password" id="user-login-password" class="login-input" placeholder="กรอกรหัสผ่าน" autocomplete="off" onkeydown="if(event.key==='Enter') doUserLogin()">
                 </div>
 
+                <!-- จดจำ Email -->
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;margin-top:-0.2rem;">
+                    <input type="checkbox" id="user-remember-email" style="width:16px;height:16px;accent-color:#2dd4bf;cursor:pointer;flex-shrink:0;border-radius:4px;">
+                    <label for="user-remember-email" style="color:rgba(255,255,255,0.6);font-size:0.875rem;cursor:pointer;user-select:none;">จดจำ Email</label>
+                </div>
+
                 <button class="login-btn" id="user-login-btn" onclick="doUserLogin()" style="background:linear-gradient(135deg,#0891b2,#4f46e5);">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
                     เข้าสู่ระบบ
@@ -5214,6 +5220,16 @@ async function doUserLogin() {
   const errEl    = document.getElementById('user-login-error');
   const errText  = document.getElementById('user-login-error-text');
   const btn      = document.getElementById('user-login-btn');
+  const rememberChk = document.getElementById('user-remember-email');
+
+  // บันทึกหรือลบ Email ตาม checkbox
+  if (rememberChk?.checked) {
+    localStorage.setItem('it_remembered_email', email || '');
+    localStorage.setItem('it_remember_email_checked', '1');
+  } else {
+    localStorage.removeItem('it_remembered_email');
+    localStorage.removeItem('it_remember_email_checked');
+  }
 
   errEl.classList.remove('show');
   if (!email || !password) {
@@ -5261,7 +5277,18 @@ async function doUserLogin() {
   }
 }
 
-// ── DO USER REGISTER ──
+// ── โหลด Email ที่จดจำไว้ตอน DOMContentLoaded ──
+document.addEventListener('DOMContentLoaded', function() {
+  var savedEmail   = localStorage.getItem('it_remembered_email');
+  var wasChecked   = localStorage.getItem('it_remember_email_checked');
+  var emailInput   = document.getElementById('user-login-email');
+  var rememberChk  = document.getElementById('user-remember-email');
+  if (wasChecked === '1' && savedEmail && emailInput) {
+    emailInput.value = savedEmail;
+    if (rememberChk) rememberChk.checked = true;
+  }
+});
+
 async function doUserRegister() {
   // DEBUG
   console.log("🔍 [DEBUG] DEFAULT_GAS_URL =", DEFAULT_GAS_URL);
