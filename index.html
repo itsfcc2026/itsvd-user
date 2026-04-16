@@ -1874,6 +1874,11 @@
                     <input type="password" id="user-login-password" class="login-input" placeholder="กรอกรหัสผ่าน" autocomplete="off" onkeydown="if(event.key==='Enter') doUserLogin()">
                 </div>
 
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.5rem;margin-top:-0.4rem;">
+                    <input type="checkbox" id="remember-username" style="width:16px;height:16px;accent-color:#2dd4bf;cursor:pointer;flex-shrink:0;">
+                    <label for="remember-username" style="color:rgba(255,255,255,0.55);font-size:0.85rem;cursor:pointer;user-select:none;">จดจำ Username</label>
+                </div>
+
                 <button class="login-btn" id="user-login-btn" onclick="doUserLogin()" style="background:linear-gradient(135deg,#0891b2,#4f46e5);">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
                     เข้าสู่ระบบ
@@ -3335,15 +3340,26 @@ function userLogout() {
     if (typeof UserSession !== "undefined") UserSession.clear();
     userTickets  = [];  // เคลียร์ทันที ป้องกัน ticket ค้างในหน้าจอ
     adminTickets = [];  // เคลียร์ in-memory ด้วย
-    // เคลียร์ค่า input login ทั้งหมด
-    const clearIds = ['user-login-email','user-login-password','login-username','login-password'];
+    // เคลียร์ค่า input login ทั้งหมด (ยกเว้น email ถ้าจดจำไว้)
+    const rememberedEmail = localStorage.getItem('it_remembered_email') || '';
+    const clearIds = ['user-login-password','login-username','login-password'];
     clearIds.forEach(function(id){ const el = document.getElementById(id); if(el) el.value = ''; });
+    // เคลียร์ email เฉพาะเมื่อไม่ได้จดจำ
+    const emailEl = document.getElementById('user-login-email');
+    if (emailEl) emailEl.value = rememberedEmail;
     const ol = document.getElementById("login-overlay");
     ol.classList.remove("hidden");
     ol.classList.add("visible");
     ol.style.display = "";
     document.getElementById("view-user-portal").classList.remove("active");
-    setTimeout(function(){ if (typeof showUserLoginPanel === "function") showUserLoginPanel(); }, 50);
+    setTimeout(function(){
+      if (typeof showUserLoginPanel === "function") showUserLoginPanel();
+      // คืนค่า checkbox และ email หลังแสดง panel
+      const chk = document.getElementById('remember-username');
+      if (chk) chk.checked = !!rememberedEmail;
+      const emailField = document.getElementById('user-login-email');
+      if (emailField && rememberedEmail) emailField.value = rememberedEmail;
+    }, 50);
 }
 
 // ===================== USER PORTAL =====================
@@ -5235,6 +5251,13 @@ async function doUserLogin() {
     const res = await userApiCall({ action: 'login', email, password });
     if (!res.ok && res.status !== 'ok') throw new Error(res.error || res.message || 'Login ไม่สำเร็จ');
 
+    // จดจำ username
+    const rememberChk = document.getElementById('remember-username');
+    if (rememberChk && rememberChk.checked) {
+      localStorage.setItem('it_remembered_email', email);
+    } else {
+      localStorage.removeItem('it_remembered_email');
+    }
     UserSession.set(res.token, res.user);
     // safe call — window.showUserPortal export ทันทีหลัง define
     if (typeof window.showUserPortal === 'function') {
@@ -5404,6 +5427,17 @@ document.addEventListener('DOMContentLoaded', () => {
 window.UserSession           = UserSession;
 window.userApiCall           = userApiCall;
 window.doUserLogin           = doUserLogin;
+
+// ── โหลด remembered email ตอนหน้าโหลด ──
+document.addEventListener('DOMContentLoaded', function() {
+  var rememberedEmail = localStorage.getItem('it_remembered_email') || '';
+  if (rememberedEmail) {
+    var emailField = document.getElementById('user-login-email');
+    if (emailField) emailField.value = rememberedEmail;
+    var chk = document.getElementById('remember-username');
+    if (chk) chk.checked = true;
+  }
+});
 window.doUserRegister        = doUserRegister;
 window.doUserForgot          = doUserForgot;
 window.showUserLoginPanel    = showUserLoginPanel;
