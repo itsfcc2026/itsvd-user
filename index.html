@@ -5186,7 +5186,19 @@ function showUserLoginPanel() {
   });
   document.getElementById('user-login-box').style.display = '';
   document.getElementById('user-login-error')?.classList.remove('show');
-  document.getElementById('user-login-email')?.focus();
+
+  // คืน Email ที่จดจำไว้ (กรณี logout แล้วกลับมา)
+  const savedEmail  = localStorage.getItem('it_remembered_email');
+  const wasChecked  = localStorage.getItem('it_remember_email_checked');
+  const emailInput  = document.getElementById('user-login-email');
+  const rememberChk = document.getElementById('user-remember-email');
+  if (wasChecked === '1' && savedEmail && emailInput) {
+    emailInput.value = savedEmail;
+    if (rememberChk) rememberChk.checked = true;
+    document.getElementById('user-login-password')?.focus();
+  } else {
+    emailInput?.focus();
+  }
 }
 function showUserRegisterPanel() {
   const adminBox = document.querySelector('#login-overlay .login-box');
