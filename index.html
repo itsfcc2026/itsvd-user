@@ -1874,9 +1874,10 @@
                     <input type="password" id="user-login-password" class="login-input" placeholder="กรอกรหัสผ่าน" autocomplete="off" onkeydown="if(event.key==='Enter') doUserLogin()">
                 </div>
 
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.5rem;margin-top:-0.4rem;">
-                    <input type="checkbox" id="remember-username" style="width:16px;height:16px;accent-color:#2dd4bf;cursor:pointer;flex-shrink:0;">
-                    <label for="remember-username" style="color:rgba(255,255,255,0.55);font-size:0.85rem;cursor:pointer;user-select:none;">จดจำ Username</label>
+                <!-- จดจำ Email -->
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;margin-top:-0.2rem;">
+                    <input type="checkbox" id="user-remember-email" style="width:16px;height:16px;accent-color:#2dd4bf;cursor:pointer;flex-shrink:0;border-radius:4px;">
+                    <label for="user-remember-email" style="color:rgba(255,255,255,0.6);font-size:0.875rem;cursor:pointer;user-select:none;">จดจำ Email</label>
                 </div>
 
                 <button class="login-btn" id="user-login-btn" onclick="doUserLogin()" style="background:linear-gradient(135deg,#0891b2,#4f46e5);">
@@ -3340,26 +3341,15 @@ function userLogout() {
     if (typeof UserSession !== "undefined") UserSession.clear();
     userTickets  = [];  // เคลียร์ทันที ป้องกัน ticket ค้างในหน้าจอ
     adminTickets = [];  // เคลียร์ in-memory ด้วย
-    // เคลียร์ค่า input login ทั้งหมด (ยกเว้น email ถ้าจดจำไว้)
-    const rememberedEmail = localStorage.getItem('it_remembered_email') || '';
-    const clearIds = ['user-login-password','login-username','login-password'];
+    // เคลียร์ค่า input login ทั้งหมด
+    const clearIds = ['user-login-email','user-login-password','login-username','login-password'];
     clearIds.forEach(function(id){ const el = document.getElementById(id); if(el) el.value = ''; });
-    // เคลียร์ email เฉพาะเมื่อไม่ได้จดจำ
-    const emailEl = document.getElementById('user-login-email');
-    if (emailEl) emailEl.value = rememberedEmail;
     const ol = document.getElementById("login-overlay");
     ol.classList.remove("hidden");
     ol.classList.add("visible");
     ol.style.display = "";
     document.getElementById("view-user-portal").classList.remove("active");
-    setTimeout(function(){
-      if (typeof showUserLoginPanel === "function") showUserLoginPanel();
-      // คืนค่า checkbox และ email หลังแสดง panel
-      const chk = document.getElementById('remember-username');
-      if (chk) chk.checked = !!rememberedEmail;
-      const emailField = document.getElementById('user-login-email');
-      if (emailField && rememberedEmail) emailField.value = rememberedEmail;
-    }, 50);
+    setTimeout(function(){ if (typeof showUserLoginPanel === "function") showUserLoginPanel(); }, 50);
 }
 
 // ===================== USER PORTAL =====================
@@ -3579,8 +3569,8 @@ const i18n = {
 };
 
 const categoryData = {
-    th: [["Computer","คอมพิวเตอร์/โน้ตบุ๊ก"],["Internet","อินเทอร์เน็ต/Wi-Fi"],["Printer","เครื่องพิมพ์/สแกนเนอร์"],["Software","ติดตั้ง/ปัญหาโปรแกรม"],["ProgramWebsite","Program / Website"],["Password","กู้คืนรหัสผ่าน"],["Hardware","ฮาร์ดแวร์/อุปกรณ์"],["Other","อื่นๆ"]],
-    en: [["Computer","Desktop/Laptop"],["Internet","Internet/Wi-Fi"],["Printer","Printer/Scanner"],["Software","Software Installation"],["ProgramWebsite","Program / Website"],["Password","Password Reset"],["Hardware","Hardware/Peripherals"],["Other","Other"]]
+    th: [["Computer","คอมพิวเตอร์/โน้ตบุ๊ก"],["Internet","อินเทอร์เน็ต/Wi-Fi"],["Printer","เครื่องพิมพ์/สแกนเนอร์"],["Software","ติดตั้ง/ปัญหาโปรแกรม"],["Password","กู้คืนรหัสผ่าน"],["Hardware","ฮาร์ดแวร์/อุปกรณ์"],["Other","อื่นๆ"]],
+    en: [["Computer","Desktop/Laptop"],["Internet","Internet/Wi-Fi"],["Printer","Printer/Scanner"],["Software","Software Installation"],["Password","Password Reset"],["Hardware","Hardware/Peripherals"],["Other","Other"]]
 };
 
 const priorityData = {
@@ -3775,13 +3765,13 @@ const DEPT_OPTIONS = {
     HO: [
         'ฝ่ายบัญชี','ฝ่ายการเงิน','ฝ่ายจัดซื้อ','ฝ่ายการตลาด',
         'ฝ่ายขาย','ฝ่าย CMK','ฝ่าย SHRS','ฝ่าย HR บริหารบุคคล',
-        'ฝ่ายสำนักงาน','ฝ่ายเบเกอร์รี่','ฝ่าย IT'
+        'ฝ่ายสำนักงาน','ฝ่ายเบเกอร์รี่','ฝ่ายกฎหมาย','ฝ่าย IT'
     ],
     FARM: [
         'ฝ่ายบัญชี','ฝ่ายการเงิน','ฝ่ายจัดซื้อ','ฝ่ายโรงงานนม',
         'ฝ่าย SHFR','ฝ่าย HR บริหารบุคคล','ฝ่ายสำนักงานฟาร์ม',
         'ฝ่ายท่องเที่ยว','ฝ่ายวิศวกรรม','ฝ่ายพืชอาหารสัตว์',
-        'ฝ่ายปศุสัตว์','ฝ่ายพืชสวนผลไม้','ฝ่ายบริการเครื่องกลเกษตร','ฝ่าย IT'
+        'ฝ่ายปศุสัตว์','ฝ่ายพืชสวนผลไม้','ฝ่ายบริการเครื่องกลเกษตร','ฝ่ายกฎหมาย','ฝ่าย IT'
     ]
 };
 function updateDeptOptions() {
@@ -5196,7 +5186,19 @@ function showUserLoginPanel() {
   });
   document.getElementById('user-login-box').style.display = '';
   document.getElementById('user-login-error')?.classList.remove('show');
-  document.getElementById('user-login-email')?.focus();
+
+  // คืน Email ที่จดจำไว้ (กรณี logout แล้วกลับมา)
+  const savedEmail  = localStorage.getItem('it_remembered_email');
+  const wasChecked  = localStorage.getItem('it_remember_email_checked');
+  const emailInput  = document.getElementById('user-login-email');
+  const rememberChk = document.getElementById('user-remember-email');
+  if (wasChecked === '1' && savedEmail && emailInput) {
+    emailInput.value = savedEmail;
+    if (rememberChk) rememberChk.checked = true;
+    document.getElementById('user-login-password')?.focus();
+  } else {
+    emailInput?.focus();
+  }
 }
 function showUserRegisterPanel() {
   const adminBox = document.querySelector('#login-overlay .login-box');
@@ -5230,6 +5232,16 @@ async function doUserLogin() {
   const errEl    = document.getElementById('user-login-error');
   const errText  = document.getElementById('user-login-error-text');
   const btn      = document.getElementById('user-login-btn');
+  const rememberChk = document.getElementById('user-remember-email');
+
+  // บันทึกหรือลบ Email ตาม checkbox
+  if (rememberChk?.checked) {
+    localStorage.setItem('it_remembered_email', email || '');
+    localStorage.setItem('it_remember_email_checked', '1');
+  } else {
+    localStorage.removeItem('it_remembered_email');
+    localStorage.removeItem('it_remember_email_checked');
+  }
 
   errEl.classList.remove('show');
   if (!email || !password) {
@@ -5251,13 +5263,6 @@ async function doUserLogin() {
     const res = await userApiCall({ action: 'login', email, password });
     if (!res.ok && res.status !== 'ok') throw new Error(res.error || res.message || 'Login ไม่สำเร็จ');
 
-    // จดจำ username
-    const rememberChk = document.getElementById('remember-username');
-    if (rememberChk && rememberChk.checked) {
-      localStorage.setItem('it_remembered_email', email);
-    } else {
-      localStorage.removeItem('it_remembered_email');
-    }
     UserSession.set(res.token, res.user);
     // safe call — window.showUserPortal export ทันทีหลัง define
     if (typeof window.showUserPortal === 'function') {
@@ -5284,7 +5289,18 @@ async function doUserLogin() {
   }
 }
 
-// ── DO USER REGISTER ──
+// ── โหลด Email ที่จดจำไว้ตอน DOMContentLoaded ──
+document.addEventListener('DOMContentLoaded', function() {
+  var savedEmail   = localStorage.getItem('it_remembered_email');
+  var wasChecked   = localStorage.getItem('it_remember_email_checked');
+  var emailInput   = document.getElementById('user-login-email');
+  var rememberChk  = document.getElementById('user-remember-email');
+  if (wasChecked === '1' && savedEmail && emailInput) {
+    emailInput.value = savedEmail;
+    if (rememberChk) rememberChk.checked = true;
+  }
+});
+
 async function doUserRegister() {
   // DEBUG
   console.log("🔍 [DEBUG] DEFAULT_GAS_URL =", DEFAULT_GAS_URL);
@@ -5427,17 +5443,6 @@ document.addEventListener('DOMContentLoaded', () => {
 window.UserSession           = UserSession;
 window.userApiCall           = userApiCall;
 window.doUserLogin           = doUserLogin;
-
-// ── โหลด remembered email ตอนหน้าโหลด ──
-document.addEventListener('DOMContentLoaded', function() {
-  var rememberedEmail = localStorage.getItem('it_remembered_email') || '';
-  if (rememberedEmail) {
-    var emailField = document.getElementById('user-login-email');
-    if (emailField) emailField.value = rememberedEmail;
-    var chk = document.getElementById('remember-username');
-    if (chk) chk.checked = true;
-  }
-});
 window.doUserRegister        = doUserRegister;
 window.doUserForgot          = doUserForgot;
 window.showUserLoginPanel    = showUserLoginPanel;
