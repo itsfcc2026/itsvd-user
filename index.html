@@ -3585,7 +3585,7 @@ const statusLabels = {
 
 function updateUserUI() {
     updateAllI18n();
-    fillDropdown('category', categoryData[currentLang]);
+    fillDropdown('category', categoryData[currentLang], currentLang === 'th' ? '-- เลือกหมวดหมู่ปัญหา --' : '-- Select Category --');
     fillDropdown('priority', priorityData[currentLang]);
     renderUserTickets();
     updateUserBadge();
@@ -3606,11 +3606,14 @@ function updateHomeStats() {
     if (elResolved) elResolved.textContent = resolved;
 }
 
-function fillDropdown(id, data) {
+function fillDropdown(id, data, placeholder) {
     const el = document.getElementById(id);
     if (!el) return;
     const val = el.value;
-    el.innerHTML = data.map(([v,t]) => `<option value="${v}">${t}</option>`).join('');
+    const placeholderHtml = placeholder
+        ? `<option value="" disabled ${val ? '' : 'selected'}>${placeholder}</option>`
+        : '';
+    el.innerHTML = placeholderHtml + data.map(([v,t]) => `<option value="${v}">${t}</option>`).join('');
     if (val) el.value = val;
 }
 
@@ -3657,7 +3660,7 @@ function switchLanguage(lang) {
         });
     }
     // อัปเดต user portal
-    fillDropdown('category', categoryData[currentLang]);
+    fillDropdown('category', categoryData[currentLang], currentLang === 'th' ? '-- เลือกหมวดหมู่ปัญหา --' : '-- Select Category --');
     fillDropdown('priority', priorityData[currentLang]);
     renderUserTickets();
     updateUserBadge();
@@ -3895,6 +3898,18 @@ function handleTicketSubmit(e) {
         const el = document.getElementById(id);
         if (el) { el.style.borderColor = ''; el.style.boxShadow = ''; }
     };
+
+    const sectionCheckVal  = document.getElementById('userSection')?.value?.trim() || '';
+    if (!sectionCheckVal) { _highlight('userSection', 'กรุณาเลือกส่วนงาน'); return; }
+    _clearHighlight('userSection');
+
+    const deptCheckVal = document.getElementById('userDept')?.value?.trim() || '';
+    if (!deptCheckVal) { _highlight('userDept', 'กรุณาเลือกฝ่าย'); return; }
+    _clearHighlight('userDept');
+
+    const categoryCheckVal = document.getElementById('category')?.value?.trim() || '';
+    if (!categoryCheckVal) { _highlight('category', 'กรุณาเลือกหมวดหมู่ปัญหา'); return; }
+    _clearHighlight('category');
 
     const descVal = document.getElementById('description')?.value?.trim() || '';
     if (!descVal) { _highlight('description', 'กรุณากรอกรายละเอียดอาการเสีย'); return; }
